@@ -1,9 +1,9 @@
 #! /bin/bash
 
 ## This script is used to produce AOD files from a gridpack for
-## 2018 data
+## 2022 data
 ##
-## Based on the MC&I UL MC instructions found at https://exo-mc-and-i.gitbook.io/exo-mc-and-interpretation/how-to-sample-production-private
+## Based on the MC&I MC instructions found at https://exo-mc-and-i.gitbook.io/exo-mc-and-interpretation/how-to-sample-production-private
 ##
 ## Usage: ./gridpackGen_UL18.sh gridpack_file.tar.xz
 
@@ -12,7 +12,7 @@ GP_f=$1
 nevent=$2
 ctau=$3
 nthreads=$4
-year=2018
+year=2022
 
 if [ "$#" -ne 4 ]; then
     echo "Wrong number of arguments!"
@@ -33,15 +33,16 @@ namebase=${GP_f/.tar.xz/}
 export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch
 source $VO_CMS_SW_DIR/cmsset_default.sh
 
-export SCRAM_ARCH=slc7_amd64_gcc820
-if ! [ -r CMSSW_10_2_16_UL/src ] ; then
-  scram p CMSSW CMSSW_10_2_16_UL
+
+export SCRAM_ARCH=el8_amd64_gcc11
+if ! [ -r CMSSW_13_0_13/src ] ; then
+  scram p CMSSW CMSSW_13_0_13
 fi
-if ! [ -r CMSSW_10_6_28/src ] ; then
-    scram p CMSSW CMSSW_10_6_28
+if ! [ -r CMSSW_13_0_13/src ] ; then
+    scram p CMSSW CMSSW_13_0_13
 fi
 
-cd CMSSW_10_6_28/src
+cd CMSSW_13_0_13/src
 eval `scram runtime -sh`
 scram b -j 4
 tar xaf ${GRIDPACKDIR}/${GP_f}
@@ -60,11 +61,11 @@ echo "${LHEDIR}/${namebase}.lhe"
 rm -rf *
 cd ${BASEDIR}
 
-export SCRAM_ARCH=slc7_amd64_gcc820
-if ! [ -r CMSSW_10_6_28/src ] ; then
-    scram p CMSSW CMSSW_10_6_28
+export SCRAM_ARCH=el8_amd64_gcc11
+if ! [ -r CMSSW_13_0_13/src ] ; then
+    scram p CMSSW CMSSW_13_0_13
 fi
-cd CMSSW_10_6_28/src
+cd CMSSW_13_0_13/src
 rm -rf *
 mkdir -p Configuration/GenProduction/python/
 
@@ -72,6 +73,7 @@ cp "${BASEDIR}/${HADRONIZER}" Configuration/GenProduction/python/
 eval `scram runtime -sh`
 scram b -j 4
 
+#QUESTIONS
 # Running GEN  Step
 echo "########################################################################################"
 echo "########################################################################################"
@@ -144,8 +146,8 @@ sed -i -e "s/NTHREAD/${nthreads}/g" ${genfragment}
 
 cmsRun -p ${genfragment}
 
-# Doing HLT step in CMSSW 10_2_16_UL
-cd ${BASEDIR}/CMSSW_10_2_16_UL/src
+# Doing HLT step in CMSSW 13_0_13
+cd ${BASEDIR}/CMSSW_13_0_13/src
 eval `scram runtime -sh`
 scram b -j 4
 echo "########################################################################################"
@@ -153,7 +155,7 @@ echo "##########################################################################
 echo "4.) HLT Step"
 genfragment=${namebase}_HLT_cfg_ctau-${ctau}.py
 cmsDriver.py step1 \
-    --filein file:${BASEDIR}/CMSSW_10_6_28/src/${namebase}_DIGIPremix_ctau-${ctau}_year-${year}.root \
+    --filein file:${BASEDIR}/CMSSW_13_0_13/src/${namebase}_DIGIPremix_ctau-${ctau}_year-${year}.root \
     --fileout file:${namebase}_HLT_ctau-${ctau}_year-${year}.root \
     --mc --eventcontent RAWSIM --datatier GEN-SIM-RAW \
     --step HLT:2018v32 --geometry DB:Extended \
@@ -164,10 +166,10 @@ cmsDriver.py step1 \
     --python_filename ${genfragment} --no_exec -n ${nevent} || exit $?;
 
 cmsRun -p ${genfragment}
-cp ${namebase}_HLT_ctau-${ctau}_year-${year}.root ${BASEDIR}/CMSSW_10_6_28/src
+cp ${namebase}_HLT_ctau-${ctau}_year-${year}.root ${BASEDIR}/CMSSW_13_0_13/src
 
 # Doing RECO/AOD step
-cd ${BASEDIR}/CMSSW_10_6_28/src
+cd ${BASEDIR}/CMSSW_13_0_13/src
 eval `scram runtime -sh`
 scram b -j 4
 echo "########################################################################################"
@@ -206,6 +208,7 @@ cmsRun -p ${genfragment}
 echo "list of output files:"
 ls -ltr *.root
 
+#Path needs to be fixed
 remoteDIR="/store/group/lpcmetx/iDMe//Samples/signal/2018"
 #xrdcp -vf ${namebase}_HLT_ctau-${ctau}_year-${year}.root root://cmseos.fnal.gov/$remoteDIR/DIGIRAWHLT/${namebase}_HLT_ctau-${ctau}_year-${year}.root
 
