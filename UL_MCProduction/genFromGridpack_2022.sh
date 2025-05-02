@@ -126,7 +126,7 @@ echo "##########################################################################
 echo "########################################################################################"
 echo "3.) DIGIPremix Step"
 genfragment=${namebase}_DIGIPremix_cfg_ctau-${ctau}.py
-cp $BASEDIR/template_DIGIPremix_cfg_UL2018.py ./${genfragment}   #WHAT SHOULD BE THE REPLACEMENT HERE FOR THE.py file
+cp $BASEDIR/template_DIGIPremix_cfg_UL2018.py ./${genfragment}   #WHAT SHOULD BE THE REPLACEMENT HERE FOR THE.py file?
 sed -i -e "s/PLACEHOLDER_IN.root/${namebase}_SIM_ctau-${ctau}_year-${year}.root/g" ${genfragment}
 sed -i -e "s/PLACEHOLDER_OUT.root/${namebase}_DIGIPremix_ctau-${ctau}_year-${year}.root/g" ${genfragment}
 sed -i -e "s/NEVT/${nevent}/g" ${genfragment}
@@ -152,14 +152,14 @@ eval `scram runtime -sh`
 scram b -j 4
 echo "########################################################################################"
 echo "########################################################################################"
-echo "4.) HLT Step" #NOT DONE
+echo "4.) HLT Step" 
 genfragment=${namebase}_HLT_cfg_ctau-${ctau}.py
 cmsDriver.py \
     --filein file:${BASEDIR}/CMSSW_13_0_13/src/${namebase}_DIGIPremix_ctau-${ctau}_year-${year}.root \
     --fileout file:${namebase}_HLT_ctau-${ctau}_year-${year}.root \
-    --mc --eventcontent RAWSIM --datatier GEN-SIM-RAW \     #UNCLEAR
-    --step HLT:2018v32 --geometry DB:Extended \   #HLT UNCLEAR
-    --conditions 130X_mcRun3_2022_realistic_v5 \
+    --mc --eventcontent RAWSIM --datatier GEN-SIM-RAW \     #Not sure about eventcontent
+    --step HLT:2022v12 --geometry DB:Extended \   
+    --conditions 124X_mcRun3_2022_realistic_v12 \
     --era Run3 --nThreads $nthreads \
     --customise_commands 'process.source.bypassVersionCheck = cms.untracked.bool(True)' \
     --customise Configuration/DataProcessing/Utils.addMonitoring \
@@ -180,8 +180,8 @@ cmsDriver.py \
     --filein file:${namebase}_HLT_ctau-${ctau}_year-${year}.root \
     --fileout file:${namebase}_AOD_ctau-${ctau}_year-${year}.root \
     --mc --eventcontent AODSIM --datatier AODSIM \
-    --step RAW2DIGI,L1Reco,RECO,RECOSIM,EI --geometry DB:Extended \  #NOT SURE
-    --conditions 130X_mcRun3_2022_realistic_v5 \
+    --step RAW2DIGI,L1Reco,RECO,RECOSIM --geometry DB:Extended \  
+    --conditions 124X_mcRun3_2022_realistic_v12 \
     --era Run3 --nThreads $nthreads \
     --customise Configuration/DataProcessing/Utils.addMonitoring \
     --python_filename ${genfragment} --no_exec --runUnscheduled -n ${nevent} || exit $?;
