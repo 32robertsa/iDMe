@@ -4,7 +4,6 @@
 
 ## Based on the MC&I MC instructions found at https://exo-mc-and-i.gitbook.io/exo-mc-and-interpretation/how-to-sample-production-private
 
-## Usage: ./gridpackGen_UL18.sh gridpack_file.tar.xz
 
 export BASEDIR=`pwd`
 GP_f=$1
@@ -15,7 +14,7 @@ year=2022
 
 if [ "$#" -ne 4 ]; then
     echo "Wrong number of arguments!"
-    echo "Usage: ./genFromGridpack_UL.sh gridpack nevents ctau nThreads"
+    echo "Usage: ./genFromGridpack_2022.sh gridpack nevents ctau nThreads"
     exit 1
 fi
 
@@ -23,11 +22,15 @@ echo "Generating signal MC for gridpack ${GP_f}"
 echo "Lifetime set to ${ctau} mm"
 
 GRIDPACKDIR=${BASEDIR}
-LHEDIR=${BASEDIR}/mylhes
+LHEDIR=${BASEDIR}
+
 [ -d ${LHEDIR} ] || mkdir ${LHEDIR}
 
 HADRONIZER="iDMe_pythiaGenFragment.py"
+#HADRONIZER="Configuration.GenProduction.genFragments.iDMe_pythiaGenFragment"
+
 namebase=${GP_f/.tar.xz/}
+
 
 export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch
 source $VO_CMS_SW_DIR/cmsset_default.sh
@@ -36,9 +39,6 @@ source $VO_CMS_SW_DIR/cmsset_default.sh
 export SCRAM_ARCH=el8_amd64_gcc11
 if ! [ -r CMSSW_13_0_13/src ] ; then
   scram p CMSSW CMSSW_13_0_13
-fi
-if ! [ -r CMSSW_13_0_13/src ] ; then
-    scram p CMSSW CMSSW_13_0_13
 fi
 
 cd CMSSW_13_0_13/src
@@ -69,6 +69,7 @@ rm -rf *
 mkdir -p Configuration/GenProduction/python/
 
 cp "${BASEDIR}/${HADRONIZER}" Configuration/GenProduction/python/
+echo "Happening!"
 eval `scram runtime -sh`
 scram b -j 4
 
@@ -77,6 +78,7 @@ echo "##########################################################################
 echo "########################################################################################"
 echo "1.) GEN Step" #DONE
 genfragment=${namebase}_GEN_cfg_ctau-${ctau}.py
+echo "genfragment:" ${namebase}_GEN_cfg_ctau-${ctau}.py
 cmsDriver.py Configuration/GenProduction/python/${HADRONIZER}  \
     --filein file:${LHEDIR}/${namebase}.lhe \
     --fileout file:${namebase}_GEN_ctau-${ctau}_year-${year}.root \
@@ -85,8 +87,8 @@ cmsDriver.py Configuration/GenProduction/python/${HADRONIZER}  \
     --conditions 124X_mcRun3_2022_realistic_v12 --beamspot Realistic25ns13p6TeVEarly2022Collision \
     --era Run3 --nThreads $nthreads \
     --customise Configuration/DataProcessing/Utils.addMonitoring \
-    --customise_commands process.RandomNumberGeneratorService.externalLHEProducer.initialSeed="int(${SEED})"
-    --python_filename ${genfragment} --no_exec --number 1000 --number_out 100 || exit $?;
+    --python_filename ${genfragment} --no_exec -n ${nevent} || exit $?;
+
 
 #Make each file unique to make later publication possible
 linenumber=`grep -n 'process.source' ${genfragment} | awk '{print $1}'`
@@ -116,7 +118,7 @@ cmsDriver.py  \
     --conditions 124X_mcRun3_2022_realistic_v12 --beamspot Realistic25ns13p6TeVEarly2022Collision \
     --era Run3 --nThreads $nthreads \
     --customise Configuration/DataProcessing/Utils.addMonitoring \
-    --customise_commands process.RandomNumberGeneratorService.externalLHEProducer.initialSeed="int(${SEED})"
+    #--customise_commands process.RandomNumberGeneratorService.externalLHEProducer.initialSeed="int(${SEED})"\
     --python_filename ${genfragment} --no_exec --runUnscheduled -n ${nevent} || exit $?; 
 
 cmsRun -p ${genfragment}
