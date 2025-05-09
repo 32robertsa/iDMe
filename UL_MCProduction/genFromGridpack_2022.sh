@@ -18,11 +18,12 @@ if [ "$#" -ne 4 ]; then
     exit 1
 fi
 
-echo "Generating signal MC for gridpack ${GP_f}"
-echo "Lifetime set to ${ctau} mm"
+# echo "Generating signal MC for gridpack ${GP_f}"
+# echo "Lifetime set to ${ctau} mm"
 
 GRIDPACKDIR=${BASEDIR}
 LHEDIR=${BASEDIR}
+
 
 [ -d ${LHEDIR} ] || mkdir ${LHEDIR}
 
@@ -37,11 +38,11 @@ source $VO_CMS_SW_DIR/cmsset_default.sh
 
 
 export SCRAM_ARCH=el8_amd64_gcc11
-if ! [ -r CMSSW_13_0_13/src ] ; then
-  scram p CMSSW CMSSW_13_0_13
+if ! [ -r CMSSW_12_4_14_patch3/src ] ; then
+  scram p CMSSW CMSSW_12_4_14_patch3
 fi
 
-cd CMSSW_13_0_13/src
+cd CMSSW_12_4_14_patch3/src
 eval `scram runtime -sh`
 scram b -j 4
 tar xaf ${GRIDPACKDIR}/${GP_f}
@@ -60,11 +61,11 @@ echo "${LHEDIR}/${namebase}.lhe"
 rm -rf *
 cd ${BASEDIR}
 
-export SCRAM_ARCH=el8_amd64_gcc11
-if ! [ -r CMSSW_13_0_13/src ] ; then
-    scram p CMSSW CMSSW_13_0_13
+export SCRAM_ARCH=el8_amd64_gcc10
+if ! [ -r CMSSW_12_4_14_patch3/src ] ; then
+    scram p CMSSW CMSSW_12_4_14_patch3
 fi
-cd CMSSW_13_0_13/src
+cd CMSSW_12_4_14_patch3/src
 rm -rf *
 mkdir -p Configuration/GenProduction/python/
 
@@ -73,7 +74,7 @@ echo "Happening!"
 eval `scram runtime -sh`
 scram b -j 4
 
-# Running GEN  Step
+# # Running GEN  Step
 echo "########################################################################################"
 echo "########################################################################################"
 echo "1.) GEN -SIM Step" #DONE
@@ -135,31 +136,23 @@ cmsRun -p ${genfragment}
 # sed -i -e "s/NTHREAD/${nthreads}/g" ${genfragment}
 
 
-# Running DigiPremix Step
-echo "########################################################################################"
+
+# echo "3.) DIGIPremix Step"
+
+# genfragment=${namebase}_DRPremix_cfg_ctau-${ctau}.py
+
+# echo "########################################################################################"
 echo "########################################################################################"
 echo "3.) DIGIPremix Step"
-
 genfragment=${namebase}_DIGIPremix_cfg_ctau-${ctau}.py
-# # fullpath="/uscms/home/reshmar/nobackup/CMSSW_13_0_13/src/iDMe/UL_MCProduction/CMSSW_13_0_13/src/${genfragment}"
-
-# # echo "Full path to config:" ${fullpath}
-
-# # sed -i -e "s/PLACEHOLDER_IN.root/${namebase}_SIM_ctau-${ctau}_year-${year}.root/g" ${fullpath}
-# # sed -i -e "s/PLACEHOLDER_OUT.root/${namebase}_DIGIPremix_ctau-${ctau}_year-${year}.root/g" ${fullpath}
-# # sed -i -e "s/NEVT/${nevent}/g" ${fullpath}
-# # sed -i -e "s/NTHREAD/${nthreads}/g" ${fullpath}
-
-# cmsDriver.py  --eventcontent PREMIXRAW --customise Configuration/DataProcessing/Utils.addMonitoring --datatier GEN-SIM-RAW --conditions 124X_mcRun3_2022_realistic_v12 --step DIGI,DATAMIX,L1,DIGI2RAW --procModifiers premix_stage2,siPixelQualityRawToDigi --geometry DB:Extended --datamix PreMix --era Run3 --python_filename GEN-Run3Summer22DRPremix-00318_1_cfg.py --fileout file:GEN-Run3Summer22DRPremix-00318_0.root --filein file:GEN-Run3Summer22wmLHEGS-00465.root --number 100 --number_out 100 --pileup_input "dbs:/Neutrino_E-10_gun/Run3Summer21PrePremix-Summer22_124X_mcRun3_2022_realistic_v11-v2/PREMIX" --no_exec --mc || exit $? ;
-
 
 cmsDriver.py  \
    --filein file:${namebase}_GEN_ctau-${ctau}_year-${year}.root \
-   --fileout file:${namebase}_DIGIPremix_ctau-${ctau}_year-${year}.root \
+   --fileout file:${namebase}_DRPremix_ctau-${ctau}_year-${year}.root \
    --mc --eventcontent PREMIXRAW --datatier GEN-SIM-RAW \
-   --step DIGI,DATAMIX,L1,DIGI2RAW --procModifiers premix_stage2,siPixelQualityRawToDigi --datamix PreMix \
+   --step DIGI,DATAMIX,L1,DIGI2RAW,HLT:2022v12 --procModifiers premix_stage2,siPixelQualityRawToDigi --datamix PreMix \
    --geometry DB:Extended \
-   --pileup_input dbs:/Neutrino_E-10_gun/Run3Summer21PrePremix-Summer22_124X_mcRun3_2022_realistic_v11-v2/PREMIX \  
+   --pileup_input dbs:/Neutrino_E-10_gun/Run3Summer21PrePremix-Summer22_124X_mcRun3_2022_realistic_v11-v2/PREMIX \
    --conditions 124X_mcRun3_2022_realistic_v12 \
    --era Run3 --nThreads $nthreads \
    --customise Configuration/DataProcessing/Utils.addMonitoring \
@@ -167,66 +160,85 @@ cmsDriver.py  \
 
 cmsRun -p ${genfragment}
 
+# # cp $BASEDIR/template_DIGIPremix_cfg_UL2017.py ./${genfragment}
+# # sed -i -e "s/PLACEHOLDER_IN.root/${namebase}_SIM_ctau-${ctau}_year-${year}.root/g" ${genfragment}
+# # sed -i -e "s/PLACEHOLDER_OUT.root/${namebase}_DIGIPremix_ctau-${ctau}_year-${year}.root/g" ${genfragment}
+# # sed -i -e "s/NEVT/${nevent}/g" ${genfragment}
+# # sed -i -e "s/NTHREAD/${nthreads}/g" ${genfragment}
 
-# # # # Doing HLT step in CMSSW 13_0_13
-# cd ${BASEDIR}/CMSSW_13_0_13/src
-# eval `scram runtime -sh`
-# scram b -j 4
-# echo "########################################################################################"
-# echo "########################################################################################"
-# echo "4.) HLT Step" 
-# genfragment=${namebase}_HLT_cfg_ctau-${ctau}.py
-# cmsDriver.py \
-#     --filein file:${BASEDIR}/CMSSW_13_0_13/src/${namebase}_DIGIPremix_ctau-${ctau}_year-${year}.root \
-#     --fileout file:${namebase}_HLT_ctau-${ctau}_year-${year}.root \
-#     --mc --eventcontent RAWSIM --datatier GEN-SIM-RAW \     #Not sure about eventcontent
-#     --step HLT:2022v12 --geometry DB:Extended \   
-#     --conditions 124X_mcRun3_2022_realistic_v12 \
-#     --era Run3 --nThreads $nthreads \
-#     --customise_commands 'process.source.bypassVersionCheck = cms.untracked.bool(True)' \
-#     --customise Configuration/DataProcessing/Utils.addMonitoring \
-#     --python_filename ${genfragment} --no_exec -n ${nevent} || exit $?;
+# # cmsRun -p ${genfragment}
 
-# cmsRun -p ${genfragment}
-# cp ${namebase}_HLT_ctau-${ctau}_year-${year}.root ${BASEDIR}/CMSSW_13_0_13/src
 
-# Doing RECO/AOD step
-# cd ${BASEDIR}/CMSSW_13_0_13/src
-# eval `scram runtime -sh`
-# scram b -j 4
-# echo "########################################################################################"
-# echo "########################################################################################"
-# echo "5.) RECO/AOD Step"
-# genfragment=${namebase}_AOD_cfg_ctau-${ctau}.py
-# cmsDriver.py \
-#     --filein file:${namebase}_HLT_ctau-${ctau}_year-${year}.root \
-#     --fileout file:${namebase}_AOD_ctau-${ctau}_year-${year}.root \
-#     --mc --eventcontent AODSIM --datatier AODSIM \
-#     --step RAW2DIGI,L1Reco,RECO,RECOSIM --geometry DB:Extended \  
-#     --conditions 124X_mcRun3_2022_realistic_v12 \
-#     --era Run3 --nThreads $nthreads \
-#     --customise Configuration/DataProcessing/Utils.addMonitoring \
-#     --python_filename ${genfragment} --no_exec --runUnscheduled -n ${nevent} || exit $?;
+# # echo "Full path to config:" ${fullpath}
+# # sed -i -e "s/PLACEHOLDER_IN.root/${namebase}_GEN_ctau-${ctau}_year-${year}.root/g" ${fullpath}
+# # sed -i -e "s/PLACEHOLDER_OUT.root/${namebase}_DIGIPremix_ctau-${ctau}_year-${year}.root/g" ${fullpath}
+# # sed -i -e "s/NEVT/${nevent}/g" ${fullpath}
+# # sed -i -e "s/NTHREAD/${nthreads}/g" ${fullpath}
 
-# cmsRun -p ${genfragment}
 
-# # Doing MINIAOD Step #DONE
-# echo "########################################################################################"
-# echo "########################################################################################"
-# echo "6.) MINIAOD Step"
-# genfragment=${namebase}_MINIAOD_cfg_ctau-${ctau}.py
-# cmsDriver.py \
-#     --filein file:${namebase}_AOD_ctau-${ctau}_year-${year}.root \
-#     --fileout file:${namebase}_MINIAOD_ctau-${ctau}_year-${year}.root \
-#     --mc --eventcontent MINIAODSIM --datatier MINIAODSIM \
-#     --step PAT --geometry DB:Extended \
-#     --conditions 130X_mcRun3_2022_realistic_v5 \
-#     --era Run3 --nThreads $nthreads \
-#     --procModifiers run3_miniAOD_12X \
-#     --customise Configuration/DataProcessing/Utils.addMonitoring
-#     --python_filename ${genfragment} --no_exec --runUnscheduled -n ${nevent} || exit $?;
 
-# cmsRun -p ${genfragment}
+
+
+
+# # # # # Doing HLT step in CMSSW 13_0_13
+# # cd ${BASEDIR}/CMSSW_13_0_13/src
+# # eval `scram runtime -sh`
+# # scram b -j 4
+# # echo "########################################################################################"
+# # echo "########################################################################################"
+# # echo "4.) HLT Step" 
+# # genfragment=${namebase}_HLT_cfg_ctau-${ctau}.py
+# # cmsDriver.py \
+# #     --filein file:${BASEDIR}/CMSSW_13_0_13/src/${namebase}_DIGIPremix_ctau-${ctau}_year-${year}.root \
+# #     --fileout file:${namebase}_HLT_ctau-${ctau}_year-${year}.root \
+# #     --mc --eventcontent RAWSIM --datatier GEN-SIM-RAW \     #Not sure about eventcontent
+# #     --step HLT:2022v12 --geometry DB:Extended \   
+# #     --conditions 124X_mcRun3_2022_realistic_v12 \
+# #     --era Run3 --nThreads $nthreads \
+# #     --customise_commands 'process.source.bypassVersionCheck = cms.untracked.bool(True)' \
+# #     --customise Configuration/DataProcessing/Utils.addMonitoring \
+# #     --python_filename ${genfragment} --no_exec -n ${nevent} || exit $?;
+
+# # cmsRun -p ${genfragment}
+# # cp ${namebase}_HLT_ctau-${ctau}_year-${year}.root ${BASEDIR}/CMSSW_13_0_13/src
+
+# # Doing RECO/AOD step
+# # cd ${BASEDIR}/CMSSW_13_0_13/src
+# # eval `scram runtime -sh`
+# # scram b -j 4
+# # echo "########################################################################################"
+# # echo "########################################################################################"
+# # echo "5.) RECO/AOD Step"
+# # genfragment=${namebase}_AOD_cfg_ctau-${ctau}.py
+# # cmsDriver.py \
+# #     --filein file:${namebase}_HLT_ctau-${ctau}_year-${year}.root \
+# #     --fileout file:${namebase}_AOD_ctau-${ctau}_year-${year}.root \
+# #     --mc --eventcontent AODSIM --datatier AODSIM \
+# #     --step RAW2DIGI,L1Reco,RECO,RECOSIM --geometry DB:Extended \  
+# #     --conditions 124X_mcRun3_2022_realistic_v12 \
+# #     --era Run3 --nThreads $nthreads \
+# #     --customise Configuration/DataProcessing/Utils.addMonitoring \
+# #     --python_filename ${genfragment} --no_exec --runUnscheduled -n ${nevent} || exit $?;
+
+# # cmsRun -p ${genfragment}
+
+# # # Doing MINIAOD Step #DONE
+# # echo "########################################################################################"
+# # echo "########################################################################################"
+# # echo "6.) MINIAOD Step"
+# # genfragment=${namebase}_MINIAOD_cfg_ctau-${ctau}.py
+# # cmsDriver.py \
+# #     --filein file:${namebase}_AOD_ctau-${ctau}_year-${year}.root \
+# #     --fileout file:${namebase}_MINIAOD_ctau-${ctau}_year-${year}.root \
+# #     --mc --eventcontent MINIAODSIM --datatier MINIAODSIM \
+# #     --step PAT --geometry DB:Extended \
+# #     --conditions 130X_mcRun3_2022_realistic_v5 \
+# #     --era Run3 --nThreads $nthreads \
+# #     --procModifiers run3_miniAOD_12X \
+# #     --customise Configuration/DataProcessing/Utils.addMonitoring
+# #     --python_filename ${genfragment} --no_exec --runUnscheduled -n ${nevent} || exit $?;
+
+# # cmsRun -p ${genfragment}
 
 # echo "list of output files:"
 # ls -ltr *.root
