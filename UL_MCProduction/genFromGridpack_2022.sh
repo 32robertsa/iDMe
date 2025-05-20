@@ -137,14 +137,11 @@ cmsRun -p ${genfragment}
 
 
 
-# echo "3.) DIGIPremix Step"
 
-# genfragment=${namebase}_DRPremix_cfg_ctau-${ctau}.py
-
-# echo "########################################################################################"
 echo "########################################################################################"
 echo "3.) DIGIPremix Step"
 genfragment=${namebase}_DIGIPremix_cfg_ctau-${ctau}.py
+echo "Running in directory: $(pwd)"
 
 cmsDriver.py  \
    --filein file:${namebase}_GEN_ctau-${ctau}_year-${year}.root \
@@ -152,7 +149,7 @@ cmsDriver.py  \
    --mc --eventcontent PREMIXRAW --datatier GEN-SIM-RAW \
    --step DIGI,DATAMIX,L1,DIGI2RAW,HLT:2022v12 --procModifiers premix_stage2,siPixelQualityRawToDigi --datamix PreMix \
    --geometry DB:Extended \
-   --pileup_input dbs:/Neutrino_E-10_gun/Run3Summer21PrePremix-Summer22_124X_mcRun3_2022_realistic_v11-v2/PREMIX \
+   --pileup_input filelist:/uscms/home/reshmar/nobackup/CMSSW_13_0_13/src/iDMe/UL_MCProduction/premix_files.txt \
    --conditions 124X_mcRun3_2022_realistic_v12 \
    --era Run3 --nThreads $nthreads \
    --customise Configuration/DataProcessing/Utils.addMonitoring \
