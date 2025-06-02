@@ -19,7 +19,7 @@ echo "year = ${year}"
 echo "nevents = ${nevents}"
 echo "nthreads = ${nthreads}"
 
-sh genFromGridpack_UL${year}.sh ${gridpack} ${nevents} ${ctau_mm} ${nthreads}
+sh genFromGridpack_${year}.sh ${gridpack} ${nevents} ${ctau_mm} ${nthreads}
 #cd $HOME
 #rm -rf *
 
