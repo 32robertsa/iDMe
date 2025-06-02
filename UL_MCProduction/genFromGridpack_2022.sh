@@ -1,8 +1,8 @@
 #! /bin/bash
 
-## This script is used to produce AOD files from a gridpack for 2022 data
+## This script is used to produce MINI-AOD files from a gridpack for 2022 samples.
 
-## Based on the MC&I MC instructions found at https://exo-mc-and-i.gitbook.io/exo-mc-and-interpretation/how-to-sample-production-private
+## Based on the MCM instructions found at https://cms-pdmv-prod.web.cern.ch/mcm/chained_requests?contains=GEN-Run3Summer22MiniAODv4-00307&page=0&shown=15
 
 
 export BASEDIR=`pwd`
@@ -18,8 +18,8 @@ if [ "$#" -ne 4 ]; then
     exit 1
 fi
 
-# echo "Generating signal MC for gridpack ${GP_f}"
-# echo "Lifetime set to ${ctau} mm"
+echo "Generating signal MC for gridpack ${GP_f}"
+echo "Lifetime set to ${ctau} mm"
 
 GRIDPACKDIR=${BASEDIR}
 LHEDIR=${BASEDIR}
@@ -53,6 +53,7 @@ RANDOMSEED=`od -vAn -N4 -tu4 < /dev/urandom`
 #Sometimes the RANDOMSEED is too long for madgraph
 RANDOMSEED=`echo $RANDOMSEED | rev | cut -c 3- | rev`
 
+#Running the LHE step
 echo "0.) LHE Step"
 sh runcmsgrid.sh ${nevent} ${RANDOMSEED} ${nthreads}
 namebase=${namebase}_$RANDOMSEED
@@ -74,10 +75,10 @@ echo "Happening!"
 eval `scram runtime -sh`
 scram b -j 4
 
-# # Running GEN  Step
+# Running GEN  Step
 echo "########################################################################################"
 echo "########################################################################################"
-echo "1.) GEN -SIM Step" #DONE
+echo "1.) GEN -SIM Step" 
 genfragment=${namebase}_GEN_cfg_ctau-${ctau}.py
 echo "Running in directory: $(pwd)"
 
@@ -107,37 +108,6 @@ rm -rf tail.py
 
 cmsRun -p ${genfragment}
 
-# # Running SIM Step
-# echo "########################################################################################"
-# echo "########################################################################################"
-# echo "2.) SIM Step" #DONE
-# genfragment=${namebase}_SIM_cfg_ctau-${ctau}.py
-# cmsDriver.py  \
-#     --filein file:${namebase}_GEN_ctau-${ctau}_year-${year}.root \
-#     --fileout file:${namebase}_SIM_ctau-${ctau}_year-${year}.root \
-#     --mc --eventcontent RAWSIM --datatier GEN-SIM \
-#     --step SIM --geometry DB:Extended \
-#     --conditions 124X_mcRun3_2022_realistic_v12 --beamspot Realistic25ns13p6TeVEarly2022Collision \
-#     --era Run3 --nThreads $nthreads \
-#     --customise Configuration/DataProcessing/Utils.addMonitoring \
-#     --python_filename ${genfragment} --no_exec --runUnscheduled -n ${nevent} || exit $?; 
-
-# cmsRun -p ${genfragment}
-
-# Running DigiPremix Step
-# echo "########################################################################################"
-# echo "########################################################################################"
-# echo "3.) DIGIPremix Step"
-# genfragment=${namebase}_DIGIPremix_cfg_ctau-${ctau}.py
-# echo "Directory here:" ${namebase}_DIGIPremix_cfg_ctau-${ctau}.py
-# sed -i -e "s/PLACEHOLDER_IN.root/${namebase}_GEN_ctau-${ctau}_year-${year}.root/g" ${genfragment}
-# sed -i -e "s/PLACEHOLDER_OUT.root/${namebase}_DIGIPremix_ctau-${ctau}_year-${year}.root/g" ${genfragment}
-# sed -i -e "s/NEVT/${nevent}/g" ${genfragment}
-# sed -i -e "s/NTHREAD/${nthreads}/g" ${genfragment}
-
-
-
-
 echo "########################################################################################"
 echo "3.) DIGIPremix Step"
 genfragment=${namebase}_DIGIPremix_cfg_ctau-${ctau}.py
@@ -157,98 +127,31 @@ cmsDriver.py  \
 
 cmsRun -p ${genfragment}
 
-# # cp $BASEDIR/template_DIGIPremix_cfg_UL2017.py ./${genfragment}
-# # sed -i -e "s/PLACEHOLDER_IN.root/${namebase}_SIM_ctau-${ctau}_year-${year}.root/g" ${genfragment}
-# # sed -i -e "s/PLACEHOLDER_OUT.root/${namebase}_DIGIPremix_ctau-${ctau}_year-${year}.root/g" ${genfragment}
-# # sed -i -e "s/NEVT/${nevent}/g" ${genfragment}
-# # sed -i -e "s/NTHREAD/${nthreads}/g" ${genfragment}
+# Doing MINIAOD Step
+echo "########################################################################################"
+echo "########################################################################################"
+echo "6.) MINIAOD Step"
+genfragment=${namebase}_MINIAOD_cfg_ctau-${ctau}.py
 
-# # cmsRun -p ${genfragment}
+cmsDriver.py \
+    --filein file:${namebase}_DRPremix_ctau-${ctau}_year-${year}.root \
+    --fileout file:${namebase}_MINIAOD_ctau-${ctau}_year-${year}.root \
+    --mc --eventcontent MINIAODSIM --datatier MINIAODSIM \
+    --step PAT --geometry DB:Extended \
+    --conditions 130X_mcRun3_2022_realistic_v5 \
+    --era Run3 --nThreads $nthreads \
+    --customise Configuration/DataProcessing/Utils.addMonitoring \
+    --customise_commands "process.MINIAODSIMoutput.outputCommands = cms.untracked.vstring([line for line in process.MINIAODSIMoutput.outputCommands if 'slimmedCaloJets' not in line and 'oniaPhotonCandidates' not in line and 'offlineSlimmedPrimaryVerticesWithBS' not in line and 'primaryVertexWithBSAssociation' not in line and 'slimmedHcalRecHits' not in line])" \
+    --python_filename ${genfragment} --no_exec --runUnscheduled -n ${nevent} || exit $?;
 
+echo "process.options = cms.untracked.PSet(SkipEvent = cms.untracked.vstring('ProductNotFound'))" >> ${genfragment}
+cmsRun -p ${genfragment}
 
-# # echo "Full path to config:" ${fullpath}
-# # sed -i -e "s/PLACEHOLDER_IN.root/${namebase}_GEN_ctau-${ctau}_year-${year}.root/g" ${fullpath}
-# # sed -i -e "s/PLACEHOLDER_OUT.root/${namebase}_DIGIPremix_ctau-${ctau}_year-${year}.root/g" ${fullpath}
-# # sed -i -e "s/NEVT/${nevent}/g" ${fullpath}
-# # sed -i -e "s/NTHREAD/${nthreads}/g" ${fullpath}
+echo "list of output files:"
+ls -ltr *.root
 
+#Path needs to be fixed
+remoteDIR="/store/group/lpcmetx/iDMe//Samples/signal/2022"
+xrdcp -vf ${namebase}_MINIAOD_ctau-${ctau}_year-${year}.root root://cmseos.fnal.gov/$remoteDIR/MINIAOD/${namebase}_MINIAOD_ctau-${ctau}_year-${year}.root
 
-
-
-
-
-# # # # # Doing HLT step in CMSSW 13_0_13
-# # cd ${BASEDIR}/CMSSW_13_0_13/src
-# # eval `scram runtime -sh`
-# # scram b -j 4
-# # echo "########################################################################################"
-# # echo "########################################################################################"
-# # echo "4.) HLT Step" 
-# # genfragment=${namebase}_HLT_cfg_ctau-${ctau}.py
-# # cmsDriver.py \
-# #     --filein file:${BASEDIR}/CMSSW_13_0_13/src/${namebase}_DIGIPremix_ctau-${ctau}_year-${year}.root \
-# #     --fileout file:${namebase}_HLT_ctau-${ctau}_year-${year}.root \
-# #     --mc --eventcontent RAWSIM --datatier GEN-SIM-RAW \     #Not sure about eventcontent
-# #     --step HLT:2022v12 --geometry DB:Extended \   
-# #     --conditions 124X_mcRun3_2022_realistic_v12 \
-# #     --era Run3 --nThreads $nthreads \
-# #     --customise_commands 'process.source.bypassVersionCheck = cms.untracked.bool(True)' \
-# #     --customise Configuration/DataProcessing/Utils.addMonitoring \
-# #     --python_filename ${genfragment} --no_exec -n ${nevent} || exit $?;
-
-# # cmsRun -p ${genfragment}
-# # cp ${namebase}_HLT_ctau-${ctau}_year-${year}.root ${BASEDIR}/CMSSW_13_0_13/src
-
-# # Doing RECO/AOD step
-# # cd ${BASEDIR}/CMSSW_13_0_13/src
-# # eval `scram runtime -sh`
-# # scram b -j 4
-# # echo "########################################################################################"
-# # echo "########################################################################################"
-# # echo "5.) RECO/AOD Step"
-# # genfragment=${namebase}_AOD_cfg_ctau-${ctau}.py
-# # cmsDriver.py \
-# #     --filein file:${namebase}_HLT_ctau-${ctau}_year-${year}.root \
-# #     --fileout file:${namebase}_AOD_ctau-${ctau}_year-${year}.root \
-# #     --mc --eventcontent AODSIM --datatier AODSIM \
-# #     --step RAW2DIGI,L1Reco,RECO,RECOSIM --geometry DB:Extended \  
-# #     --conditions 124X_mcRun3_2022_realistic_v12 \
-# #     --era Run3 --nThreads $nthreads \
-# #     --customise Configuration/DataProcessing/Utils.addMonitoring \
-# #     --python_filename ${genfragment} --no_exec --runUnscheduled -n ${nevent} || exit $?;
-
-# # cmsRun -p ${genfragment}
-
-# # # Doing MINIAOD Step #DONE
-# # echo "########################################################################################"
-# # echo "########################################################################################"
-# # echo "6.) MINIAOD Step"
-# # genfragment=${namebase}_MINIAOD_cfg_ctau-${ctau}.py
-# # cmsDriver.py \
-# #     --filein file:${namebase}_AOD_ctau-${ctau}_year-${year}.root \
-# #     --fileout file:${namebase}_MINIAOD_ctau-${ctau}_year-${year}.root \
-# #     --mc --eventcontent MINIAODSIM --datatier MINIAODSIM \
-# #     --step PAT --geometry DB:Extended \
-# #     --conditions 130X_mcRun3_2022_realistic_v5 \
-# #     --era Run3 --nThreads $nthreads \
-# #     --procModifiers run3_miniAOD_12X \
-# #     --customise Configuration/DataProcessing/Utils.addMonitoring
-# #     --python_filename ${genfragment} --no_exec --runUnscheduled -n ${nevent} || exit $?;
-
-# # cmsRun -p ${genfragment}
-
-# echo "list of output files:"
-# ls -ltr *.root
-
-# #Path needs to be fixed
-# remoteDIR="/store/group/lpcmetx/iDMe//Samples/signal/2022"
-# #xrdcp -vf ${namebase}_HLT_ctau-${ctau}_year-${year}.root root://cmseos.fnal.gov/$remoteDIR/DIGIRAWHLT/${namebase}_HLT_ctau-${ctau}_year-${year}.root
-
-# #xrdcp -vf ${namebase}_AOD_ctau-${ctau}_year-${year}.root #root://cmseos.fnal.gov/$remoteDIR/AOD/${namebase}_AOD_ctau-${ctau}_year-${year}.root
-# #xrdcp -vf ${namebase}_MINIAOD_ctau-${ctau}_year-${year}.root root://cmseos.fnal.gov/$remoteDIR/MINIAOD/${namebase}_MINIAOD_ctau-${ctau}_year-${year}.root
-# #xrdcp -vf ${namebase}_AOD_ctau-${ctau}_year-${year}.root root://cmseos.fnal.gov/$remoteDIR/AOD/${namebase}_AOD_ctau-${ctau}_year-${year}.root
-# xrdcp -vf ${namebase}_MINIAOD_ctau-${ctau}_year-${year}.root root://cmseos.fnal.gov/$remoteDIR/MINIAOD/${namebase}_MINIAOD_ctau-${ctau}_year-${year}.root
-
-# #xrdcp -vf ${namebase}_MINIAOD_devel_ctau-${ctau}_year-${year}.root root://cmseos.fnal.gov/$remoteDIR/MINIAOD_devel/${namebase}_MINIAOD_devel_ctau-${ctau}_year-${year}.root
-
-# echo "DONE."
+echo "DONE."
