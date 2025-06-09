@@ -4,7 +4,6 @@
 
 ## Based on the MCM instructions found at https://cms-pdmv-prod.web.cern.ch/mcm/chained_requests?contains=GEN-Run3Summer22MiniAODv4-00307&page=0&shown=15
 
-
 export BASEDIR=`pwd`
 GP_f=$1
 nevent=$2
@@ -108,24 +107,58 @@ rm -rf tail.py
 
 cmsRun -p ${genfragment}
 
+
 echo "########################################################################################"
 echo "3.) DIGIPremix Step"
-genfragment=${namebase}_DIGIPremix_cfg_ctau-${ctau}.py
-echo "Running in directory: $(pwd)"
+set -e
+
+template_cfg="/uscms/home/reshmar/nobackup/CMSSW_13_0_13/src/iDMe/UL_MCProduction/template_DRPremix_cfg_2022.py"
+#genfragment="${template_cfg}"
+
+genfragment=${namebase}_DRPremix_cfg_ctau-${ctau}.py
+
 
 cmsDriver.py  \
-   --filein file:${namebase}_GEN_ctau-${ctau}_year-${year}.root \
-   --fileout file:${namebase}_DRPremix_ctau-${ctau}_year-${year}.root \
+   --filein file:PLACEHOLDER_IN.root \
+   --fileout file:PLACEHOLDER_OUT.root \
    --mc --eventcontent PREMIXRAW --datatier GEN-SIM-RAW \
    --step DIGI,DATAMIX,L1,DIGI2RAW,HLT:2022v12 --procModifiers premix_stage2,siPixelQualityRawToDigi --datamix PreMix \
    --geometry DB:Extended \
-   --pileup_input filelist:/uscms/home/reshmar/nobackup/CMSSW_13_0_13/src/iDMe/UL_MCProduction/premix_files.txt \
+   --pileup_input filelist:/store/user/reshmar/iDMe/premix_files_prefixed.txt \
    --conditions 124X_mcRun3_2022_realistic_v12 \
    --era Run3 --nThreads $nthreads \
    --customise Configuration/DataProcessing/Utils.addMonitoring \
    --python_filename ${genfragment} --no_exec -n ${nevent} || exit $?;
 
+sed -i -e "s/PLACEHOLDER_IN.root/${namebase}_GEN_ctau-${ctau}_year-${year}.root/g" ${genfragment}
+sed -i -e "s/PLACEHOLDER_OUT.root/${namebase}_DRPremix_ctau-${ctau}_year-${year}.root/g" ${genfragment}
+sed -i -e "s/NEVT/${nevent}/g" ${genfragment}
+sed -i -e "s/NTHREAD/${nthreads}/g" ${genfragment}
+
 cmsRun -p ${genfragment}
+
+# template_cfg="/uscms/home/reshmar/nobackup/CMSSW_13_0_13/src/iDMe/UL_MCProduction/template_DRPremix_cfg_2022.py"
+
+echo "SUCCESS DP!"
+
+# Rename the generated config file to a standardized template name
+# mv "${genfragment}" "${template_cfg}"
+# genfragment="${template_cfg}"
+
+
+# (Optional) You can confirm the file was renamed
+# if [[ -f "${template_cfg}" ]]; then
+#     echo "Template created: ${template_cfg}"
+# else
+#     echo "ERROR: Renaming failed!"
+#     exit 1
+# fi
+# sed -i -e "s/PLACEHOLDER_IN.root/${namebase}_GEN_ctau-${ctau}_year-${year}.root/g" ${genfragment}
+# sed -i -e "s/PLACEHOLDER_OUT.root/${namebase}_DRPremix_ctau-${ctau}_year-${year}.root/g" ${genfragment}
+# sed -i -e "s/NEVT/${nevent}/g" ${genfragment}
+# sed -i -e "s/NTHREAD/${nthreads}/g" ${genfragment}
+
+# cmsRun -p ${genfragment}
 
 # Doing MINIAOD Step
 echo "########################################################################################"
