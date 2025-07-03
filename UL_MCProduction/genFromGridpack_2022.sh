@@ -20,6 +20,7 @@ fi
 echo "Generating signal MC for gridpack ${GP_f}"
 echo "Lifetime set to ${ctau} mm"
 
+echo "Base Dir: ${BASEDIR}"
 GRIDPACKDIR=${BASEDIR}
 LHEDIR=${BASEDIR}
 
@@ -112,53 +113,25 @@ echo "##########################################################################
 echo "3.) DIGIPremix Step"
 set -e
 
-template_cfg="/uscms/home/reshmar/nobackup/CMSSW_13_0_13/src/iDMe/UL_MCProduction/template_DRPremix_cfg_2022.py"
-#genfragment="${template_cfg}"
-
 genfragment=${namebase}_DRPremix_cfg_ctau-${ctau}.py
 
+echo "Current working directory: $(pwd)"
 
 cmsDriver.py  \
-   --filein file:PLACEHOLDER_IN.root \
-   --fileout file:PLACEHOLDER_OUT.root \
+   --filein file:${namebase}_GEN_ctau-${ctau}_year-${year}.root \
+   --fileout file:${namebase}_DRPremix_ctau-${ctau}_year-${year}.root \
    --mc --eventcontent PREMIXRAW --datatier GEN-SIM-RAW \
    --step DIGI,DATAMIX,L1,DIGI2RAW,HLT:2022v12 --procModifiers premix_stage2,siPixelQualityRawToDigi --datamix PreMix \
    --geometry DB:Extended \
-   --pileup_input filelist:/store/user/reshmar/iDMe/premix_files_prefixed.txt \
+   --pileup_input filelist:${BASEDIR}/premix_files_prefixed.txt \
    --conditions 124X_mcRun3_2022_realistic_v12 \
    --era Run3 --nThreads $nthreads \
    --customise Configuration/DataProcessing/Utils.addMonitoring \
    --python_filename ${genfragment} --no_exec -n ${nevent} || exit $?;
 
-sed -i -e "s/PLACEHOLDER_IN.root/${namebase}_GEN_ctau-${ctau}_year-${year}.root/g" ${genfragment}
-sed -i -e "s/PLACEHOLDER_OUT.root/${namebase}_DRPremix_ctau-${ctau}_year-${year}.root/g" ${genfragment}
-sed -i -e "s/NEVT/${nevent}/g" ${genfragment}
-sed -i -e "s/NTHREAD/${nthreads}/g" ${genfragment}
-
 cmsRun -p ${genfragment}
 
-# template_cfg="/uscms/home/reshmar/nobackup/CMSSW_13_0_13/src/iDMe/UL_MCProduction/template_DRPremix_cfg_2022.py"
-
-echo "SUCCESS DP!"
-
-# Rename the generated config file to a standardized template name
-# mv "${genfragment}" "${template_cfg}"
-# genfragment="${template_cfg}"
-
-
-# (Optional) You can confirm the file was renamed
-# if [[ -f "${template_cfg}" ]]; then
-#     echo "Template created: ${template_cfg}"
-# else
-#     echo "ERROR: Renaming failed!"
-#     exit 1
-# fi
-# sed -i -e "s/PLACEHOLDER_IN.root/${namebase}_GEN_ctau-${ctau}_year-${year}.root/g" ${genfragment}
-# sed -i -e "s/PLACEHOLDER_OUT.root/${namebase}_DRPremix_ctau-${ctau}_year-${year}.root/g" ${genfragment}
-# sed -i -e "s/NEVT/${nevent}/g" ${genfragment}
-# sed -i -e "s/NTHREAD/${nthreads}/g" ${genfragment}
-
-# cmsRun -p ${genfragment}
+echo "SUCCESS DRPREMIX!"
 
 # Doing MINIAOD Step
 echo "########################################################################################"
@@ -180,11 +153,12 @@ cmsDriver.py \
 echo "process.options = cms.untracked.PSet(SkipEvent = cms.untracked.vstring('ProductNotFound'))" >> ${genfragment}
 cmsRun -p ${genfragment}
 
-echo "list of output files:"
+echo "LIST OF OUTPUT FILES:"
 ls -ltr *.root
 
 #Path needs to be fixed
 remoteDIR="/store/group/lpcmetx/iDMe//Samples/signal/2022"
 xrdcp -vf ${namebase}_MINIAOD_ctau-${ctau}_year-${year}.root root://cmseos.fnal.gov/$remoteDIR/MINIAOD/${namebase}_MINIAOD_ctau-${ctau}_year-${year}.root
 
-echo "DONE."
+echo "The output MINIAOD file: root://cmseos.fnal.gov/$remoteDIR/MINIAOD/${namebase}_MINIAOD_ctau-${ctau}_year-${year}.root"
+echo "DONE!"
