@@ -592,7 +592,7 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    int iele = 0;
    for (const auto & ele : *recoNanoElectronHandle_) {
       // require pT > 5 & pass loose ID to consider GED electron
-      if (ele.pt() < 5 || !ele.electronID("cutBasedElectronID-Fall17-94X-V2-loose")) {
+      if (ele.pt() < 5 || !ele.electronID("cutBasedElectronID-RunIIIWinter22-V1-loose")) {
          iele++;
          continue;
       }
@@ -611,20 +611,20 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       nt.recoElectronIsPF_.push_back(ele.isPF());
       nt.recoElectronGenMatched_.push_back(false);
       nt.recoElectronMatchType_.push_back(0);
-      nt.recoElectronID_cutVeto_.push_back(ele.electronID("cutBasedElectronID-Fall17-94X-V2-veto"));
-      nt.recoElectronID_cutLoose_.push_back(ele.electronID("cutBasedElectronID-Fall17-94X-V2-loose"));
-      nt.recoElectronID_cutMed_.push_back(ele.electronID("cutBasedElectronID-Fall17-94X-V2-medium"));
-      nt.recoElectronID_cutTight_.push_back(ele.electronID("cutBasedElectronID-Fall17-94X-V2-tight"));
-      nt.recoElectronID_cutVetoInt_.push_back(ele.userInt("cutBasedElectronID-Fall17-94X-V2-veto"));
-      nt.recoElectronID_cutLooseInt_.push_back(ele.userInt("cutBasedElectronID-Fall17-94X-V2-loose"));
-      nt.recoElectronID_cutMedInt_.push_back(ele.userInt("cutBasedElectronID-Fall17-94X-V2-medium"));
-      nt.recoElectronID_cutTightInt_.push_back(ele.userInt("cutBasedElectronID-Fall17-94X-V2-tight"));
-      nt.recoElectronID_mvaIso90_.push_back(ele.electronID("mvaEleID-Fall17-iso-V2-wp90"));
-      nt.recoElectronID_mvaIso80_.push_back(ele.electronID("mvaEleID-Fall17-iso-V2-wp80"));
-      nt.recoElectronID_mvaIsoLoose_.push_back(ele.electronID("mvaEleID-Fall17-iso-V2-wpLoose"));
-      nt.recoElectronID_mva90_.push_back(ele.electronID("mvaEleID-Fall17-noIso-V2-wp90"));
-      nt.recoElectronID_mva80_.push_back(ele.electronID("mvaEleID-Fall17-noIso-V2-wp80"));
-      nt.recoElectronID_mvaLoose_.push_back(ele.electronID("mvaEleID-Fall17-noIso-V2-wpLoose"));
+      nt.recoElectronID_cutVeto_.push_back(ele.electronID("cutBasedElectronID-RunIIIWinter22-V1-veto"));
+      nt.recoElectronID_cutLoose_.push_back(ele.electronID("cutBasedElectronID-RunIIIWinter22-V1-loose"));
+      nt.recoElectronID_cutMed_.push_back(ele.electronID("cutBasedElectronID-RunIIIWinter22-V1-medium"));
+      nt.recoElectronID_cutTight_.push_back(ele.electronID("cutBasedElectronID-RunIIIWinter22-V1-tight"));
+      nt.recoElectronID_cutVetoInt_.push_back(ele.userInt("cutBasedElectronID-RunIIIWinter22-V1-veto"));
+      nt.recoElectronID_cutLooseInt_.push_back(ele.userInt("cutBasedElectronID-RunIIIWinter22-V1-loose"));
+      nt.recoElectronID_cutMedInt_.push_back(ele.userInt("cutBasedElectronID-RunIIIWinter22-V1-medium"));
+      nt.recoElectronID_cutTightInt_.push_back(ele.userInt("cutBasedElectronID-RunIIIWinter22-V1-tight"));
+      nt.recoElectronID_mvaIso90_.push_back(ele.electronID("mvaEleID-RunIIIWinter22-iso-V1-wp90"));
+      nt.recoElectronID_mvaIso80_.push_back(ele.electronID("mvaEleID-RunIIIWinter22-iso-V1-wp80"));
+      // nt.recoElectronID_mvaIsoLoose_.push_back(ele.electronID("mvaEleID-RunIIIWinter22-iso-V1-wpLoose"));
+      nt.recoElectronID_mva90_.push_back(ele.electronID("mvaEleID-RunIIIWinter22-noIso-V1-wp90"));
+      nt.recoElectronID_mva80_.push_back(ele.electronID("mvaEleID-RunIIIWinter22-noIso-V1-wp80"));
+      // nt.recoElectronID_mvaLoose_.push_back(ele.electronID("mvaEleID-RunIIIWinter22-noIso-V1-wpLoose"));
       nt.recoElectronAngularRes_.push_back(sqrt(track->phiError()*track->phiError() + track->etaError()*track->etaError()));
       nt.recoElectronE_.push_back(ele.energy());
       nt.recoElectronVxy_.push_back(ele.trackPositionAtVtx().rho());
@@ -635,6 +635,8 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       nt.recoElectronCaloRelIso_.push_back(ele.caloIso()/ele.pt());
       nt.recoElectronCharge_.push_back(ele.charge());
       // Calculating "official" dR03 PF Isolation based on https://github.com/cms-sw/cmssw/blob/CMSSW_10_6_X/RecoEgamma/ElectronIdentification/plugins/cuts/GsfEleRelPFIsoScaledCut.cc#L62
+
+//For Run3: https://github.com/cms-sw/cmssw/blob/CMSSW_13_0_X/RecoEgamma/ElectronIdentification/plugins/cuts/GsfEleRelPFIsoScaledCut.cc
       auto pfIso = ele.pfIsolationVariables();
       const float rho = rhoHandle_.isValid() ? (float)(*rhoHandle_) : 0.0;
       const float eA = effectiveAreas_.getEffectiveArea(std::abs(ele.superCluster()->eta()));
