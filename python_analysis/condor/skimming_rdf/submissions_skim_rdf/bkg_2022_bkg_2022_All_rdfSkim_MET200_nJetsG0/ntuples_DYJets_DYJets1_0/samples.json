@@ -1,0 +1,14 @@
+{
+    "name": "DYJets_DYJets1",
+    "location": "/eos/uscms/store/group/lpcmetx/iDMe/Samples/Ntuples/background_bkg_28July_2022//2022/DYJets/DYJets1/DYJetsToLL_M-50_TuneCP5_13p6TeV-madgraphMLM-pythia8/crab_iDMe_DYJets1_2025_07_28-13_15/250728_181529/0000/",
+    "type": "bkg",
+    "year": 2022,
+    "nFiles": 1,
+    "sum_wgt": 9925.0,
+    "xsec": 5379000.0,
+    "num_events": 9925,
+    "blacklist": [],
+    "fileset": [
+        "root://cmseos.fnal.gov//eos/uscms/store/group/lpcmetx/iDMe/Samples/Ntuples/background_bkg_28July_2022//2022/DYJets/DYJets1/DYJetsToLL_M-50_TuneCP5_13p6TeV-madgraphMLM-pythia8/crab_iDMe_DYJets1_2025_07_28-13_15/250728_181529/0000/DYJets1_1.root"
+    ]
+}

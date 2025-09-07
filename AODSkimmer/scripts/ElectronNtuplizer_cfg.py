@@ -146,10 +146,11 @@ metTrigs = [
     "HLT_PFMET120_PFMHT120_IDTight",
     "HLT_PFMET130_PFMHT130_IDTight",
     "HLT_PFMET140_PFMHT140_IDTight",
+    "HLT_PFMETNoMu120_PFMHTNoMu120_IDTight",
     "HLT_PFMETTypeOne110_PFMHT110_IDTight",
     "HLT_PFMETTypeOne120_PFMHT120_IDTight",
     "HLT_PFMETTypeOne130_PFMHT130_IDTight",
-    "HLT_PFMETTypeOne140_PFMHT140_IDTight",
+    "HLT_PFMETTypeOne140_PFMHT140_IDTight"
    # "HLT_PFMET100_PFMHT100_IDTight_PFHT60_v9"
 ]
 jetTrigs = [
@@ -265,6 +266,11 @@ process.ntuples = ElectronSkimmer.clone(
 )
 
 #---------------------comment the lines only for Run3---------------------------------
+from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
+setupEgammaPostRecoSeq(process,
+                       runEnergyCorrections=True,
+                       runVID=True, #saves CPU time by not needlessly re-running VID, if you want the Fall17V2 IDs, set this to True or remove (default is True)
+                       era=recoEgammaTools_era)
 # import EGamma postreco tools
 #from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
 #setupEgammaPostRecoSeq(process,

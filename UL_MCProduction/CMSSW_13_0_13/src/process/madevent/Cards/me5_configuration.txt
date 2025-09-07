@@ -232,4 +232,4 @@ cluster_temp_path = None
 run_mode = 0
 lhapdf_py3 = /cvmfs/cms.cern.ch/slc7_amd64_gcc11/external/lhapdf/6.4.0-e019996650b819a0fc60be6587a245af/share/LHAPDF/../../bin/lhapdf-config
 run_mode = 2
-nb_core = 1
+nb_core = 2

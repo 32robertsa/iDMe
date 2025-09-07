@@ -24,6 +24,7 @@ def make_histograms():
         "sel_vtx_minDxy" : Hist(samp,cut,ele_dxy,storage=hist.storage.Weight()),
         "sel_vtx_minDxy_fine": Hist(samp,cut,dxy_fine,storage=hist.storage.Weight()),
         "sel_vtx_pt" : Hist(samp,cut,ele_pt,storage=hist.storage.Weight()),
+        
         "sel_vtx_eta" : Hist(samp,cut,ele_eta,storage=hist.storage.Weight()),
         "sel_vtx_phi" : Hist(samp,cut,ele_phi,storage=hist.storage.Weight()),
         "sel_vtx_matchType" : Hist(samp,cut,vtx_matchType,storage=hist.storage.Weight()),
@@ -85,6 +86,7 @@ def make_histograms():
         "dp_dotJet12" : Hist(samp,cut,angleDot,storage=hist.storage.Weight()),
         
         # Gen plots
+        "GenEle_pt" = Hist(samp,cut,GenEle_pt,storage=hist.storage.Weight()),
         "genEle_mindRj" : Hist(samp,cut,dR,storage=hist.storage.Weight()),
         "genEle_mindPhiJ" : Hist(samp,cut,dphi_generic,storage=hist.storage.Weight()),
         "genPos_mindRj" : Hist(samp,cut,dR,storage=hist.storage.Weight()),

@@ -4,14 +4,14 @@ echo "Current directory: $(pwd)"
 
 # EOS_FILE=/eos/uscms/store/group/lpcmetx/iDMe/premix_files_prefixed.txt
 
-EOS_FILE=root://cmseos.fnal.gov//store/group/lpcmetx/iDMe/premix_files_prefixed.txt
-
-xrdfs root://cmseos.fnal.gov stat /store/group/lpcmetx/iDMe/premix_files_prefixed.txt > /dev/null 2>&1
+EOS_FILE=root://cmsxrootd.fnal.gov//store/mc/Run3Summer21PrePremix/Neutrino_E-10_gun/PREMIX/Summer22_124X_mcRun3_2022_realistic_v11-v2/2550001/77518c88-21fb-4593-9648-30a39aba4e8c.root
+ 
+xrdfs root://cmseos.fnal.gov stat /store/mc/Run3Summer21PrePremix/Neutrino_E-10_gun/PREMIX/Summer22_124X_mcRun3_2022_realistic_v11-v2/2550001/77518c88-21fb-4593-9648-30a39aba4e8c.root > /dev/null 2>&1
 
 if [ $? -eq 0 ]; then
     echo "File found. Copying and printing..."
-    xrdcp -f $EOS_FILE new_premix.txt
-    head -n 10 new_premix.txt
+    xrdcp -f $EOS_FILE TEST.root
+    
 else
     echo "Cannot access the file."
     exit 1

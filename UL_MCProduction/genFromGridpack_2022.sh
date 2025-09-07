@@ -42,6 +42,10 @@ if ! [ -r CMSSW_12_4_14_patch3/src ] ; then
   scram p CMSSW CMSSW_12_4_14_patch3
 fi
 
+if ! [ -r CMSSW_13_0_13/src ] ; then
+  scram p CMSSW CMSSW_13_0_13
+fi
+
 cd CMSSW_12_4_14_patch3/src
 eval `scram runtime -sh`
 scram b -j 4
@@ -71,7 +75,6 @@ rm -rf *
 mkdir -p Configuration/GenProduction/python/
 
 cp "${BASEDIR}/${HADRONIZER}" Configuration/GenProduction/python/
-echo "Happening!"
 eval `scram runtime -sh`
 scram b -j 4
 
@@ -83,6 +86,8 @@ genfragment=${namebase}_GEN_cfg_ctau-${ctau}.py
 echo "Running in directory: $(pwd)"
 
 echo "genfragment:" ${namebase}_GEN_cfg_ctau-${ctau}.py
+echo "Input LHE file:" ${LHEDIR}/${namebase}.lhe 
+
 cmsDriver.py Configuration/GenProduction/python/${HADRONIZER}  \
     --filein file:${LHEDIR}/${namebase}.lhe \
     --fileout file:${namebase}_GEN_ctau-${ctau}_year-${year}.root \
@@ -110,16 +115,19 @@ cmsRun -p ${genfragment}
 
 
 echo "########################################################################################"
-echo "3.) DIGIPremix Step"
+echo "3.) DRPremix Step"
 set -e
 
-genfragment=${namebase}_DRPremix_cfg_ctau-${ctau}.py
+
+genfragment_premix=${namebase}_DRPremix_cfg_ctau-${ctau}.py
+genfragment_reco=${namebase}_RECO_cfg_ctau-${ctau}.py
 
 echo "Current working directory: $(pwd)"
 
+#PREMIXRAW step:
 cmsDriver.py  \
    --filein file:${namebase}_GEN_ctau-${ctau}_year-${year}.root \
-   --fileout file:${namebase}_DRPremix_ctau-${ctau}_year-${year}.root \
+   --fileout file:${namebase}_Premix_ctau-${ctau}_year-${year}.root \
    --mc --eventcontent PREMIXRAW --datatier GEN-SIM-RAW \
    --step DIGI,DATAMIX,L1,DIGI2RAW,HLT:2022v12 --procModifiers premix_stage2,siPixelQualityRawToDigi --datamix PreMix \
    --geometry DB:Extended \
@@ -127,38 +135,72 @@ cmsDriver.py  \
    --conditions 124X_mcRun3_2022_realistic_v12 \
    --era Run3 --nThreads $nthreads \
    --customise Configuration/DataProcessing/Utils.addMonitoring \
-   --python_filename ${genfragment} --no_exec -n ${nevent} || exit $?;
+   --python_filename ${genfragment_premix} --no_exec -n ${nevent} || exit $?;
 
-cmsRun -p ${genfragment}
+cmsRun -p ${genfragment_premix}
+
+#RECO step:
+
+cmsDriver.py  \
+   --filein file:${namebase}_Premix_ctau-${ctau}_year-${year}.root \
+   --fileout file:${namebase}_PremixRECO_ctau-${ctau}_year-${year}.root \
+   --mc --eventcontent AODSIM --datatier AODSIM \
+   --step RAW2DIGI,L1Reco,RECO,RECOSIM --procModifiers siPixelQualityRawToDigi \
+   --geometry DB:Extended \
+   --conditions 124X_mcRun3_2022_realistic_v12 \
+   --era Run3 --nThreads $nthreads \
+   --customise Configuration/DataProcessing/Utils.addMonitoring \
+   --python_filename ${genfragment_reco} --no_exec -n ${nevent} || exit $?;
+
+cmsRun -p ${genfragment_reco}
+
 
 echo "SUCCESS DRPREMIX!"
 
+echo "Let us copy the output file to a different directory."
+cp  ${namebase}_PremixRECO_ctau-${ctau}_year-${year}.root ${BASEDIR}/CMSSW_13_0_13/src
+
+if [ $? -eq 0 ]; then
+    echo "File copied successfully to ${BASEDIR}/CMSSW_13_0_13/src"
+else
+    echo "Failed to copy the file."
+fi
+
+echo "Let us enter a new directory!"
+
+cd ${BASEDIR}/CMSSW_13_0_13/src
+eval `scram runtime -sh`
+scram b -j 4
+
+
 # Doing MINIAOD Step
-echo "########################################################################################"
 echo "########################################################################################"
 echo "6.) MINIAOD Step"
 genfragment=${namebase}_MINIAOD_cfg_ctau-${ctau}.py
 
 cmsDriver.py \
-    --filein file:${namebase}_DRPremix_ctau-${ctau}_year-${year}.root \
+    --filein file:${namebase}_PremixRECO_ctau-${ctau}_year-${year}.root \
     --fileout file:${namebase}_MINIAOD_ctau-${ctau}_year-${year}.root \
     --mc --eventcontent MINIAODSIM --datatier MINIAODSIM \
     --step PAT --geometry DB:Extended \
     --conditions 130X_mcRun3_2022_realistic_v5 \
-    --era Run3 --nThreads $nthreads \
+    --era Run3,run3_miniAOD_12X \
+    --nThreads $nthreads \
     --customise Configuration/DataProcessing/Utils.addMonitoring \
-    --customise_commands "process.MINIAODSIMoutput.outputCommands = cms.untracked.vstring([line for line in process.MINIAODSIMoutput.outputCommands if 'slimmedCaloJets' not in line and 'oniaPhotonCandidates' not in line and 'offlineSlimmedPrimaryVerticesWithBS' not in line and 'primaryVertexWithBSAssociation' not in line and 'slimmedHcalRecHits' not in line])" \
     --python_filename ${genfragment} --no_exec --runUnscheduled -n ${nevent} || exit $?;
 
-echo "process.options = cms.untracked.PSet(SkipEvent = cms.untracked.vstring('ProductNotFound'))" >> ${genfragment}
+#echo "process.options = cms.untracked.PSet(SkipEvent = cms.untracked.vstring('ProductNotFound'))" >> ${genfragment}
 cmsRun -p ${genfragment}
 
-echo "LIST OF OUTPUT FILES:"
-ls -ltr *.root
 
-#Path needs to be fixed
+#echo "LIST OF OUTPUT FILES:"
+#ls -ltr *.root
+
+
 remoteDIR="/store/group/lpcmetx/iDMe//Samples/signal/2022"
 xrdcp -vf ${namebase}_MINIAOD_ctau-${ctau}_year-${year}.root root://cmseos.fnal.gov/$remoteDIR/MINIAOD/${namebase}_MINIAOD_ctau-${ctau}_year-${year}.root
 
+echo "Final output ROOT file:" ${namebase}_MINIAOD_ctau-${ctau}_year-${year}.root 
 echo "The output MINIAOD file: root://cmseos.fnal.gov/$remoteDIR/MINIAOD/${namebase}_MINIAOD_ctau-${ctau}_year-${year}.root"
 echo "DONE!"
+

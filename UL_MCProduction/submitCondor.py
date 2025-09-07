@@ -27,10 +27,12 @@ if __name__ == "__main__":
     if os.path.isdir(f"{baseDir}/submit"):
         os.system(f"rm -rf {baseDir}/submit")
     os.mkdir(f"{baseDir}/submit")
-    os.system("cp genFragments/iDMe_pythiaGenFragment.py {0}".format(baseDir+"/submit"))
-    os.system("cp genFromGridpack_*.sh {0}".format(baseDir+"/submit"))
-    os.system("cp template_DIGIPremix_cfg_UL*.py {0}".format(baseDir+"/submit"))
+    os.system("cp iDMe_pythiaGenFragment.py {0}".format(baseDir+"/submit")) 
+    os.system("cp genFromGridpack_2022.sh {0}".format(baseDir + "/submit"))
+    os.system("cp template_DRPremix_cfg_2022.py {0}".format(baseDir+"/submit"))    
     os.system("cp runGeneration.sh {0}".format(baseDir+"/submit"))
+    os.system("cp /uscms/home/reshmar/nobackup/CMSSW_13_0_13/src/iDMe/UL_MCProduction/premix_files_prefixed.txt {0}".format(baseDir+"/submit"))
+    #os.system("xrdcp root://cmseos.fnal.gov//store/group/lpcmetx/iDMe/premix_files_prefixed.txt {0}".format(baseDir+"/submit"))
     os.system("cp {0} {1}".format(gridpack,baseDir+"/submit"))
 
     if os.path.exists(f"{baseDir}/submit.tar.gz"):
@@ -66,4 +68,3 @@ if __name__ == "__main__":
 
     print(condor_cmd)
     os.system(condor_cmd)
-

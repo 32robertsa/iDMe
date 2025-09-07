@@ -1,0 +1,18 @@
+[
+    {
+        "location": "/uscms/home/reshmar/nobackup/CMSSW_13_0_13/src/iDMe/AODSkimmer/Signal_Mchi-52p5_dMchi-5p0_ctau-10_output.root",
+        "Mchi": 52.5,
+        "dMchi": 5.0,
+        "ctau": 10,
+        "name": "Mchi-52p5_dMchi-5p0_ctau-10_2022_MINIAOD",
+        "sum_wgt": 2.9044974780845223e-06,
+        "type": "signal",
+        "year": 2022,
+        "alphaD": "aEM",
+        "xsec": 311.52733342,
+        "nFiles": 1,
+        "filter_eff": 0.7768,
+        "num_events": 69068,
+        "blacklist": []
+    }
+]

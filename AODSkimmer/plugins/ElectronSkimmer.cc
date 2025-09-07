@@ -842,7 +842,7 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          allLptEles_isXcleaned.push_back(false);
       }
    }
-
+    //This needs to be done: Section 7
    // Computing corrections to PFIso and MiniIso
    float mindr = 0.05; float maxdr = 0.2; float kt_scale = 10.0; // for miniIso
    // correcting for regular electrons

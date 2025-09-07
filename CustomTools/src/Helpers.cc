@@ -15,7 +15,7 @@ bool Helper::JetID(const pat::Jet &jet, std::string year) {
     auto chEmFrac = jet.chargedEmEnergyFraction();
 
     bool passID = true;
-
+   
     if ((year == "2016") || (year == "2016APV")) {
         if (abs(eta) <= 2.4) {
             passID = (neutHadFrac < 0.9) && (neutEmFrac < 0.9) && (nConstit > 1) && (muonFrac < 0.8) && (chargedHadFrac > 0) && (chargedMult > 0) && (chEmFrac < 0.8);
@@ -45,10 +45,10 @@ bool Helper::JetID(const pat::Jet &jet, std::string year) {
         }
     }
 
-    // Apply additional cuts to leading jet (see monojet analysis: https://arxiv.org/pdf/1703.01651.pdf)
-    //if (idx == 0) {
+    //Apply additional cuts to leading jet (see monojet analysis: https://arxiv.org/pdf/1703.01651.pdf)
+    // if (idx == 0) {
     //    passID = passID && (chargedHadFrac > 0.1) && (neutHadFrac < 0.8);
-    //}
+    // }
 
     return passID;
 }

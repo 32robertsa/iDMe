@@ -1,0 +1,20 @@
+{
+    "name": "ZJets_Zto2Nu6",
+    "location": "/eos/uscms/store/group/lpcmetx/iDMe/Samples/Ntuples/background_bkg_28July_2022//2022/ZJets/Zto2Nu6/Zto2Nu-4Jets_HT-2500_TuneCP5_13p6TeV_madgraphMLM-pythia8/crab_iDMe_Zto2Nu6_2025_07_28-13_10/250728_181119/0000/",
+    "type": "bkg",
+    "year": 2022,
+    "nFiles": 15,
+    "sum_wgt": 39201.40420150757,
+    "xsec": 6.699,
+    "num_events": 542755,
+    "blacklist": [],
+    "fileset": [
+        "root://cmseos.fnal.gov//eos/uscms/store/group/lpcmetx/iDMe/Samples/Ntuples/background_bkg_28July_2022//2022/ZJets/Zto2Nu6/Zto2Nu-4Jets_HT-2500_TuneCP5_13p6TeV_madgraphMLM-pythia8/crab_iDMe_Zto2Nu6_2025_07_28-13_10/250728_181119/0000/Zto2Nu6_3.root",
+        "root://cmseos.fnal.gov//eos/uscms/store/group/lpcmetx/iDMe/Samples/Ntuples/background_bkg_28July_2022//2022/ZJets/Zto2Nu6/Zto2Nu-4Jets_HT-2500_TuneCP5_13p6TeV_madgraphMLM-pythia8/crab_iDMe_Zto2Nu6_2025_07_28-13_10/250728_181119/0000/Zto2Nu6_4.root",
+        "root://cmseos.fnal.gov//eos/uscms/store/group/lpcmetx/iDMe/Samples/Ntuples/background_bkg_28July_2022//2022/ZJets/Zto2Nu6/Zto2Nu-4Jets_HT-2500_TuneCP5_13p6TeV_madgraphMLM-pythia8/crab_iDMe_Zto2Nu6_2025_07_28-13_10/250728_181119/0000/Zto2Nu6_5.root",
+        "root://cmseos.fnal.gov//eos/uscms/store/group/lpcmetx/iDMe/Samples/Ntuples/background_bkg_28July_2022//2022/ZJets/Zto2Nu6/Zto2Nu-4Jets_HT-2500_TuneCP5_13p6TeV_madgraphMLM-pythia8/crab_iDMe_Zto2Nu6_2025_07_28-13_10/250728_181119/0000/Zto2Nu6_6.root",
+        "root://cmseos.fnal.gov//eos/uscms/store/group/lpcmetx/iDMe/Samples/Ntuples/background_bkg_28July_2022//2022/ZJets/Zto2Nu6/Zto2Nu-4Jets_HT-2500_TuneCP5_13p6TeV_madgraphMLM-pythia8/crab_iDMe_Zto2Nu6_2025_07_28-13_10/250728_181119/0000/Zto2Nu6_7.root",
+        "root://cmseos.fnal.gov//eos/uscms/store/group/lpcmetx/iDMe/Samples/Ntuples/background_bkg_28July_2022//2022/ZJets/Zto2Nu6/Zto2Nu-4Jets_HT-2500_TuneCP5_13p6TeV_madgraphMLM-pythia8/crab_iDMe_Zto2Nu6_2025_07_28-13_10/250728_181119/0000/Zto2Nu6_8.root",
+        "root://cmseos.fnal.gov//eos/uscms/store/group/lpcmetx/iDMe/Samples/Ntuples/background_bkg_28July_2022//2022/ZJets/Zto2Nu6/Zto2Nu-4Jets_HT-2500_TuneCP5_13p6TeV_madgraphMLM-pythia8/crab_iDMe_Zto2Nu6_2025_07_28-13_10/250728_181119/0000/Zto2Nu6_9.root"
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "name": "QCD_QCD5",
+    "location": "/eos/uscms/store/group/lpcmetx/iDMe/Samples/Ntuples/background_bkg_28July_2022//2022/QCD/QCD5/QCD-4Jets_HT-400to600_TuneCP5_13p6TeV_madgraphMLM-pythia8/crab_iDMe_QCD5_2025_07_28-13_12/250728_181302/0000/",
+    "type": "bkg",
+    "year": 2022,
+    "nFiles": 25,
+    "sum_wgt": 20402635127808.0,
+    "xsec": 95620000,
+    "num_events": 19509745,
+    "blacklist": [],
+    "fileset": [
+        "root://cmseos.fnal.gov//eos/uscms/store/group/lpcmetx/iDMe/Samples/Ntuples/background_bkg_28July_2022//2022/QCD/QCD5/QCD-4Jets_HT-400to600_TuneCP5_13p6TeV_madgraphMLM-pythia8/crab_iDMe_QCD5_2025_07_28-13_12/250728_181302/0000/QCD5_1-1.root",
+        "root://cmseos.fnal.gov//eos/uscms/store/group/lpcmetx/iDMe/Samples/Ntuples/background_bkg_28July_2022//2022/QCD/QCD5/QCD-4Jets_HT-400to600_TuneCP5_13p6TeV_madgraphMLM-pythia8/crab_iDMe_QCD5_2025_07_28-13_12/250728_181302/0000/QCD5_1-2.root",
+        "root://cmseos.fnal.gov//eos/uscms/store/group/lpcmetx/iDMe/Samples/Ntuples/background_bkg_28July_2022//2022/QCD/QCD5/QCD-4Jets_HT-400to600_TuneCP5_13p6TeV_madgraphMLM-pythia8/crab_iDMe_QCD5_2025_07_28-13_12/250728_181302/0000/QCD5_1.root",
+        "root://cmseos.fnal.gov//eos/uscms/store/group/lpcmetx/iDMe/Samples/Ntuples/background_bkg_28July_2022//2022/QCD/QCD5/QCD-4Jets_HT-400to600_TuneCP5_13p6TeV_madgraphMLM-pythia8/crab_iDMe_QCD5_2025_07_28-13_12/250728_181302/0000/QCD5_10.root",
+        "root://cmseos.fnal.gov//eos/uscms/store/group/lpcmetx/iDMe/Samples/Ntuples/background_bkg_28July_2022//2022/QCD/QCD5/QCD-4Jets_HT-400to600_TuneCP5_13p6TeV_madgraphMLM-pythia8/crab_iDMe_QCD5_2025_07_28-13_12/250728_181302/0000/QCD5_11.root",
+        "root://cmseos.fnal.gov//eos/uscms/store/group/lpcmetx/iDMe/Samples/Ntuples/background_bkg_28July_2022//2022/QCD/QCD5/QCD-4Jets_HT-400to600_TuneCP5_13p6TeV_madgraphMLM-pythia8/crab_iDMe_QCD5_2025_07_28-13_12/250728_181302/0000/QCD5_12.root",
+        "root://cmseos.fnal.gov//eos/uscms/store/group/lpcmetx/iDMe/Samples/Ntuples/background_bkg_28July_2022//2022/QCD/QCD5/QCD-4Jets_HT-400to600_TuneCP5_13p6TeV_madgraphMLM-pythia8/crab_iDMe_QCD5_2025_07_28-13_12/250728_181302/0000/QCD5_13.root",
+        "root://cmseos.fnal.gov//eos/uscms/store/group/lpcmetx/iDMe/Samples/Ntuples/background_bkg_28July_2022//2022/QCD/QCD5/QCD-4Jets_HT-400to600_TuneCP5_13p6TeV_madgraphMLM-pythia8/crab_iDMe_QCD5_2025_07_28-13_12/250728_181302/0000/QCD5_14.root",
+        "root://cmseos.fnal.gov//eos/uscms/store/group/lpcmetx/iDMe/Samples/Ntuples/background_bkg_28July_2022//2022/QCD/QCD5/QCD-4Jets_HT-400to600_TuneCP5_13p6TeV_madgraphMLM-pythia8/crab_iDMe_QCD5_2025_07_28-13_12/250728_181302/0000/QCD5_15.root"
+    ]
+}

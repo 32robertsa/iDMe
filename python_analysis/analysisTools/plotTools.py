@@ -17,7 +17,8 @@ import utils
 
 from mplhep.styles.cms import cmap_petroff
 
-cmap = ["#3f90da", "#ffa90e", "#bd1f01", "#94a4a2", "#832db6", "#a96b59", "#e76300", "#b9ac70", "#717581", "#92dadd"] # cms-recommended version of 10-color scheme
+cmap = ["#3f90da", "#ffa90e", "#bd1f01", "#94a4a2", "#832db6", "#a96b59", "#e76300", "#b9ac70", "#717581", "#92dadd"] 
+# cms-recommended version of 10-color scheme
 
 bkg_cmap = {
     "QCD":cmap_petroff[0],
@@ -46,18 +47,16 @@ bkg_cmap = {
 }
 '''
 
-selected_signals = [
-    "sig_2018_Mchi-10p5_dMchi-1p0_ctau-1",
-    "sig_2018_Mchi-11p0_dMchi-2p0_ctau-100",
-    "sig_2018_Mchi-52p5_dMchi-5p0_ctau-10",
-    "sig_2018_Mchi-77p0_dMchi-14p0_ctau-100"
-]
-selected_signals_cmap = {
-    "sig_2018_Mchi-10p5_dMchi-1p0_ctau-1":"k",
-    "sig_2018_Mchi-11p0_dMchi-2p0_ctau-100":"g",
-    "sig_2018_Mchi-52p5_dMchi-5p0_ctau-10":"c",
-    "sig_2018_Mchi-77p0_dMchi-14p0_ctau-100":"b"
-}
+# selected_signals = [
+#     "signal_2022_Mchi-10p5_dMchi-1p0_ctau-10",
+#     "signal_2022_Mchi-31p5_dMchi-3p0_ctau-10",
+#     "signal_2022_Mchi-52p5_dMchi-5p0_ctau-10"    
+# ]
+# selected_signals_cmap = {
+#     "signal_2022_Mchi-10p5_dMchi-1p0_ctau-10":"r",
+#     "signal_2022_Mchi-31p5_dMchi-3p0_ctau-10":"b",
+#     "signal_2022_Mchi-52p5_dMchi-5p0_ctau-10":"g"
+# }
 
 class histContainer:
     def __init__(self,path,noMeta=False,bkg=False):
@@ -515,6 +514,7 @@ def plot_signal_1D(sig_histo, m1, delta, ctau, plot_dict, style_dict):
         ax.set_yscale('log')
 
     # Plot
+    print ("I am issuing the type:", type(histo))
     hep.histplot(histo, yerr=style_dict['doYerr'], density=style_dict['doDensity'], ax=ax, histtype='step', flow=style_dict['flow'], label = label)
 
     plt.legend()

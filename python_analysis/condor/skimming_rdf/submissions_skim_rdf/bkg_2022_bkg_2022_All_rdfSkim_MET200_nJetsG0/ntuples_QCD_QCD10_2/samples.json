@@ -1,0 +1,20 @@
+{
+    "name": "QCD_QCD10",
+    "location": "/eos/uscms/store/group/lpcmetx/iDMe/Samples/Ntuples/background_bkg_28July_2022//2022/QCD/QCD10/QCD-4Jets_HT-1500to2000_TuneCP5_13p6TeV_madgraphMLM-pythia8/crab_iDMe_QCD10_2025_07_28-13_14/250728_181447/0000/",
+    "type": "bkg",
+    "year": 2022,
+    "nFiles": 22,
+    "sum_wgt": 36354013576.0,
+    "xsec": 125200,
+    "num_events": 21645853,
+    "blacklist": [],
+    "fileset": [
+        "root://cmseos.fnal.gov//eos/uscms/store/group/lpcmetx/iDMe/Samples/Ntuples/background_bkg_28July_2022//2022/QCD/QCD10/QCD-4Jets_HT-1500to2000_TuneCP5_13p6TeV_madgraphMLM-pythia8/crab_iDMe_QCD10_2025_07_28-13_14/250728_181447/0000/QCD10_3.root",
+        "root://cmseos.fnal.gov//eos/uscms/store/group/lpcmetx/iDMe/Samples/Ntuples/background_bkg_28July_2022//2022/QCD/QCD10/QCD-4Jets_HT-1500to2000_TuneCP5_13p6TeV_madgraphMLM-pythia8/crab_iDMe_QCD10_2025_07_28-13_14/250728_181447/0000/QCD10_4.root",
+        "root://cmseos.fnal.gov//eos/uscms/store/group/lpcmetx/iDMe/Samples/Ntuples/background_bkg_28July_2022//2022/QCD/QCD10/QCD-4Jets_HT-1500to2000_TuneCP5_13p6TeV_madgraphMLM-pythia8/crab_iDMe_QCD10_2025_07_28-13_14/250728_181447/0000/QCD10_5.root",
+        "root://cmseos.fnal.gov//eos/uscms/store/group/lpcmetx/iDMe/Samples/Ntuples/background_bkg_28July_2022//2022/QCD/QCD10/QCD-4Jets_HT-1500to2000_TuneCP5_13p6TeV_madgraphMLM-pythia8/crab_iDMe_QCD10_2025_07_28-13_14/250728_181447/0000/QCD10_6.root",
+        "root://cmseos.fnal.gov//eos/uscms/store/group/lpcmetx/iDMe/Samples/Ntuples/background_bkg_28July_2022//2022/QCD/QCD10/QCD-4Jets_HT-1500to2000_TuneCP5_13p6TeV_madgraphMLM-pythia8/crab_iDMe_QCD10_2025_07_28-13_14/250728_181447/0000/QCD10_7.root",
+        "root://cmseos.fnal.gov//eos/uscms/store/group/lpcmetx/iDMe/Samples/Ntuples/background_bkg_28July_2022//2022/QCD/QCD10/QCD-4Jets_HT-1500to2000_TuneCP5_13p6TeV_madgraphMLM-pythia8/crab_iDMe_QCD10_2025_07_28-13_14/250728_181447/0000/QCD10_8.root",
+        "root://cmseos.fnal.gov//eos/uscms/store/group/lpcmetx/iDMe/Samples/Ntuples/background_bkg_28July_2022//2022/QCD/QCD10/QCD-4Jets_HT-1500to2000_TuneCP5_13p6TeV_madgraphMLM-pythia8/crab_iDMe_QCD10_2025_07_28-13_14/250728_181447/0000/QCD10_9.root"
+    ]
+}

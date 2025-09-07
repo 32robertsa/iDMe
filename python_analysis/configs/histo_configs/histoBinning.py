@@ -20,14 +20,16 @@ class myHisto:
         self.match = self.parse_axis(('match',[0,1]))
         self.dR = self.parse_axis(('dR',100,0,5))
         self.dR_refit = self.parse_axis(('dR_refit',100,0,5))
+        self.GenEle_pt = self.parse_axis(('GenEle_pt',100,0,100))
+        self.LptElectron_pt = self.parse_axis(('LptElectron_pt',100,0,100))
         self.vxy1 = self.parse_axis(('vxy',100,0,1))
         self.vxy10 = self.parse_axis(('vxy',100,0,10))
         self.vxy100 = self.parse_axis(('vxy',1000,0,100))
         self.vz = self.parse_axis(('vz',500,-10,10))
-        self.ele_pt = self.parse_axis(("pt",50,0,50))
+        self.ele_pt = self.parse_axis(("pt",100,0,100))
         self.ele_pt800 = self.parse_axis(("pt800",100,0,800))
         self.dphi = self.parse_axis(("phi",64,-3.2,3.2))
-        self.phi = self.parse_axis(("phi",64,-3.2,3.2))
+        self.phi = self.parse_axis(("phi",64,-3.2,3.2))    
         self.phi_zoomHEM = self.parse_axis(("phi_zoomHEM",64,-2,-0.4))
         self.jet_phi = self.parse_axis(("jet_phi",64,-3.2,3.2))
         self.phi_refit = self.parse_axis(("phi_refit",64,-3.2,3.2))
@@ -54,7 +56,7 @@ class myHisto:
         self.numHits = self.parse_axis(('numHits',20,0,20))
         self.trkProb = self.parse_axis(('prob',100,0,1))
         self.IDScore = self.parse_axis(('id',100,-1,3))
-        self.ele_passID = self.parse_axis(('passID',[0,1]))
+        self.ele_passID = self.parse_axis(('passID',[0,1]))        
         self.vtx_type = self.parse_axis(('vtype',['LL','LR','RR']))
         self.vtx_mass = self.parse_axis(('mass',300,0,300))
         self.vtx_mass_refit = self.parse_axis(('mass_refit',100,0,30))
@@ -69,6 +71,7 @@ class myHisto:
         self.vxyCategories = self.parse_axis(('vxyCat',['0to1','1to5','5to10','10to15','15toInf']))
         self.ptCategories = self.parse_axis(('ptCat',['0to5','5to10','10to20','20toInf']))
         self.nJets = self.parse_axis(('nJets',10,0,10))
+        #self.triggercut = self.parse_axis(('triggercut', 10,0,1))
         self.vtxPurity = self.parse_axis(('purity',['total','n_matched_any','n_matched_sel','n_matched_good',
                                                     'n_eeReco_any','n_eeReco_passID',
                                                     'n_vtxReco_any','n_vtxReco_good']))
@@ -115,6 +118,7 @@ class myHisto:
         self.vxySignif = self.parse_axis(('vxySignif',500,0,50))
         self.bdtscore = self.parse_axis(('bdtscore',100,0,1))
         self.ratio = self.parse_axis(('ratio',500,0,10))
+        
 
         self.dEta = self.parse_axis(('dEta',500,0,10))
         self.dPhi = self.parse_axis(('dPhi',500,0,10))

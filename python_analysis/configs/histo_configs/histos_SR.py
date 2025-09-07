@@ -81,12 +81,16 @@ def make_histograms(info):
     h.make("jetMETdPhi",'abs_dphi')
     h.make("minJetMETdPhi",'abs_dphi')
     h.make("nJets",'nJets')
+#    h.make("triggercut", 'triggercut')
     h.make('lead_jet_pt','jet_pt')
     h.make('lead_jet_eta','eta')
-    h.make("jetMETratio",'jetMETratio')
-    
-
+    h.make("jetMETratio",'jetMETratio') 
     h.make("bdtscore",'bdtscore')
+    h.make("jet_phi",'jet_phi')
+    h.make("GenEle_pt",'GenEle_pt')
+    h.make("LptElectron_pt",'LptElectron_pt')
+    
+    
 
     return h
 
@@ -177,12 +181,20 @@ def fillHistos(events,h,samp,cut,info,sum_wgt=1):
     h.fill("sel_vtx_vxy20_vs_vxySignif",vxy=sel_vtx.vxy,vxySignif=sel_vtx.vxy/sel_vtx.sigmavxy,weight=wgt)
 
     #
+
+    h.fill("jet_phi", jet_phi =ak.count(events.PFJet.phi,axis=1), weight = wgt)
+    h.fill("GenEle_pt",GenEle_pt = events.GenEle.pt,weight=wgt)
+    h.fill("LptElectron_pt",LptElectron_pt = ak.flatten(events.LptElectron.pt))
+    
     h.fill("PFMET",met=events.PFMET.pt,weight=wgt)
     h.fill("jetMETdPhi",abs_dphi=np.abs(events.PFJet.METdPhi[:,0]),weight=wgt)
     h.fill("minJetMETdPhi",abs_dphi=ak.min(np.abs(events.PFJet.METdPhi),axis=1),weight=wgt)
     h.fill("nJets",nJets=ak.count(events.PFJet.pt,axis=1),weight=wgt)
+    #h.fill("triggercut",triggercut=events.trig_HLT_PFMETNoMu120_PFMHTNoMu120_IDTight, weight=wgt)
     h.fill("lead_jet_pt",jet_pt=events.PFJet.pt[:,0],weight=wgt)
     h.fill("lead_jet_eta",eta=events.PFJet.eta[:,0],weight=wgt)
     h.fill("jetMETratio",jetMETratio=events.PFJet.pt[:,0]/events.PFMET.pt,weight=wgt)
+    
+    
 
 #    h.fill("bdtscore",bdtscore=events.BDTScore,weight=wgt)
