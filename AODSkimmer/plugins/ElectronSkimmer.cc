@@ -434,7 +434,7 @@ ElectronSkimmer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) 
    desc.add<edm::InputTag>("genEvt", edm::InputTag("generator"));
    desc.add<edm::InputTag>("pileups", edm::InputTag("slimmedAddPileupInfo"));
    desc.add<edm::InputTag>("rho", edm::InputTag("fixedGridRhoFastJetAll"));
-   desc.add<edm::InputTag>("genParticle",edm::InputTag("prunedGenParticles"));
+   desc.add<edm::InputTag>("genParticle",edm::InputTag("prunedGenParticles")); //IMP
    desc.add<edm::InputTag>("genJet",edm::InputTag("slimmedGenJets"));
    desc.add<edm::InputTag>("genMET",edm::InputTag("genMetTrue"));
    desc.add<edm::InputTag>("primaryVertex",edm::InputTag("offlineSlimmedPrimaryVertices"));
@@ -592,9 +592,12 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    int iele = 0;
    for (const auto & ele : *recoNanoElectronHandle_) {
       // require pT > 5 & pass loose ID to consider GED electron
-      if (ele.pt() < 5 || !ele.electronID("cutBasedElectronID-RunIIIWinter22-V1-loose")) {
+      if (ele.pt() < 5 || !ele.electronID("mvaEleID-RunIIIWinter22-noIso-V1-wp90")) {
          iele++;
          continue;
+      // if (ele.pt() < 5 || !ele.electronID("cutBasedElectronID-RunIIIWinter22-V1-loose")) {
+      //    iele++;
+      //    continue;
       }
       iSaved_ele.push_back(iele);
       iele++;
@@ -719,7 +722,8 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             mindR = dR;
             //iMatch_reg = ireg;
          }
-      }
+      }\
+       // The CROSS-CLEANING part 
       // can optionally not skip and save whether or not the lpt electron *should* be x-cleaned
       if (mindR < PFmatch_threshold) {
          //nt.recoLowPtElectronIsXCleaned_.push_back(true);
@@ -766,6 +770,7 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       nt.recoLowPtElectronCaloIso_.push_back(ele.caloIso());
       nt.recoLowPtElectronCaloRelIso_.push_back(ele.caloIso()/ele.pt());
       nt.recoLowPtElectronCharge_.push_back(ele.charge());
+       
       // Calculating "official" dR03 PF Isolation based on https://github.com/cms-sw/cmssw/blob/CMSSW_10_6_X/RecoEgamma/ElectronIdentification/plugins/cuts/GsfEleRelPFIsoScaledCut.cc#L62
       auto pfIso = ele.pfIsolationVariables();
       const float rho = rhoHandle_.isValid() ? (float)(*rhoHandle_) : 0.0;
@@ -1319,7 +1324,7 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          }
       }
 
-      if (isSignal) {
+       if (isSignal) {
          // Gen-matching electrons to reco objects for iDM signal
          // Strategy: merge "good" electrons + low-pT electrons (i.e. the ones saved to ntuples & used in vertexing)
          vector<math::XYZTLorentzVector> all_eles(reg_ele_p4s);
