@@ -85,7 +85,7 @@ struct trackPair
 
 
    // ---- trackPair constructors: 
-   trackPair(const reco::Vertex &pv, const reco::BeamSpot &bs, edm::ESHandle<TransientTrackBuilder> theTransientTrackBuilder, const reco::Track &tr_A, const reco::Track &tr_B, bool isEE)
+   trackPair(const reco::Vertex &pv, const reco::BeamSpot &bs, const TransientTrackBuilder& theTransientTrackBuilder, const reco::Track &tr_A, const reco::Track &tr_B, bool isEE)
    { 
       Init(theTransientTrackBuilder, pv, bs, tr_A, tr_B, isEE); 
    };
@@ -96,7 +96,7 @@ struct trackPair
    // ---- trackPair DataFormat functions
 
    // -- Init trackPair:
-   void Init(edm::ESHandle<TransientTrackBuilder> theTransientTrackBuilder, const reco::Vertex &pv, const reco::BeamSpot &bs,const reco::Track &tr_A, const reco::Track &tr_B, bool isEE)
+   void Init(const TransientTrackBuilder& theTransientTrackBuilder, const reco::Vertex &pv, const reco::BeamSpot &bs,const reco::Track &tr_A, const reco::Track &tr_B, bool isEE)
    {
 
       if (isEE) { type = 0; }
@@ -105,8 +105,8 @@ struct trackPair
 
       // Get tracks:
       std::vector<reco::TransientTrack> vec_refitTracks;
-      reco::TransientTrack isotransienttrackA = theTransientTrackBuilder->build(tr_A);
-      reco::TransientTrack isotransienttrackB = theTransientTrackBuilder->build(tr_B);
+      reco::TransientTrack isotransienttrackA = theTransientTrackBuilder.build(tr_A);
+      reco::TransientTrack isotransienttrackB = theTransientTrackBuilder.build(tr_B);
       vec_refitTracks.push_back(isotransienttrackA); vec_refitTracks.push_back(isotransienttrackB);
 
       // Fit tracks:
@@ -206,9 +206,9 @@ struct trackPair
    } // end computeDxy function
 
 
-   float computeDxyError(edm::ESHandle<TransientTrackBuilder> theTransientTrackBuilder, const reco::Track & track, const reco::Vertex pv) {
+   float computeDxyError(const TransientTrackBuilder& theTransientTrackBuilder, const reco::Track & track, const reco::Vertex pv) {
 
-      reco::TransientTrack isotk = theTransientTrackBuilder->build(track);
+      reco::TransientTrack isotk = theTransientTrackBuilder.build(track);
       GlobalPoint vert(pv.x(), pv.y(), pv.z());
       TrajectoryStateClosestToPoint  traj = isotk.trajectoryStateClosestToPoint(vert);
 

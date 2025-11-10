@@ -1,11 +1,11 @@
 #include "iDMe/CustomTools/interface/DisplacedDileptonAOD.hh"
 
-DisplacedDileptonsAOD::DisplacedDileptonsAOD(reco::Vertex &pv_, reco::BeamSpot &beamspot_, edm::Handle<std::vector<pat::IsolatedTrack> > &isotracks_, std::vector<reco::Photon> &photons_, edm::Handle<std::vector<pat::PackedCandidate> > &packedPFCandidates_, edm::ESHandle<TransientTrackBuilder> &theTransientTrackBuilder_) {
+DisplacedDileptonsAOD::DisplacedDileptonsAOD(reco::Vertex &pv_, reco::BeamSpot &beamspot_, edm::Handle<std::vector<pat::IsolatedTrack> > &isotracks_, std::vector<reco::Photon> &photons_, edm::Handle<std::vector<pat::PackedCandidate> > &packedPFCandidates_, const TransientTrackBuilder& theTransientTrackBuilder_) : theTransientTrackBuilder(theTransientTrackBuilder_) {
     isoTracks = isotracks_;
     photons = photons_;
     packedPFCandidates = packedPFCandidates_;
     pv = pv_;
-    theTransientTrackBuilder = theTransientTrackBuilder_;
+    //theTransientTrackBuilder = theTransientTrackBuilder_;
     beamspot = beamspot_;
 
     PV_vx = pv.x();
@@ -211,7 +211,7 @@ void DisplacedDileptonsAOD::findDileptons() {
             // Access to the track and computation of impact parameters:
             const reco::Track *trref = (*pckCand).bestTrack();
             const reco::Track &ctr = *trref;
-            reco::TransientTrack _isotk = theTransientTrackBuilder->build(ctr);
+            reco::TransientTrack _isotk = theTransientTrackBuilder.build(ctr);
             TrajectoryStateClosestToPoint _trajPV = _isotk.trajectoryStateClosestToPoint( _PVpoint );
             TrajectoryStateClosestToPoint _trajBS = _isotk.trajectoryStateClosestToPoint( _BSpoint );
             TrajectoryStateClosestToPoint _traj0 = _isotk.trajectoryStateClosestToPoint( _0point );

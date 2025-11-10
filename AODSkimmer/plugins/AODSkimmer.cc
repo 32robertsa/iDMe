@@ -49,7 +49,11 @@
 #include "DataFormats/TrackReco/interface/TrackFwd.h"
 #include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
 #include "DataFormats/EgammaCandidates/interface/Photon.h"
+
+#include "DataFormats/PatCandidates/interface/Conversion.h"
+#include "DataFormats/EgammaCandidates/interface/ConversionFwd.h"
 #include "DataFormats/EgammaCandidates/interface/Conversion.h"
+
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/JetReco/interface/GenJet.h"
 #include "DataFormats/JetReco/interface/PFJet.h"
@@ -66,6 +70,8 @@
 #include "JetMETCorrections/JetCorrector/interface/JetCorrector.h"
 #include "JetMETCorrections/Objects/interface/JetCorrectionsRecord.h"
 #include "JetMETCorrections/Modules/interface/JetResolution.h"
+#include "CondFormats/DataRecord/interface/JetResolutionRcd.h"
+#include "CondFormats/DataRecord/interface/JetResolutionScaleFactorRcd.h"
 
 #include "TrackingTools/TransientTrack/interface/TransientTrack.h"
 #include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
@@ -116,7 +122,7 @@ class AODSkimmer : public edm::one::EDAnalyzer<edm::one::WatchRuns, edm::one::Sh
       std::vector<std::string> allTrigPaths_;
 
       // Jet Corrector helpers
-      edm::ESHandle<JetCorrectorParametersCollection> JetCorParCollHandle_;
+      //edm::ESHandle<JetCorrectorParametersCollection> JetCorParCollHandle_;
       JetCorrectionUncertainty * jecUnc; 
 
       // Tokens 
@@ -154,6 +160,10 @@ class AODSkimmer : public edm::one::EDAnalyzer<edm::one::WatchRuns, edm::one::Sh
       const edm::EDGetTokenT<edm::TriggerResults> trigResultsToken_;
       const edm::EDGetTokenT<trigger::TriggerEvent> trigEventToken_;
 
+      edm::ESGetToken<TransientTrackBuilder, TransientTrackRecord> theBToken_;
+      edm::ESGetToken<JetCorrectorParametersCollection, JetCorrectionsRecord> JetCorParCollToken_;
+      edm::ESGetToken<JME::JetResolutionScaleFactor, JetResolutionScaleFactorRcd> resolutionSFToken_;
+  
       // Handles
       edm::Handle<reco::JetTagCollection> bTagProbbHandle_;
       edm::Handle<reco::JetTagCollection> bTagProbbbHandle_;
@@ -251,7 +261,11 @@ AODSkimmer::AODSkimmer(const edm::ParameterSet& ps)
    eeBadScFilterToken_(consumes<bool>(ps.getParameter<edm::InputTag>("eeBadScFilter"))),
    ecalBadCalibFilterToken_(consumes<bool>(ps.getParameter<edm::InputTag>("ecalBadCalibFilter"))),
    trigResultsToken_(consumes<edm::TriggerResults>(ps.getParameter<edm::InputTag>("trigResult"))),
-   trigEventToken_(consumes<trigger::TriggerEvent>(ps.getParameter<edm::InputTag>("trigEvent")))
+   trigEventToken_(consumes<trigger::TriggerEvent>(ps.getParameter<edm::InputTag>("trigEvent"))),
+
+   theBToken_(esConsumes<TransientTrackBuilder, TransientTrackRecord>(edm::ESInputTag("", "TransientTrackBuilder"))),
+   JetCorParCollToken_(esConsumes<JetCorrectorParametersCollection, JetCorrectionsRecord>(edm::ESInputTag("", "AK4PFchs"))),
+   resolutionSFToken_(esConsumes<JME::JetResolutionScaleFactor, JetResolutionScaleFactorRcd>(edm::ESInputTag("", "AK4PFchs")))
 {
    usesResource("TFileService");
    m_random_generator = std::mt19937(37428479);
@@ -372,8 +386,8 @@ AODSkimmer::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup)
    }
 
    // JEC Uncertainty object
-   iSetup.get<JetCorrectionsRecord>().get("AK4PFchs", JetCorParCollHandle_); 
-   JetCorrectorParameters const & JetCorPar = (*JetCorParCollHandle_)["Uncertainty"];
+   const auto& JetCorParColl = iSetup.getData(JetCorParCollToken_);
+   JetCorrectorParameters const & JetCorPar = JetCorParColl["Uncertainty"];
    jecUnc = new JetCorrectionUncertainty(JetCorPar);
    if (!jecUnc) {
       edm::LogError("JECUncertainty") << "iDMAnalyzer::beginRun: failed to get jecUnc object!";
@@ -504,9 +518,10 @@ AODSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    //Vertex & beamspot information
    reco::Vertex pv = (*primaryVertexHandle_).at(0);
    //reco::BeamSpot beamspot = *beamspotHandle_;
+
    // Set up objects for vertex reco
-   edm::ESHandle<TransientTrackBuilder> theB;
-   iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder", theB);
+   const TransientTrackBuilder& theB = iSetup.getData(theBToken_);
+   
    KalmanVertexFitter kvf(true);
 
    // MET Filters (as recommended here https://twiki.cern.ch/twiki/bin/view/CMS/MissingETOptionalFiltersRun2#UL_data)
@@ -755,8 +770,8 @@ AODSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
             TransientVertex tv;
             vector<reco::TransientTrack> transient_tracks{};
-            transient_tracks.push_back(theB->build(ele_i));
-            transient_tracks.push_back(theB->build(ele_j));
+            transient_tracks.push_back(theB.build(ele_i));
+            transient_tracks.push_back(theB.build(ele_j));
             tv = kvf.vertex(transient_tracks);
 
             if (!tv.isValid()) continue; // skip if the vertex is bad
@@ -891,10 +906,11 @@ AODSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    ///////////////////
    // Handling Jets //
    ///////////////////
-   
+
    // Loading/executing module to compute & apply jet corrections, and write to output tree
-   JME::JetResolution resolution = JME::JetResolution::get(iSetup, "AK4PFchs_pt");
-   JME::JetResolutionScaleFactor resolution_sf = JME::JetResolutionScaleFactor::get(iSetup, "AK4PFchs");
+   auto token = esConsumes<JME::JetResolutionObject, JetResolutionRcd>(edm::ESInputTag("", "AK4PFchs_pt"));
+   JME::JetResolution resolution = JME::JetResolution::get(iSetup, token);
+   JME::JetResolutionScaleFactor resolution_sf = iSetup.getData(resolutionSFToken_);
    
    JetCorrections jc(recoJetHandle_, jetCorrectorHandle_, nt, bTagProbbHandle_, bTagProbbbHandle_, recoElectronHandle_, year, isData);
    jc.Correct(resolution, resolution_sf, *jecUnc, rhoHandle_, genJetHandle_, PFMET);

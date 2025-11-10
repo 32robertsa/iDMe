@@ -61,7 +61,7 @@ const int nElectronCandidateMax = 1000;
 class DisplacedDileptonsAOD {
 
 public:
-    DisplacedDileptonsAOD(reco::Vertex &pv_, reco::BeamSpot &beamspot_, edm::Handle<std::vector<pat::IsolatedTrack> > &isotracks_, std::vector<reco::Photon> &photons_, edm::Handle<std::vector<pat::PackedCandidate> > &packedPFCandidates_, edm::ESHandle<TransientTrackBuilder> &theTransientTrackBuilder_);
+    DisplacedDileptonsAOD(reco::Vertex &pv_, reco::BeamSpot &beamspot_, edm::Handle<std::vector<pat::IsolatedTrack> > &isotracks_, std::vector<reco::Photon> &photons_, edm::Handle<std::vector<pat::PackedCandidate> > &packedPFCandidates_, const TransientTrackBuilder& theTransientTrackBuilder_);
     ~DisplacedDileptonsAOD();
     void findDileptons();
     float getDeltaR(float phi1, float eta1, float phi2, float eta2);
@@ -76,7 +76,7 @@ public:
     edm::Handle<std::vector<pat::PackedCandidate> > packedPFCandidates;
     reco::Vertex pv;
     reco::BeamSpot beamspot;
-    edm::ESHandle<TransientTrackBuilder> theTransientTrackBuilder;
+    const TransientTrackBuilder& theTransientTrackBuilder;
 
     //-> PRIMARY VERTEX SELECTION
     int nPV;

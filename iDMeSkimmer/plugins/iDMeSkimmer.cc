@@ -110,7 +110,8 @@ class iDMeSkimmer : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
       const edm::EDGetTokenT<vector<pat::MET> > METToken_;
       const edm::EDGetTokenT<vector<pat::MET> > PuppiMETToken_;
       const edm::EDGetTokenT<edm::TriggerResults> trigResultsToken_;
-      //const edm::EDGetTokenT<trigger::TriggerEvent> trigEventToken_;
+
+      edm::ESGetToken<TransientTrackBuilder, TransientTrackRecord> theBToken_;
 
       // Handles
       edm::Handle<pat::ElectronCollection> recoElectronHandle_;
@@ -155,11 +156,12 @@ iDMeSkimmer::iDMeSkimmer(const edm::ParameterSet& ps)
    conversionsToken_(consumes<vector<reco::Conversion> >(ps.getParameter<edm::InputTag>("conversions"))),
    photonsToken_(consumes<vector<pat::Photon> >(ps.getParameter<edm::InputTag>("photons"))),
    METToken_(consumes<vector<pat::MET> >(ps.getParameter<edm::InputTag>("MET"))),
-   PuppiMETToken_(consumes<vector<pat::MET> >(ps.getParameter<edm::InputTag>("PuppiMET")))
+   PuppiMETToken_(consumes<vector<pat::MET> >(ps.getParameter<edm::InputTag>("PuppiMET"))),
+
+   theBToken_(esConsumes<TransientTrackBuilder, TransientTrackRecord>(edm::ESInputTag("", "TransientTrackBuilder")))
 {
    usesResource("TFileService");
    m_random_generator = std::mt19937(37428479);
-
 }
 
 
@@ -244,9 +246,9 @@ iDMeSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    //nt.isData_ = isData;
    reco::Vertex pv = *primaryVertexHandle_->begin();
    reco::BeamSpot beamspot = *beamspotHandle_;
+
    // Set up objects for vertex reco
-   edm::ESHandle<TransientTrackBuilder> theB;
-   iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder", theB);
+   const TransientTrackBuilder& theB = iSetup.getData(theBToken_);
    KalmanVertexFitter kvf(true);
 
    // Handling Regular MET
@@ -467,8 +469,8 @@ iDMeSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
             TransientVertex tv;
             if (ele_i.isNonnull() && ele_j.isNonnull() && !skip) {
                vector<reco::TransientTrack> transient_tracks{};
-               transient_tracks.push_back(theB->build(ele_i));
-               transient_tracks.push_back(theB->build(ele_j));
+               transient_tracks.push_back(theB.build(ele_i));
+               transient_tracks.push_back(theB.build(ele_j));
                tv = kvf.vertex(transient_tracks);
             }
             float vxy = -9999;

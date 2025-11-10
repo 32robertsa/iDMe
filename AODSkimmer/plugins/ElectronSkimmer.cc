@@ -99,8 +99,8 @@
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 
-#include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h"
-#include "RecoEgamma/EgammaTools/interface/ConversionTools.h"
+#include "EgammaAnalysis/ElectronTools/interface/ElectronEffectiveArea.h"
+#include "CommonTools/Egamma/interface/ConversionTools.h"
 
 #include "iDMe/CustomTools/interface/DisplacedDileptonAOD.hh"
 #include "iDMe/CustomTools/interface/JetCorrections.hh"
@@ -143,8 +143,6 @@ class ElectronSkimmer : public edm::one::EDAnalyzer<edm::one::WatchRuns, edm::on
       const std::string metFilterName_;
       std::vector<std::string> metFilters_;
       std::vector<std::string> trigPaths_;
-      // Electron isolation effective areas
-      EffectiveAreas effectiveAreas_;
 
       // Tokens 
       const edm::EDGetTokenT<vector<pat::Electron> > recoElectronToken_;
@@ -170,6 +168,8 @@ class ElectronSkimmer : public edm::one::EDAnalyzer<edm::one::WatchRuns, edm::on
       const edm::EDGetTokenT<edm::TriggerResults> metFilterResultsToken_;
       const edm::EDGetTokenT<vector<pat::IsolatedTrack> > isoTrackToken_;
       const edm::EDGetTokenT<vector<pat::Muon> > pfRecoMuToken_;
+
+      edm::ESGetToken<TransientTrackBuilder, TransientTrackRecord> theBToken_;
 
       // Handles
       edm::Handle<vector<pat::Electron> > recoElectronHandle_;
@@ -222,7 +222,6 @@ ElectronSkimmer::ElectronSkimmer(const edm::ParameterSet& ps)
    metFilterName_(ps.getParameter<std::string>("metFilterName")),
    metFilters_(ps.getParameter<std::vector<std::string> >("metFilters")),
    trigPaths_(ps.getParameter<std::vector<std::string> >("triggerPaths")),
-   effectiveAreas_((ps.getParameter<edm::FileInPath>("effAreasConfigFile")).fullPath()),
    recoElectronToken_(consumes<vector<pat::Electron> >(ps.getParameter<edm::InputTag>("recoElectron"))),
    recoNanoElectronToken_(consumes<vector<pat::Electron> >(ps.getParameter<edm::InputTag>("nanoElectron"))),
    lowPtElectronToken_(consumes<vector<pat::Electron> >(ps.getParameter<edm::InputTag>("lowPtElectron"))),
@@ -245,7 +244,9 @@ ElectronSkimmer::ElectronSkimmer(const edm::ParameterSet& ps)
    trigResultsToken_(consumes<edm::TriggerResults>(ps.getParameter<edm::InputTag>("trigResults"))),
    metFilterResultsToken_(consumes<edm::TriggerResults>(ps.getParameter<edm::InputTag>("metFilterResults"))),
    isoTrackToken_(consumes<vector<pat::IsolatedTrack> >(ps.getParameter<edm::InputTag>("isoTracks"))),
-   pfRecoMuToken_(consumes<vector<pat::Muon> >(ps.getParameter<edm::InputTag>("pfRecoMu")))
+   pfRecoMuToken_(consumes<vector<pat::Muon> >(ps.getParameter<edm::InputTag>("pfRecoMu"))),
+
+   theBToken_(esConsumes<TransientTrackBuilder, TransientTrackRecord>(edm::ESInputTag("", "TransientTrackBuilder")))
 {
    usesResource("TFileService");
    m_random_generator = std::mt19937(37428479);
@@ -356,7 +357,6 @@ ElectronSkimmer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) 
    desc.add<std::string>("metFilterName","PAT");
    desc.add<std::vector<std::string> >("metFilters",{});
    desc.add<std::vector<std::string> >("triggerPaths",{});
-   desc.add<edm::FileInPath>("effAreasConfigFile");
    desc.add<edm::InputTag>("recoElectron",edm::InputTag("slimmedElectrons"));
    desc.add<edm::InputTag>("nanoElectron",edm::InputTag("slimmedElectronsWithUserDataMinimal"));
    desc.add<edm::InputTag>("lowPtElectron",edm::InputTag("slimmedLowPtElectrons"));
@@ -436,22 +436,20 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    nt.PV_y_ = pv.y();
    nt.PV_z_ = pv.z();
       
-    double nPV = 0;
-    for (const auto & ele : *primaryVertexHandle_) {
-      nPV++;
-    }
-    nt.numPV_ = nPV;
-
-   auto beamspot = *beamspotHandle_;
+   double nPV = 0;
+   for (const auto & ele : *primaryVertexHandle_) {
+     nPV++;
+   }
+   nt.numPV_ = nPV;
+   
    // Set up objects for vertex reco
-   edm::ESHandle<TransientTrackBuilder> theB;
-   iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder", theB);
+   const TransientTrackBuilder& theB = iSetup.getData(theBToken_);
    KalmanVertexFitter kvf(true);
-
+   
    // MET Filters (as recommended here https://twiki.cern.ch/twiki/bin/view/CMS/MissingETOptionalFiltersRun2#UL_data)
    for (size_t i = 0; i < metFilters_.size(); i++) {
-      //std::cout << "MET filter " << metFilters_[i] << " is at index " << hltConfig_.triggerIndex(metFilters_[i]) << std::endl;
-      nt.METFiltersFailBits_ |= ((!(metFilterResultsHandle_->accept(metFilterConfig_.triggerIndex(metFilters_[i])))) << i);
+     //std::cout << "MET filter " << metFilters_[i] << " is at index " << hltConfig_.triggerIndex(metFilters_[i]) << std::endl;
+     nt.METFiltersFailBits_ |= ((!(metFilterResultsHandle_->accept(metFilterConfig_.triggerIndex(metFilters_[i])))) << i);
    }
 
    // All triggers
@@ -650,7 +648,10 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       // Calculating "official" dR03 PF Isolation based on https://github.com/cms-sw/cmssw/blob/CMSSW_10_6_X/RecoEgamma/ElectronIdentification/plugins/cuts/GsfEleRelPFIsoScaledCut.cc#L62
       auto pfIso = ele.pfIsolationVariables();
       const float rho = rhoHandle_.isValid() ? (float)(*rhoHandle_) : 0.0;
-      const float eA = effectiveAreas_.getEffectiveArea(std::abs(ele.superCluster()->eta()));
+      const float eA = ElectronEffectiveArea::GetElectronEffectiveArea(
+								       ElectronEffectiveArea::kEleGammaAndNeutralHadronIso03,
+								       std::abs(ele.superCluster()->eta()),
+								       ElectronEffectiveArea::kEleEAData2012);
       float iso = pfIso.sumChargedHadronPt + std::max(0.0f,pfIso.sumNeutralHadronEt + pfIso.sumPhotonEt  - rho*eA);
       nt.recoElectronPFIso_.push_back(iso);
       nt.recoElectronPFRelIso_.push_back(iso/ele.pt());
@@ -695,7 +696,7 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       nt.recoElectronAbs1overEm1overP_.push_back(std::abs(1.0 - eSCoverP)*ecal_energy_inverse);
       constexpr auto missingHitType =reco::HitPattern::MISSING_INNER_HITS;
       nt.recoElectronExpMissingInnerHits_.push_back(ele.gsfTrack()->hitPattern().numberOfLostHits(missingHitType));
-      nt.recoElectronConversionVeto_.push_back(!ConversionTools::hasMatchedConversion(ele,*conversionsHandle_,beamspot.position()));
+      //nt.recoElectronConversionVeto_.push_back(!ConversionTools::hasMatchedConversion(ele,*conversionsHandle_,beamspot.position()));
       nt.recoElectronIsEE_.push_back(ele.isEE());
       // x-cleaning study
       nt.recoElectronHasLptMatch_.push_back(false);
@@ -774,7 +775,10 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       // Calculating "official" dR03 PF Isolation based on https://github.com/cms-sw/cmssw/blob/CMSSW_10_6_X/RecoEgamma/ElectronIdentification/plugins/cuts/GsfEleRelPFIsoScaledCut.cc#L62
       auto pfIso = ele.pfIsolationVariables();
       const float rho = rhoHandle_.isValid() ? (float)(*rhoHandle_) : 0.0;
-      const float eA = effectiveAreas_.getEffectiveArea(std::abs(ele.superCluster()->eta()));
+      const float eA = ElectronEffectiveArea::GetElectronEffectiveArea(
+								       ElectronEffectiveArea::kEleGammaAndNeutralHadronIso03,
+								       std::abs(ele.superCluster()->eta()),
+								       ElectronEffectiveArea::kEleEAData2012);
       float iso = pfIso.sumChargedHadronPt + std::max(0.0f,pfIso.sumNeutralHadronEt + pfIso.sumPhotonEt  - rho*eA);
       nt.recoLowPtElectronPFIso_.push_back(iso);
       nt.recoLowPtElectronPFRelIso_.push_back(iso/ele.pt());
@@ -819,7 +823,7 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       nt.recoLowPtElectronAbs1overEm1overP_.push_back(std::abs(1.0 - eSCoverP)*ecal_energy_inverse);
       constexpr auto missingHitType =reco::HitPattern::MISSING_INNER_HITS;
       nt.recoLowPtElectronExpMissingInnerHits_.push_back(ele.gsfTrack()->hitPattern().numberOfLostHits(missingHitType));
-      nt.recoLowPtElectronConversionVeto_.push_back(!ConversionTools::hasMatchedConversion(ele,*conversionsHandle_,beamspot.position()));
+      //nt.recoLowPtElectronConversionVeto_.push_back(!ConversionTools::hasMatchedConversion(ele,*conversionsHandle_,beamspot.position()));
       nt.recoLowPtElectronIsEE_.push_back(ele.isEE());
       // additional x-cleaning study variables 
       nt.recoLowPtElectronGEDisMatched_.push_back(false);
@@ -1045,8 +1049,8 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
             TransientVertex tv;
             vector<reco::TransientTrack> transient_tracks{};
-            transient_tracks.push_back(theB->build(ele_i));
-            transient_tracks.push_back(theB->build(ele_j));
+            transient_tracks.push_back(theB.build(ele_i));
+            transient_tracks.push_back(theB.build(ele_j));
             tv = kvf.vertex(transient_tracks);
 
             if (!tv.isValid()) continue; // skip if the vertex is bad
