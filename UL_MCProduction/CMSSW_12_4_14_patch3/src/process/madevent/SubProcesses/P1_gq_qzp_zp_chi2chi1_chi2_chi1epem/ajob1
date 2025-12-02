@@ -26,14 +26,14 @@ tar -xzf MadLoop5_resources.tar.gz
 fi
 keeplog=false
 if [ "$keeplog" = true ] ; then
-    k=GridRun_34319214_app.log
+    k=GridRun_42324019_app.log
 else
     k=/dev/null
 fi
 script=ajob1                         
 
 grid_directory=
-j=G4.14
+j=G3.14
      if [[ ! -e $j ]]; then
           mkdir $j
           if [[ -e $grid_directory/ftn26 ]];then
@@ -56,7 +56,7 @@ j=G4.14
      fi
      # create the input file
          echo "    500       13       1" >& input_sg.txt
-         echo "    -12913056391.31726" >> input_sg.txt
+         echo "    -17206767.99541153" >> input_sg.txt
      if [[ ! -e ftn25 ]]; then
          echo "2" >> input_sg.txt   # grid refinement
          echo "1" >> input_sg.txt   # suppress amplitude
@@ -66,7 +66,7 @@ j=G4.14
          echo "1" >> input_sg.txt
      fi
      echo "0" >> input_sg.txt
-     echo "4.14" >> input_sg.txt
+     echo "3.14" >> input_sg.txt
 
      # run the executable. The loop is design to avoid
      # filesystem problem (executable not found)
@@ -151,14 +151,14 @@ tar -xzf MadLoop5_resources.tar.gz
 fi
 keeplog=false
 if [ "$keeplog" = true ] ; then
-    k=GridRun_34319214_app.log
+    k=GridRun_42324019_app.log
 else
     k=/dev/null
 fi
 script=ajob1                         
 
 grid_directory=
-j=G3.14
+j=G4.14
      if [[ ! -e $j ]]; then
           mkdir $j
           if [[ -e $grid_directory/ftn26 ]];then
@@ -181,7 +181,7 @@ j=G3.14
      fi
      # create the input file
          echo "    500       13       1" >& input_sg.txt
-         echo "    -8593526210.25494" >> input_sg.txt
+         echo "    -16350555.918901242" >> input_sg.txt
      if [[ ! -e ftn25 ]]; then
          echo "2" >> input_sg.txt   # grid refinement
          echo "1" >> input_sg.txt   # suppress amplitude
@@ -191,7 +191,7 @@ j=G3.14
          echo "1" >> input_sg.txt
      fi
      echo "0" >> input_sg.txt
-     echo "3.14" >> input_sg.txt
+     echo "4.14" >> input_sg.txt
 
      # run the executable. The loop is design to avoid
      # filesystem problem (executable not found)

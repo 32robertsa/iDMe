@@ -27,6 +27,6 @@
 # Number of events and rnd seed                                      *
 #*********************************************************************
   10	=  gevents  ! Number of unweighted events requested 
-  34319214	=  gseed    ! rnd seed
+  42324019	=  gseed    ! rnd seed
   1	=  ngran    ! Granularity (minimum # events per channel)
 #*********************************************************************

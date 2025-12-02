@@ -6,8 +6,8 @@ NNPDF31_nnlo_as_0118_nf_4_mc_hessian PDF set, member #0, version 1; LHAPDF ID = 
  Old value of alpha_s from param_card:   0.11799999999999999     
  New value of alpha_s from PDF lhapdf :  0.11266013434007299     
  using LHAPDF
- Define smin to   10000.204401044486     
- Define smin to   10000.204401044486     
+ Define smin to   6400.0000000000000     
+ Define smin to   6400.0000000000000     
  Warning: pt or E min of a jet should in general be >0
  *****************************************************
  *               MadGraph/MadEvent                   *
@@ -25,11 +25,11 @@ NNPDF31_nnlo_as_0118_nf_4_mc_hessian PDF set, member #0, version 1; LHAPDF ID = 
   ---------------------------------
   
  mdl_cabi =   0.48799999999999999     
- mdl_Mchi =    55.000000000000000     
- mdl_dMchi =    10.000000000000000     
+ mdl_Mchi =    33.000000000000000     
+ mdl_dMchi =    6.0000000000000000     
  mdl_mZinput =    91.188000000000002     
  mdl_MWinput =    80.418999999999997     
- mdl_mZDinput =    150.00000000000000     
+ mdl_mZDinput =    90.000000000000000     
  mdl_MHSinput =    200.00000000000000     
  mdl_epsilon =    1.0000000000000000E-002
  mdl_kap =    1.0000000000000001E-009
@@ -69,13 +69,13 @@ NNPDF31_nnlo_as_0118_nf_4_mc_hessian PDF set, member #0, version 1; LHAPDF ID = 
  mdl_CKM22 =               (0.88327234509383379,0.0000000000000000)
  mdl_epsilon__exp__2 =    1.0000000000000000E-004
  mdl_eta =    1.1359969609849949E-002
- mdl_MChi1 =    50.000000000000000     
- mdl_MChi2 =    60.000000000000000     
+ mdl_MChi1 =    30.000000000000000     
+ mdl_MChi2 =    36.000000000000000     
  mdl_MH =    125.00000000000000     
  mdl_MHS =    200.00000000000000     
  mdl_MW =    80.418999999999997     
  mdl_MZ =    91.188000000000002     
- mdl_MZp =    150.00000000000000     
+ mdl_MZp =    90.000000000000000     
  mdl_aX =    7.8186082877247844E-003
  mdl_nb__2__exp__0_25 =    1.1892071150027210     
  mdl_sqrt__Gf =    3.4152452327761182E-003
@@ -83,11 +83,11 @@ NNPDF31_nnlo_as_0118_nf_4_mc_hessian PDF set, member #0, version 1; LHAPDF ID = 
  mdl_eta__exp__2 =    1.2904890953671441E-004
  mdl_chi =    1.1359236684941295E-002
  mdl_MW__exp__2 =    6467.2155609999991     
- mdl_mZDinput__exp__2 =    22500.000000000000     
+ mdl_mZDinput__exp__2 =    8100.0000000000000     
  mdl_mZinput__exp__2 =    8315.2513440000002     
- mdl_DZ =    2.7057803101320821     
+ mdl_DZ =   0.97636233914116299     
  mdl_sqrt__2 =    1.4142135623730951     
- mdl_MZ0 =    91.188766643361447     
+ mdl_MZ0 =    91.135450601014114     
  mdl_MH__exp__6 =    3814697265625.0000     
  mdl_MT__exp__6 =    28040407622150.848     
  mdl_MH__exp__4 =    244140625.00000000     
@@ -102,9 +102,9 @@ NNPDF31_nnlo_as_0118_nf_4_mc_hessian PDF set, member #0, version 1; LHAPDF ID = 
  mdl_ym =    6.0711278388812817E-004
  mdl_yt =    1.0011330012459863     
  mdl_ytau =    1.0206617000654717E-002
- mdl_cw =   0.88189590626352121     
- mdl_sqrt__DZ =    1.6449256244985917     
- mdl_MX =    149.99873891808767     
+ mdl_cw =   0.88241183282310043     
+ mdl_sqrt__DZ =   0.98811048933869894     
+ mdl_MX =    90.051894689470885     
  mdl_MH__exp__12 =    1.4551915228366852E+025
  mdl_MW__exp__12 =    7.3165108479606225E+022
  mdl_MH__exp__10 =    9.3132257461547853E+020
@@ -113,31 +113,31 @@ NNPDF31_nnlo_as_0118_nf_4_mc_hessian PDF set, member #0, version 1; LHAPDF ID = 
  mdl_MW__exp__8 =    1749320345470752.0     
  mdl_MW__exp__6 =    270490496098.48813     
  mdl_MW__exp__4 =    41824877.112440534     
- mdl_cw__exp__2 =   0.77774038948435742     
- mdl_sw =   0.47144417539687833     
+ mdl_cw__exp__2 =   0.77865064270622331     
+ mdl_sw =   0.47047779681274726     
  mdl_chi__exp__2 =    1.2903225806451608E-004
- mdl_xi =    478.50879800734594     
- mdl_sw__exp__2 =   0.22225961051564258     
- mdl_ta =    3.1395887456657071E-003
+ mdl_xi =    287.27324107487351     
+ mdl_sw__exp__2 =   0.22134935729377669     
+ mdl_ta =  -0.21583371811671759     
  mdl_MHinput__exp__2 =    15625.000000000000     
  mdl_MHSinput__exp__2 =    40000.000000000000     
  mdl_kap__exp__2 =    1.0000000000000001E-018
  mdl_v__exp__2 =    60623.529110035888     
- mdl_xi__exp__2 =    228970.66977043499     
+ mdl_xi__exp__2 =    82525.915037662387     
  mdl_th =    0.0000000000000000     
  mdl_lam =   0.12886910601690266     
- mdl_rho =    8.7347431966076333E-002
- mdl_ta__exp__2 =    9.8570174919107678E-006
- mdl_ca =   0.99999507152768896     
+ mdl_rho =   0.24234811562977027     
+ mdl_ta__exp__2 =    4.6584193876086706E-002
+ mdl_ca =   0.97749133047242920     
  mdl_th__exp__2 =    0.0000000000000000     
  mdl_ch =    1.0000000000000000     
  mdl_muH2 =    20000.000030311763     
- mdl_muSM2 =    7812.5001144853341     
- mdl_sa =    3.1395732722895057E-003
+ mdl_muSM2 =    7812.5000412629570     
+ mdl_sa =  -0.21097558828272150     
  mdl_sh =    0.0000000000000000     
  mdl_complexi =                (0.0000000000000000,1.0000000000000000)
- mdl_ca__exp__2 =   0.99999014307966771     
- mdl_sa__exp__2 =    9.8569203320746355E-006
+ mdl_ca__exp__2 =   0.95548930114875974     
+ mdl_sa__exp__2 =    4.4510698851240413E-002
  mdl_ch__exp__3 =    1.0000000000000000     
  mdl_sh__exp__3 =    0.0000000000000000     
  mdl_ch__exp__4 =    1.0000000000000000     
@@ -154,9 +154,9 @@ NNPDF31_nnlo_as_0118_nf_4_mc_hessian PDF set, member #0, version 1; LHAPDF ID = 
  mdl_ee =   0.31345100004952897     
  mdl_ee__exp__2 =    9.8251529432049817E-002
  mdl_AH =    3.2749804484624101E-005
- mdl_g1 =   0.35542856908995107     
- mdl_gw =   0.66487405382759235     
- mdl_gw__exp__2 =   0.44205750745313616     
+ mdl_g1 =   0.35522075791606861     
+ mdl_gw =   0.66623972942613530     
+ mdl_gw__exp__2 =   0.44387537706580998     
   Internal Params evaluated point by point
   ----------------------------------------
   
@@ -168,14 +168,14 @@ NNPDF31_nnlo_as_0118_nf_4_mc_hessian PDF set, member #0, version 1; LHAPDF ID = 
   ---------------------------------
   
          GC_6 =   0.00000E+00   0.12177E+01
-        GC_36 =  -0.00000E+00  -0.29317E+00
-        GC_38 =  -0.00000E+00  -0.92044E-03
-        GC_39 =   0.00000E+00   0.92044E-03
-        GC_45 =   0.00000E+00   0.83776E-01
-        GC_47 =   0.00000E+00   0.76062E-03
-        GC_48 =  -0.00000E+00  -0.22819E-02
-        GC_14 =  -0.31347E+00   0.00000E+00
-        GC_17 =  -0.98417E-03   0.00000E+00
+        GC_36 =  -0.00000E+00  -0.28733E+00
+        GC_38 =   0.00000E+00   0.62016E-01
+        GC_39 =  -0.00000E+00  -0.62016E-01
+        GC_45 =   0.00000E+00   0.82107E-01
+        GC_47 =   0.00000E+00  -0.52191E-02
+        GC_48 =  -0.00000E+00   0.15657E-01
+        GC_14 =  -0.30642E+00   0.00000E+00
+        GC_17 =   0.66135E-01   0.00000E+00
 
  Collider parameters:
  --------------------
@@ -216,7 +216,7 @@ Thanks for using LHAPDF 6.4.0. Please make sure to cite the paper:
  Using Uniform Grid!          28
  Using uniform alpha   1.0000000000000000     
  Grid defined OK
- Masses: 0.000E+00 0.000E+00 0.000E+00 0.500E+02 0.511E-03 0.511E-03 0.500E+02
+ Masses: 0.000E+00 0.000E+00 0.000E+00 0.300E+02 0.511E-03 0.511E-03 0.300E+02
  Set CM energy to      13000.00
  Mapping Graph           4  to config           4
  Determine nb_t

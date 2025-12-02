@@ -2,10 +2,17 @@ from __future__ import with_statement
 import coffea
 from coffea.nanoevents import NanoEventsFactory, NanoAODSchema, BaseSchema
 from coffea import processor
+
+# from coffea.dataset_tools import (
+#    apply_to_fileset,
+#    max_chunks,
+#    preprocess,
+# )
+
 import uproot
 import awkward as ak
 import vector
-vector.register_awkward()
+#vector.register_awkward()
 import numba as nb
 import awkward.numba
 import numpy as np

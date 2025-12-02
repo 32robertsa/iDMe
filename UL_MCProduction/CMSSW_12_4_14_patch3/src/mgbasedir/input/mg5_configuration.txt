@@ -60,14 +60,14 @@
 #!  Defines the path to the pythia8 installation directory (i.e. the
 #!  on containing the lib, bin and include directories) .
 #!  If using a relative path, that starts from the mg5 directory
-pythia8_path = /uscms_data/d3/reshmar/GENmay/genproductions/bin/MadGraph5_aMCatNLO/iDMe_Mchi-55p0_dMchi-10p0_mZDinput-150p0_ctau-0_1jet_icckw1_drjj0_xptj80_xqcut20/iDMe_Mchi-55p0_dMchi-10p0_mZDinput-150p0_ctau-0_1jet_icckw1_drjj0_xptj80_xqcut20_gridpack/work/MG5_aMC_v2_9_18/None #  
+pythia8_path = /uscms_data/d3/reshmar/GENmay/genproductions/bin/MadGraph5_aMCatNLO/iDMe_Mchi-33p0_dMchi-6p0_mZDinput-90p0_ctau-0_1jet_icckw1_drjj0_xptj80_xqcut20/iDMe_Mchi-33p0_dMchi-6p0_mZDinput-90p0_ctau-0_1jet_icckw1_drjj0_xptj80_xqcut20_gridpack/work/MG5_aMC_v2_9_18/None #  
 
 #! MG5aMC_PY8_interface path
 #!  Defines the path of the C++ driver file that is used by MG5_aMC to
 #!  steer the Pythia8 shower.
 #!  Can be installed directly from within MG5_aMC with the following command:
 #!     MG5_aMC> install mg5amc_py8_interface
-mg5amc_py8_interface_path = /uscms_data/d3/reshmar/GENmay/genproductions/bin/MadGraph5_aMCatNLO/iDMe_Mchi-55p0_dMchi-10p0_mZDinput-150p0_ctau-0_1jet_icckw1_drjj0_xptj80_xqcut20/iDMe_Mchi-55p0_dMchi-10p0_mZDinput-150p0_ctau-0_1jet_icckw1_drjj0_xptj80_xqcut20_gridpack/work/MG5_aMC_v2_9_18/None #  
+mg5amc_py8_interface_path = /uscms_data/d3/reshmar/GENmay/genproductions/bin/MadGraph5_aMCatNLO/iDMe_Mchi-33p0_dMchi-6p0_mZDinput-90p0_ctau-0_1jet_icckw1_drjj0_xptj80_xqcut20/iDMe_Mchi-33p0_dMchi-6p0_mZDinput-90p0_ctau-0_1jet_icckw1_drjj0_xptj80_xqcut20_gridpack/work/MG5_aMC_v2_9_18/None #  
 
 #! Herwig++/Herwig7 paths
 #!  specify here the paths also to HepMC ant ThePEG
@@ -76,9 +76,9 @@ mg5amc_py8_interface_path = /uscms_data/d3/reshmar/GENmay/genproductions/bin/Mad
 #!  WARNING: if Herwig7 has been installed with the bootstrap script,
 #!  then please set thepeg_path and hepmc_path to the same value as
 #!  hwpp_path
-hwpp_path = /uscms_data/d3/reshmar/GENmay/genproductions/bin/MadGraph5_aMCatNLO/iDMe_Mchi-55p0_dMchi-10p0_mZDinput-150p0_ctau-0_1jet_icckw1_drjj0_xptj80_xqcut20/iDMe_Mchi-55p0_dMchi-10p0_mZDinput-150p0_ctau-0_1jet_icckw1_drjj0_xptj80_xqcut20_gridpack/work/MG5_aMC_v2_9_18/None #  
-thepeg_path = /uscms_data/d3/reshmar/GENmay/genproductions/bin/MadGraph5_aMCatNLO/iDMe_Mchi-55p0_dMchi-10p0_mZDinput-150p0_ctau-0_1jet_icckw1_drjj0_xptj80_xqcut20/iDMe_Mchi-55p0_dMchi-10p0_mZDinput-150p0_ctau-0_1jet_icckw1_drjj0_xptj80_xqcut20_gridpack/work/MG5_aMC_v2_9_18/None #  
-hepmc_path = /uscms_data/d3/reshmar/GENmay/genproductions/bin/MadGraph5_aMCatNLO/iDMe_Mchi-55p0_dMchi-10p0_mZDinput-150p0_ctau-0_1jet_icckw1_drjj0_xptj80_xqcut20/iDMe_Mchi-55p0_dMchi-10p0_mZDinput-150p0_ctau-0_1jet_icckw1_drjj0_xptj80_xqcut20_gridpack/work/MG5_aMC_v2_9_18/None #  
+hwpp_path = /uscms_data/d3/reshmar/GENmay/genproductions/bin/MadGraph5_aMCatNLO/iDMe_Mchi-33p0_dMchi-6p0_mZDinput-90p0_ctau-0_1jet_icckw1_drjj0_xptj80_xqcut20/iDMe_Mchi-33p0_dMchi-6p0_mZDinput-90p0_ctau-0_1jet_icckw1_drjj0_xptj80_xqcut20_gridpack/work/MG5_aMC_v2_9_18/None #  
+thepeg_path = /uscms_data/d3/reshmar/GENmay/genproductions/bin/MadGraph5_aMCatNLO/iDMe_Mchi-33p0_dMchi-6p0_mZDinput-90p0_ctau-0_1jet_icckw1_drjj0_xptj80_xqcut20/iDMe_Mchi-33p0_dMchi-6p0_mZDinput-90p0_ctau-0_1jet_icckw1_drjj0_xptj80_xqcut20_gridpack/work/MG5_aMC_v2_9_18/None #  
+hepmc_path = /uscms_data/d3/reshmar/GENmay/genproductions/bin/MadGraph5_aMCatNLO/iDMe_Mchi-33p0_dMchi-6p0_mZDinput-90p0_ctau-0_1jet_icckw1_drjj0_xptj80_xqcut20/iDMe_Mchi-33p0_dMchi-6p0_mZDinput-90p0_ctau-0_1jet_icckw1_drjj0_xptj80_xqcut20_gridpack/work/MG5_aMC_v2_9_18/None #  
 
 #! Control when MG5 checks if he is up-to-date.
 #! Enter the number of day between two check (0 means never)
@@ -149,7 +149,7 @@ run_mode = 2 #
 
 #! MadAnalysis5 python-based Package [For advanced analysis]
 #!  relative path start from main directory
-madanalysis5_path = /uscms_data/d3/reshmar/GENmay/genproductions/bin/MadGraph5_aMCatNLO/iDMe_Mchi-55p0_dMchi-10p0_mZDinput-150p0_ctau-0_1jet_icckw1_drjj0_xptj80_xqcut20/iDMe_Mchi-55p0_dMchi-10p0_mZDinput-150p0_ctau-0_1jet_icckw1_drjj0_xptj80_xqcut20_gridpack/work/MG5_aMC_v2_9_18/None #  
+madanalysis5_path = /uscms_data/d3/reshmar/GENmay/genproductions/bin/MadGraph5_aMCatNLO/iDMe_Mchi-33p0_dMchi-6p0_mZDinput-90p0_ctau-0_1jet_icckw1_drjj0_xptj80_xqcut20/iDMe_Mchi-33p0_dMchi-6p0_mZDinput-90p0_ctau-0_1jet_icckw1_drjj0_xptj80_xqcut20_gridpack/work/MG5_aMC_v2_9_18/None #  
 
 #! ExRootAnalysis Package
 #!  relative path start from main directory
@@ -227,7 +227,7 @@ lhapdf = /cvmfs/cms.cern.ch/slc7_amd64_gcc11/external/lhapdf/6.4.0-e019996650b81
 auto_convert_model = True 
 
 # MG5 MAIN DIRECTORY
-mg5_path = /uscms_data/d3/reshmar/GENmay/genproductions/bin/MadGraph5_aMCatNLO/iDMe_Mchi-55p0_dMchi-10p0_mZDinput-150p0_ctau-0_1jet_icckw1_drjj0_xptj80_xqcut20/iDMe_Mchi-55p0_dMchi-10p0_mZDinput-150p0_ctau-0_1jet_icckw1_drjj0_xptj80_xqcut20_gridpack/work/MG5_aMC_v2_9_18
+mg5_path = /uscms_data/d3/reshmar/GENmay/genproductions/bin/MadGraph5_aMCatNLO/iDMe_Mchi-33p0_dMchi-6p0_mZDinput-90p0_ctau-0_1jet_icckw1_drjj0_xptj80_xqcut20/iDMe_Mchi-33p0_dMchi-6p0_mZDinput-90p0_ctau-0_1jet_icckw1_drjj0_xptj80_xqcut20_gridpack/work/MG5_aMC_v2_9_18
 cluster_local_path = /cvmfs/cms.cern.ch/slc7_amd64_gcc11/external/lhapdf/6.4.0-e019996650b819a0fc60be6587a245af/share/LHAPDF
 lhapdf_py3 = /cvmfs/cms.cern.ch/slc7_amd64_gcc11/external/lhapdf/6.4.0-e019996650b819a0fc60be6587a245af/share/LHAPDF/../../bin/lhapdf-config
 cluster_queue = local

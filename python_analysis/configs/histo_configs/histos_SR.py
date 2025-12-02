@@ -182,11 +182,13 @@ def fillHistos(events,h,samp,cut,info,sum_wgt=1):
 
     #
 
-    h.fill("jet_phi", jet_phi =ak.count(events.PFJet.phi,axis=1), weight = wgt)
+    h.fill("jet_phi", jet_phi =ak.count(events.PFJet.phi,axis=1),weight = wgt)
     h.fill("GenEle_pt",GenEle_pt = events.GenEle.pt,weight=wgt)
     h.fill("LptElectron_pt",LptElectron_pt = ak.flatten(events.LptElectron.pt))
     
     h.fill("PFMET",met=events.PFMET.pt,weight=wgt)
+
+    #h.fill("PFMET",met=events.PFMET.pt)
     h.fill("jetMETdPhi",abs_dphi=np.abs(events.PFJet.METdPhi[:,0]),weight=wgt)
     h.fill("minJetMETdPhi",abs_dphi=ak.min(np.abs(events.PFJet.METdPhi),axis=1),weight=wgt)
     h.fill("nJets",nJets=ak.count(events.PFJet.pt,axis=1),weight=wgt)

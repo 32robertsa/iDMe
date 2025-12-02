@@ -14,6 +14,7 @@ from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
 from matplotlib.colors import Normalize, LogNorm
 import utils
+import boost_histogram as bh
 
 from mplhep.styles.cms import cmap_petroff
 
@@ -466,7 +467,7 @@ def plot_signal_1D(sig_histo, m1, delta, ctau, plot_dict, style_dict):
     fig = style_dict['fig']
     ax = style_dict['ax']
     
-    hep.cms.label('', data=False, year=plot_dict['year'], com='13.6')
+    hep.cms.label('Preliminary', data=False, year=plot_dict['year'], com='13.6')
     
     # get signal point info
     si = utils.get_signal_point_dict(sig_histo)
@@ -514,7 +515,7 @@ def plot_signal_1D(sig_histo, m1, delta, ctau, plot_dict, style_dict):
         ax.set_yscale('log')
 
     # Plot
-    print ("I am issuing the type:", type(histo))
+   
     hep.histplot(histo, yerr=style_dict['doYerr'], density=style_dict['doDensity'], ax=ax, histtype='step', flow=style_dict['flow'], label = label)
 
     plt.legend()
@@ -525,6 +526,248 @@ def plot_signal_1D(sig_histo, m1, delta, ctau, plot_dict, style_dict):
         plt.savefig(f"{style_dict['outDir']}/{style_dict['outName']}")
         print(f"Saved: {style_dict['outDir']}/{style_dict['outName']}")
     
+
+#Used for Electron Reconstruction Efficiency when projecting pT
+def plot_signal_1D_match(sig_histo, m1, delta, ctau, plot_dict, style_dict, match_type='R', passID='1'):
+    """
+    Example:
+
+    plot_dict = {
+    'variable': 'sel_vtx_vxy10',
+    'cut': 'cut7',
+    'year': 2018
+    }
+    
+    style_dict = {
+        'fig': fig,
+        'ax': ax,
+        'rebin': 1j,
+        'xlim': None,     # if None, the default will show up; otherwise give as a list, i.e. [0, 10]
+        'doLogy': True, 
+        'doLogx': False,
+        'doDensity': False,
+        'doYerr': False, 
+        'xlabel': r"$L_{xy}$ [cm]",   # if None, the default will show up; otherwise give as a string, i.e. 'Electron dxy'
+        'ylabel': 'Events/0.1cm',   # if None, the default will show up; otherwise give as a string, i.e. 'Efficiency'
+        'label': None,    # if None, the default will show up; otherwise give as a string, i.e. 'Highest ctau signal samples'
+        'flow': None,     # overflow
+        'doSave': False,
+        'outDir': './plots/',
+        'outName': f'background_cut7_Lxy_max10.png'
+    }
+
+    """
+
+    fig = style_dict['fig']
+    ax = style_dict['ax']
+    
+    hep.cms.label('Preliminary', data=False, year=plot_dict['year'], com='13.6')
+    
+    # get signal point info
+    si = utils.get_signal_point_dict(sig_histo)
+    samp_df = si[(si.m1 == m1) & (si.delta == delta) & (si.ctau == ctau)]
+    
+    samp = samp_df.name[0]
+
+    m1 = samp_df.m1[0]
+    dmchi = samp_df.dmchi[0]
+    ctau = samp_df.ctau[0]
+    label = rf"$(m_\chi, \Delta m_\chi) = ({m1:.0f}, {dmchi:.0f})$ GeV"
+
+    if style_dict['label'] != None:
+        label = style_dict['label']
+    
+    # get histogram from coffea output
+    histo = sig_histo[plot_dict['variable']][{"samp":samp, "cut": plot_dict['cut']}]
+
+    # Project categorical axes to pt
+    histo_sel = histo
+    #PART for match "pT" or "vxy" plots
+    if "match_type" in histo.axes.name:
+        histo_sel = histo_sel[{"match_type": match_type}]
+    if "passID" in histo.axes.name:
+        histo_sel = histo_sel[{"passID": passID}]
+
+    # Project to numeric axis
+    histo_proj = histo_sel.project("pt")
+    # histo_proj = histo_sel.project("vxy")
+
+
+    # rebinning
+    # histo_proj = histo_proj[::style_dict['rebin']]
+    # rebin = style_dict.get('rebin', 1)
+    # if isinstance(rebin, (int, complex)):
+    #     histo_proj = histo_proj[::rebin]
+    # elif isinstance(rebin, (list, np.ndarray)):
+    #     histo_proj = bh.rebin(rebin)
+
+    # Apply x range
+    if style_dict.get('xlim') is not None:
+        xlim = style_dict['xlim']
+        xbin_range = np.where((histo_proj.axes.edges[0] > xlim[0]) & (histo_proj.axes.edges[0] < xlim[1]))[0]
+        histo_proj = histo_proj[int(xbin_range[0])-1:int(xbin_range[-1]+1)]
+
+
+    # if style_dict.get('xlim') is not None:
+    #      unequal_edges = histo_proj[]
+    #      hist_proj = bh.Histogram(bh.axis.Variable(unequal_edges))
+                          
+ 
+      
+    ax.set_xlabel(style_dict.get('xlabel', histo_proj.name))
+    if style_dict.get('ylabel') is not None:
+        ax.set_ylabel(style_dict['ylabel'])
+    else:
+        binwidth = histo_proj.axes.widths[0][0]
+        ylabel = f'Events/{binwidth:.3f}'
+        if style_dict.get('doDensity', False):
+            ylabel = f'A.U./{binwidth:.3f}'
+        ax.set_ylabel(ylabel)
+
+    # Log scales
+    if style_dict.get('doLogx', False):
+        ax.set_xscale('log')
+    if style_dict.get('doLogy', False):
+        ax.set_yscale('log')
+ 
+    count = histo_proj.values()
+    edges = histo_proj.axes[0].edges
+   
+    # edges_1 = histo_proj.axes.edges[1]
+    hep.histplot(histo_proj, yerr=style_dict['doYerr'], density=style_dict['doDensity'], ax=ax, histtype='step', flow=style_dict['flow'], label = label)
+    
+
+    plt.legend()
+    
+    if style_dict['doSave']:
+        os.makedirs(style_dict['outDir'], exist_ok=True)
+        plt.tight_layout()
+        plt.savefig(f"{style_dict['outDir']}/{style_dict['outName']}")
+        print(f"Saved: {style_dict['outDir']}/{style_dict['outName']}")
+    return count, edges
+
+#Used for Electron Reconstruction Efficiency when projecting Lxy
+def plot_signal_1D_lxy(sig_histo, m1, delta, ctau, plot_dict, style_dict, match_type='R', passID='1'):
+    """
+    Example:
+
+    plot_dict = {
+    'variable': 'sel_vtx_vxy10',
+    'cut': 'cut7',
+    'year': 2018
+    }
+    
+    style_dict = {
+        'fig': fig,
+        'ax': ax,
+        'rebin': 1j,
+        'xlim': None,     # if None, the default will show up; otherwise give as a list, i.e. [0, 10]
+        'doLogy': True, 
+        'doLogx': False,
+        'doDensity': False,
+        'doYerr': False, 
+        'xlabel': r"$L_{xy}$ [cm]",   # if None, the default will show up; otherwise give as a string, i.e. 'Electron dxy'
+        'ylabel': 'Events/0.1cm',   # if None, the default will show up; otherwise give as a string, i.e. 'Efficiency'
+        'label': None,    # if None, the default will show up; otherwise give as a string, i.e. 'Highest ctau signal samples'
+        'flow': None,     # overflow
+        'doSave': False,
+        'outDir': './plots/',
+        'outName': f'background_cut7_Lxy_max10.png'
+    }
+
+    """
+
+    fig = style_dict['fig']
+    ax = style_dict['ax']
+    
+    hep.cms.label('Preliminary', data=False, year=plot_dict['year'], com='13.6')
+    
+    # get signal point info
+    si = utils.get_signal_point_dict(sig_histo)
+    samp_df = si[(si.m1 == m1) & (si.delta == delta) & (si.ctau == ctau)]
+    
+    samp = samp_df.name[0]
+
+    m1 = samp_df.m1[0]
+    dmchi = samp_df.dmchi[0]
+    ctau = samp_df.ctau[0]
+    label = rf"$(m_\chi, \Delta m_\chi) = ({m1:.0f}, {dmchi:.0f})$ GeV"
+
+    if style_dict['label'] != None:
+        label = style_dict['label']
+    
+    # get histogram from coffea output
+    histo = sig_histo[plot_dict['variable']][{"samp":samp, "cut": plot_dict['cut']}]
+
+    # Project categorical axes to pt
+    histo_sel = histo
+    #PART for match "pT" or "vxy" plots
+    if "match_type" in histo.axes.name:
+        histo_sel = histo_sel[{"match_type": match_type}]
+    if "passID" in histo.axes.name:
+        histo_sel = histo_sel[{"passID": passID}]
+
+    # Project to numeric axis
+    histo_proj = histo_sel.project("vxy")
+    # histo_proj = histo_sel.project("vxy")
+
+
+    # rebinning
+    # histo_proj = histo_proj[::style_dict['rebin']]
+    # rebin = style_dict.get('rebin', 1)
+    # if isinstance(rebin, (int, complex)):
+    #     histo_proj = histo_proj[::rebin]
+    # elif isinstance(rebin, (list, np.ndarray)):
+    #     histo_proj = bh.rebin(rebin)
+
+    # Apply x range
+    if style_dict.get('xlim') is not None:
+        xlim = style_dict['xlim']
+        xbin_range = np.where((histo_proj.axes.edges[0] > xlim[0]) & (histo_proj.axes.edges[0] < xlim[1]))[0]
+        histo_proj = histo_proj[int(xbin_range[0])-1:int(xbin_range[-1]+1)]
+
+
+    # if style_dict.get('xlim') is not None:
+    #      unequal_edges = histo_proj[]
+    #      hist_proj = bh.Histogram(bh.axis.Variable(unequal_edges))
+                          
+ 
+      
+    ax.set_xlabel(style_dict.get('xlabel', histo_proj.name))
+    if style_dict.get('ylabel') is not None:
+        ax.set_ylabel(style_dict['ylabel'])
+    else:
+        binwidth = histo_proj.axes.widths[0][0]
+        ylabel = f'Events/{binwidth:.3f}'
+        if style_dict.get('doDensity', False):
+            ylabel = f'A.U./{binwidth:.3f}'
+        ax.set_ylabel(ylabel)
+
+    # Log scales
+    if style_dict.get('doLogx', False):
+        ax.set_xscale('log')
+    if style_dict.get('doLogy', False):
+        ax.set_yscale('log')
+ 
+    count = histo_proj.values()
+    edges = histo_proj.axes[0].edges
+   
+    # edges_1 = histo_proj.axes.edges[1]
+    hep.histplot(histo_proj, yerr=style_dict['doYerr'], density=style_dict['doDensity'], ax=ax, histtype='step', flow=style_dict['flow'], label = label)
+    
+
+    plt.legend()
+    
+    if style_dict['doSave']:
+        os.makedirs(style_dict['outDir'], exist_ok=True)
+        plt.tight_layout()
+        plt.savefig(f"{style_dict['outDir']}/{style_dict['outName']}")
+        print(f"Saved: {style_dict['outDir']}/{style_dict['outName']}")
+    return count, edges
+    
+
+
+
 
 def plot_signal_2D(sig_histo, m1, delta, ctau, plot_dict, style_dict):
     """
@@ -757,7 +1000,7 @@ def plot_bkg_1d(bkg_histos, plot_dict, style_dict, isLegacy = False, processes =
 
     # CMS styling
     #hep.cms.label(r"$\mathrm{Private Work}$", data=False, year=plot_dict['year'])
-    hep.cms.label('', data=False, year=plot_dict['year'], com='13.6')
+    hep.cms.label('Preliminary', data=False, year=plot_dict['year'], com='13.6')
     
     if isLegacy:
         return plot_bkg_1d_legacy(ax, bkg_histos, plot_dict, style_dict, processes, isLegacy)

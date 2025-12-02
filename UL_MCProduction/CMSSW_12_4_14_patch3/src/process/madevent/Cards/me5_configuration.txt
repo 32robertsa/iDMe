@@ -223,10 +223,10 @@
 # amcfast = amcfast-config
 
 
-mg5_path = /uscms_data/d3/reshmar/GENmay/genproductions/bin/MadGraph5_aMCatNLO/iDMe_Mchi-55p0_dMchi-10p0_mZDinput-150p0_ctau-0_1jet_icckw1_drjj0_xptj80_xqcut20/iDMe_Mchi-55p0_dMchi-10p0_mZDinput-150p0_ctau-0_1jet_icckw1_drjj0_xptj80_xqcut20_gridpack/work/MG5_aMC_v2_9_18 
+mg5_path = /uscms_data/d3/reshmar/GENmay/genproductions/bin/MadGraph5_aMCatNLO/iDMe_Mchi-33p0_dMchi-6p0_mZDinput-90p0_ctau-0_1jet_icckw1_drjj0_xptj80_xqcut20/iDMe_Mchi-33p0_dMchi-6p0_mZDinput-90p0_ctau-0_1jet_icckw1_drjj0_xptj80_xqcut20_gridpack/work/MG5_aMC_v2_9_18 
 
 # MG5 MAIN DIRECTORY
-mg5_path = /uscms_data/d3/reshmar/GENmay/genproductions/bin/MadGraph5_aMCatNLO/iDMe_Mchi-55p0_dMchi-10p0_mZDinput-150p0_ctau-0_1jet_icckw1_drjj0_xptj80_xqcut20/iDMe_Mchi-55p0_dMchi-10p0_mZDinput-150p0_ctau-0_1jet_icckw1_drjj0_xptj80_xqcut20_gridpack/work/MG5_aMC_v2_9_18
+mg5_path = /uscms_data/d3/reshmar/GENmay/genproductions/bin/MadGraph5_aMCatNLO/iDMe_Mchi-33p0_dMchi-6p0_mZDinput-90p0_ctau-0_1jet_icckw1_drjj0_xptj80_xqcut20/iDMe_Mchi-33p0_dMchi-6p0_mZDinput-90p0_ctau-0_1jet_icckw1_drjj0_xptj80_xqcut20_gridpack/work/MG5_aMC_v2_9_18
 mg5_path = ../../mgbasedir
 cluster_temp_path = None
 run_mode = 0

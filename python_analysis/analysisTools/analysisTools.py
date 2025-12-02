@@ -3,14 +3,22 @@ import coffea
 from coffea.nanoevents import NanoEventsFactory, NanoAODSchema, BaseSchema
 from mySchema import MySchema
 from coffea import processor
+
+# from coffea.dataset_tools import (
+#    apply_to_fileset,
+#    max_chunks,
+#    preprocess,
+# )
+# import dask
+
 import uproot
 import awkward as ak
 
 import vector
-vector.register_awkward()
+# vector.register_awkward()
 
-#import vector
-#vector.register_awkward()
+import vector
+# vector.register_awkward()
 import numpy as np
 import matplotlib.pyplot as plt
 import json
@@ -188,6 +196,7 @@ class Analyzer:
             print("Done Preprocessing")
             to_compute = apply_to_fileset(proc,dataset_runnable,schemaclass=MySchema)
             (accumulator,) = dask.compute(to_compute)
+            
         
         return accumulator
 
@@ -237,7 +246,8 @@ class iDMeProcessor(processor.ProcessorABC):
             info[f"extras_{k}"] = v
         
         
-        histObj = self.histoMod.make_histograms(info)
+        #histObj = self.histoMod.make_histograms(info)
+        histObj = self.histoMod.make_histograms()  #Commented when using a different histo
         cutDesc = defaultdict(str)
         cutflow = defaultdict(float)               # efficiency
         cutflow_counts = defaultdict(float)        # xsec-weighted event counts
