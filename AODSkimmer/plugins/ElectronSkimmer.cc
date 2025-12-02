@@ -19,6 +19,8 @@
 #include <vector>
 #include <boost/format.hpp>
 #include <boost/any.hpp>
+#include "TH1.h"
+#include "TCanvas.h"
 
 // user include files
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
@@ -132,6 +134,7 @@ class ElectronSkimmer : public edm::one::EDAnalyzer<edm::one::WatchRuns, edm::on
       TTree *outT;
       NtupleContainerV2 nt;
       edm::Service<TFileService> fs;
+      
 
       std::mt19937 m_random_generator;
 
@@ -317,6 +320,9 @@ ElectronSkimmer::ElectronSkimmer(const edm::ParameterSet& ps)
 {
    usesResource("TFileService");
    m_random_generator = std::mt19937(37428479);
+   
+   
+ 
 
 }
 
@@ -407,7 +413,8 @@ void ElectronSkimmer::beginJob()
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
-void ElectronSkimmer::endJob() {}
+void ElectronSkimmer::endJob() 
+{}
 
 void ElectronSkimmer::endRun(edm::Run const& iRun, edm::EventSetup const& iSetup) {}
 
@@ -1185,6 +1192,7 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                   auto diele_state = diele_part->currentState();
                   auto daughters = vertexFitTree->daughterParticles();
                   nt.vtx_refit_m_.push_back(diele_state.mass());
+                  
                   nt.vtx_refit_pt_.push_back(diele_state.globalMomentum().transverse());
                   nt.vtx_refit_eta_.push_back(diele_state.globalMomentum().eta());
                   nt.vtx_refit_phi_.push_back(diele_state.globalMomentum().phi());
@@ -1194,6 +1202,7 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                   nt.vtx_refit_pt_.push_back(-999.0);
                   nt.vtx_refit_eta_.push_back(-999.0);
                   nt.vtx_refit_phi_.push_back(-999.0);
+                  
                }
             }
             catch (std::exception ex) {
@@ -1259,6 +1268,7 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       math::XYZTLorentzVector gen_ele_p4, gen_pos_p4;
       for (const auto & genParticle : *genParticleHandle_) {
          int absID = abs(genParticle.pdgId());
+         std::cout<<"ID:"<<absID<<std::endl;
          // veto anything that isn't a lepton or a hard process particle
          if ((!genParticle.isHardProcess()) && (genParticle.status() != 1 || (absID < 11) || (absID > 16))) {
             continue;
@@ -1286,7 +1296,9 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          nt.genMass_.push_back(genParticle.mass());
 
          if (isSignal) {
-            if ((abs(genParticle.pdgId()) == 11) && (motherID == 1000023)) {
+            if ((abs(genParticle.pdgId()) == 11) && (motherID == 1000023))
+            {
+            //if ((abs(genParticle.pdgId()) == 11)) {
                // Recording basic info
                if (genParticle.pdgId() == 11) {
                   gen_ele_p4 = genParticle.p4();
