@@ -1268,7 +1268,7 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       math::XYZTLorentzVector gen_ele_p4, gen_pos_p4;
       for (const auto & genParticle : *genParticleHandle_) {
          int absID = abs(genParticle.pdgId());
-         std::cout<<"ID:"<<absID<<std::endl;
+         //std::cout<<"ID:"<<absID<<std::endl;
          // veto anything that isn't a lepton or a hard process particle
          if ((!genParticle.isHardProcess()) && (genParticle.status() != 1 || (absID < 11) || (absID > 16))) {
             continue;
