@@ -8,6 +8,7 @@ from Configuration.Eras.Era_Run2_2018_cff import Run2_2018
 from Configuration.Eras.Era_Run2_2017_cff import Run2_2017
 from Configuration.Eras.Era_Run2_2016_cff import Run2_2016
 from Configuration.Eras.Era_Run2_2016_HIPM_cff import Run2_2016_HIPM
+from Configuration.Eras.Era_Run3_2024_cff import Run3_2024
 from Configuration.ProcessModifiers.run2_miniAOD_UL_cff import run2_miniAOD_UL
 import json
 import sys
@@ -24,7 +25,7 @@ options.register('signal',
         True,
         VarParsing.VarParsing.multiplicity.singleton,
         VarParsing.VarParsing.varType.bool,
-        "Run on signal (1) or not (0")
+        "Run on signal (1) or not (0)")
 options.register('year',
         "2018",
         VarParsing.VarParsing.multiplicity.singleton,
@@ -92,6 +93,14 @@ elif options.year == '2018':
     globaltag = '106X_dataRun2_v37' if options.data else '106X_upgrade2018_realistic_v16_L1v1'
     era = Run2_2018
     recoEgammaTools_era = '2018-UL'
+    if options.data:
+        from iDMe.AODSkimmer.Data_miniAOD_UL18 import makeProcess
+    else:
+        from iDMe.AODSkimmer.MC_miniAOD_UL18 import makeProcess
+elif options.year == '2024':
+    globaltag = '' if options.data else '140X_mcRun3_2024_realistic_v26'
+    era = Run3_2024
+    recoEgammaTools_era = '2022-Prompt'
     if options.data:
         from iDMe.AODSkimmer.Data_miniAOD_UL18 import makeProcess
     else:
@@ -197,7 +206,7 @@ process.ntuples = ElectronSkimmer.clone(
     year = options.year,
     metFilters = cms.vstring(metFilters),
     triggerPaths = cms.vstring(triggerPaths),
-    effAreasConfigFile = cms.FileInPath(effAreaInputPath)
+    #effAreasConfigFile = cms.FileInPath(effAreaInputPath)
 )
 
 # load nanoAOD producer chain for low-pT electrons -- computes mini iso
@@ -223,10 +232,10 @@ process.slimmedElectronsWithUserDataMinimal = process.slimmedElectronsWithUserDa
     src = cms.InputTag("slimmedElectrons"),
     userFloats = cms.PSet(
         miniIsoChg = cms.InputTag("isoForEleRelative:miniIsoChg"),
-        miniIsoAll = cms.InputTag("isoForEleRelative:miniIsoAll"),
-        PFIsoChg = cms.InputTag("isoForEleRelative:PFIsoChg"),
-        PFIsoAll = cms.InputTag("isoForEleRelative:PFIsoAll"),
-        PFIsoAll04 = cms.InputTag("isoForEleRelative:PFIsoAll04"),
+        miniIsoAll = cms.InputTag("isoForEleRelative:miniIsoAll")
+        #FIsoChg = cms.InputTag("isoForEleRelative:PFIsoChg"),
+        #FIsoAll = cms.InputTag("isoForEleRelative:PFIsoAll"),
+        #FIsoAll04 = cms.InputTag("isoForEleRelative:PFIsoAll04"),
     ),
     userIntFromBools = cms.PSet(),
     userInts = cms.PSet(),

@@ -6,6 +6,7 @@ from Configuration.Eras.Era_Run2_2018_cff import Run2_2018
 from Configuration.Eras.Era_Run2_2017_cff import Run2_2017
 from Configuration.Eras.Era_Run2_2016_cff import Run2_2016
 from Configuration.Eras.Era_Run2_2016_HIPM_cff import Run2_2016_HIPM
+from Configuration.Eras.Era_Run3_2024_cff import Run3_2024
 from Configuration.ProcessModifiers.run2_miniAOD_UL_cff import run2_miniAOD_UL
 import json
 import sys
@@ -78,6 +79,10 @@ elif options.year == '2018':
     globaltag = '106X_dataRun2_v37' if options.data else '106X_upgrade2018_realistic_v16_L1v1'
     era = Run2_2018
     recoEgammaTools_era = '2018-UL'
+elif options.year == '2024':
+    globaltag = '' if options.data else '140X_mcRun3_2024_realistic_v26'
+    era = Run3_2024
+    recoEgammaTools_era = '2018-UL' #'2024' not available? just prompt 2022
 else:
     print("Invalid year given for run 2 : {0}".format(options.year))
     exit
@@ -111,6 +116,8 @@ elif options.year == '2017' or options.year == '2018':
         "Flag_eeBadScFilter",
         "Flag_ecalBadCalibFilter"
     ]
+elif options.year == '2024':
+    metFilters = []
 
 #######################
 ###### Triggers #######
@@ -233,14 +240,19 @@ process.TFileService = cms.Service("TFileService",
 ###### Main iDM analyzer #####
 ##############################
 # import ntuplizer
-from iDMe.AODSkimmer.ElectronSkimmer_cfi import ElectronSkimmer
+#from iDMe.AODSkimmer.ElectronSkimmer_cfi import ElectronSkimmer
+import sys
+sys.path.append("../../../../cfipython/el9_amd64_gcc12/iDMe/AODSkimmer/")
+sys.path.append("../../../cfipython/el9_amd64_gcc12/iDMe/AODSkimmer/")
+from ElectronSkimmer_cfi import ElectronSkimmer
+
 process.ntuples = ElectronSkimmer.clone(
     isData = cms.bool(options.data),
     isSignal = cms.bool(options.signal),
     year = options.year,
     metFilters = cms.vstring(metFilters),
     triggerPaths = cms.vstring(triggerPaths),
-    effAreasConfigFile = cms.FileInPath(effAreaInputPath)
+    #effAreasConfigFile = cms.FileInPath(effAreaInputPath)
 )
 
 # import EGamma postreco tools
@@ -267,10 +279,10 @@ process.slimmedElectronsWithUserDataMinimal = process.slimmedElectronsWithUserDa
     src = cms.InputTag("slimmedElectrons"),
     userFloats = cms.PSet(
         miniIsoChg = cms.InputTag("isoForEleRelative:miniIsoChg"),
-        miniIsoAll = cms.InputTag("isoForEleRelative:miniIsoAll"),
-        PFIsoChg = cms.InputTag("isoForEleRelative:PFIsoChg"),
-        PFIsoAll = cms.InputTag("isoForEleRelative:PFIsoAll"),
-        PFIsoAll04 = cms.InputTag("isoForEleRelative:PFIsoAll04"),
+        miniIsoAll = cms.InputTag("isoForEleRelative:miniIsoAll")
+        #PFIsoChg = cms.InputTag("isoForEleRelative:PFIsoChg"),
+        #PFIsoAll = cms.InputTag("isoForEleRelative:PFIsoAll"),
+        #PFIsoAll04 = cms.InputTag("isoForEleRelative:PFIsoAll04"),
     ),
     userIntFromBools = cms.PSet(),
     userInts = cms.PSet(),

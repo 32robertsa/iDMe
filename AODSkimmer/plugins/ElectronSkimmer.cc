@@ -520,6 +520,7 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
              else if ((year == "2017") && (bTag > 0.3040)) { nt.PFNbJetTagged_++; pt_btagEff_num = jet.pt(); } 
              else if ((year == "2016") && (bTag > 0.2489)) { nt.PFNbJetTagged_++; pt_btagEff_num = jet.pt(); } 
              else if ((year == "2016APV") && (bTag > 0.2598)) { nt.PFNbJetTagged_++; pt_btagEff_num = jet.pt(); }
+             else if ((year == "2024") && (bTag > 0.2598)) { nt.PFNbJetTagged_++; pt_btagEff_num = jet.pt(); }
              nt.PFJetEffNumPt_.push_back(pt_btagEff_num); 
            }
          } 
@@ -603,7 +604,8 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    for (const auto & ele : *recoNanoElectronHandle_) {
       // require pT > 5 & pass loose ID to consider GED electron
       //if (ele.pt() < 5 || !ele.electronID("cutBasedElectronID-Fall17-94X-V2-loose")) {
-      if (ele.pt() < 2 || !ele.electronID("mvaEleID-Fall17-noIso-V2-wp90")) {
+     //if (ele.pt() < 2 || !ele.electronID("mvaEleID-Fall17-noIso-V2-wp90")) {
+      if (ele.pt() < 2 || !ele.electronID("mvaEleID-RunIIIWinter22-noIso-V1-wp90")) {
          iele++;
          continue;
       }
@@ -622,20 +624,34 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       nt.recoElectronIsPF_.push_back(ele.isPF());
       nt.recoElectronGenMatched_.push_back(false);
       nt.recoElectronMatchType_.push_back(0);
-      nt.recoElectronID_cutVeto_.push_back(ele.electronID("cutBasedElectronID-Fall17-94X-V2-veto"));
-      nt.recoElectronID_cutLoose_.push_back(ele.electronID("cutBasedElectronID-Fall17-94X-V2-loose"));
-      nt.recoElectronID_cutMed_.push_back(ele.electronID("cutBasedElectronID-Fall17-94X-V2-medium"));
-      nt.recoElectronID_cutTight_.push_back(ele.electronID("cutBasedElectronID-Fall17-94X-V2-tight"));
-      nt.recoElectronID_cutVetoInt_.push_back(ele.userInt("cutBasedElectronID-Fall17-94X-V2-veto"));
-      nt.recoElectronID_cutLooseInt_.push_back(ele.userInt("cutBasedElectronID-Fall17-94X-V2-loose"));
-      nt.recoElectronID_cutMedInt_.push_back(ele.userInt("cutBasedElectronID-Fall17-94X-V2-medium"));
-      nt.recoElectronID_cutTightInt_.push_back(ele.userInt("cutBasedElectronID-Fall17-94X-V2-tight"));
-      nt.recoElectronID_mvaIso90_.push_back(ele.electronID("mvaEleID-Fall17-iso-V2-wp90"));
-      nt.recoElectronID_mvaIso80_.push_back(ele.electronID("mvaEleID-Fall17-iso-V2-wp80"));
-      nt.recoElectronID_mvaIsoLoose_.push_back(ele.electronID("mvaEleID-Fall17-iso-V2-wpLoose"));
-      nt.recoElectronID_mva90_.push_back(ele.electronID("mvaEleID-Fall17-noIso-V2-wp90"));
-      nt.recoElectronID_mva80_.push_back(ele.electronID("mvaEleID-Fall17-noIso-V2-wp80"));
-      nt.recoElectronID_mvaLoose_.push_back(ele.electronID("mvaEleID-Fall17-noIso-V2-wpLoose"));
+      nt.recoElectronID_cutVeto_.push_back(ele.electronID("cutBasedElectronID-RunIIIWinter22-V1-veto"));
+      nt.recoElectronID_cutLoose_.push_back(ele.electronID("cutBasedElectronID-RunIIIWinter22-V1-loose"));
+      nt.recoElectronID_cutMed_.push_back(ele.electronID("cutBasedElectronID-RunIIIWinter22-V1-medium"));
+      nt.recoElectronID_cutTight_.push_back(ele.electronID("cutBasedElectronID-RunIIIWinter22-V1-tight"));
+      nt.recoElectronID_cutVetoInt_.push_back(ele.userInt("cutBasedElectronID-RunIIIWinter22-V1-veto"));
+      nt.recoElectronID_cutLooseInt_.push_back(ele.userInt("cutBasedElectronID-RunIIIWinter22-V1-loose"));
+      nt.recoElectronID_cutMedInt_.push_back(ele.userInt("cutBasedElectronID-RunIIIWinter22-V1-medium"));
+      nt.recoElectronID_cutTightInt_.push_back(ele.userInt("cutBasedElectronID-RunIIIWinter22-V1-tight"));
+      //'cutBasedElectronID-Fall17-94X-V1-loose' 'cutBasedElectronID-Fall17-94X-V1-medium' 'cutBasedElectronID-Fall17-94X-V1-tight' 'cutBasedElectronID-Fall17-94X-V1-veto'
+      //'cutBasedElectronID-Fall17-94X-V2-loose' 'cutBasedElectronID-Fall17-94X-V2-medium' 'cutBasedElectronID-Fall17-94X-V2-tight' 'cutBasedElectronID-Fall17-94X-V2-veto'
+      //'cutBasedElectronID-RunIIIWinter22-V1-loose' 'cutBasedElectronID-RunIIIWinter22-V1-medium'
+      //'cutBasedElectronID-RunIIIWinter22-V1-tight' 'cutBasedElectronID-RunIIIWinter22-V1-veto'
+      //'cutBasedElectronID-Summer16-80X-V1-loose' 'cutBasedElectronID-Summer16-80X-V1-medium' 'cutBasedElectronID-Summer16-80X-V1-tight' 'cutBasedElectronID-Summer16-80X-V1-veto'
+      //'heepElectronID-HEEPV70' 'heepElectronID-HEEPV71'
+      //'mvaEleID-Fall17-iso-V1-wp80' 'mvaEleID-Fall17-iso-V1-wp90' 'mvaEleID-Fall17-iso-V1-wpLoose'
+      //'mvaEleID-Fall17-iso-V2-wp80' 'mvaEleID-Fall17-iso-V2-wp90' 'mvaEleID-Fall17-iso-V2-wpHZZ' 'mvaEleID-Fall17-iso-V2-wpLoose'
+      //'mvaEleID-Fall17-noIso-V1-wp80' 'mvaEleID-Fall17-noIso-V1-wp90' 'mvaEleID-Fall17-noIso-V1-wpLoose'
+      //'mvaEleID-Fall17-noIso-V2-wp80' 'mvaEleID-Fall17-noIso-V2-wp90' 'mvaEleID-Fall17-noIso-V2-wpLoose'
+      //'mvaEleID-RunIIIWinter22-iso-V1-wp80' 'mvaEleID-RunIIIWinter22-iso-V1-wp90'
+      //'mvaEleID-RunIIIWinter22-noIso-V1-wp80' 'mvaEleID-RunIIIWinter22-noIso-V1-wp90'
+      //'mvaEleID-Spring16-GeneralPurpose-V1-wp80' 'mvaEleID-Spring16-GeneralPurpose-V1-wp90' 'mvaEleID-Spring16-HZZ-V1-wpLoose' 'mvaEleID-Summer16UL-ID-ISO-HZZ'
+      //'mvaEleID-Summer17UL-ID-ISO-HZZ' 'mvaEleID-Summer18UL-ID-ISO-HZZ' 'mvaEleID-Winter22-HZZ-V1'
+      nt.recoElectronID_mvaIso90_.push_back(ele.electronID("mvaEleID-RunIIIWinter22-iso-V1-wp90"));
+      nt.recoElectronID_mvaIso80_.push_back(ele.electronID("mvaEleID-RunIIIWinter22-iso-V1-wp80"));
+      //nt.recoElectronID_mvaIsoLoose_.push_back(ele.electronID("mvaEleID-Fall17-iso-V2-wpLoose"));
+      nt.recoElectronID_mva90_.push_back(ele.electronID("mvaEleID-RunIIIWinter22-noIso-V1-wp90"));
+      nt.recoElectronID_mva80_.push_back(ele.electronID("mvaEleID-RunIIIWinter22-noIso-V1-wp80"));
+      //nt.recoElectronID_mvaLoose_.push_back(ele.electronID("mvaEleID-Fall17-noIso-V2-wpLoose"));
       nt.recoElectronAngularRes_.push_back(sqrt(track->phiError()*track->phiError() + track->etaError()*track->etaError()));
       nt.recoElectronE_.push_back(ele.energy());
       nt.recoElectronVxy_.push_back(ele.trackPositionAtVtx().rho());
@@ -713,7 +729,9 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    int ilpt_all = 0;
    for (auto & ele : *lowPtNanoElectronHandle_) {
       // basic cut (should be applied by default in miniAOD stage, but repeating here)
-      if (ele.pt() < 1 || ele.userFloat("ID") < -0.25) {
+      //if (ele.pt() < 1 || ele.userFloat("ID") < -0.25) {
+     //if (ele.pt() < 1 || ele.electronID("mvaEleID-Fall17-iso-V2-wp90") < -0.25) {
+      if (ele.pt() < 1 || ele.electronID("ID") < -0.25) {
          ilpt_all++;
          continue;
       }
@@ -762,7 +780,9 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       nt.recoLowPtElectronIsPF_.push_back(ele.isPF());
       nt.recoLowPtElectronGenMatched_.push_back(false);
       nt.recoLowPtElectronMatchType_.push_back(0);
-      nt.recoLowPtElectronID_.push_back(ele.userFloat("ID"));
+      //nt.recoLowPtElectronID_.push_back(ele.userFloat("ID"));
+      //nt.recoLowPtElectronID_.push_back(ele.electronID("mvaEleID-Fall17-iso-V2-wp90"));
+      nt.recoLowPtElectronID_.push_back(ele.electronID("ID"));
       nt.recoLowPtElectronAngularRes_.push_back(sqrt(track->phiError()*track->phiError() + track->etaError()*track->etaError()));
       nt.recoLowPtElectronE_.push_back(ele.energy());
       nt.recoLowPtElectronVxy_.push_back(ele.trackPositionAtVtx().rho());
