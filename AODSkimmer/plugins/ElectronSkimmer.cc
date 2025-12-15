@@ -100,7 +100,8 @@
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 
 #include "EgammaAnalysis/ElectronTools/interface/ElectronEffectiveArea.h"
-#include "CommonTools/Egamma/interface/ConversionTools.h"
+//#include "CommonTools/Egamma/interface/ConversionTools.h"
+#include "CommonToolsCMSSW14/Egamma/interface/ConversionTools.h"
 
 #include "iDMe/CustomTools/interface/DisplacedDileptonAOD.hh"
 #include "iDMe/CustomTools/interface/JetCorrections.hh"
@@ -112,6 +113,7 @@
 
 #include "TTree.h"
 #include "TMath.h"
+
 
 class ElectronSkimmer : public edm::one::EDAnalyzer<edm::one::WatchRuns, edm::one::SharedResources>  {
    public:
@@ -371,7 +373,8 @@ ElectronSkimmer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) 
    desc.add<edm::InputTag>("genMET",edm::InputTag("genMetTrue"));
    desc.add<edm::InputTag>("primaryVertex",edm::InputTag("offlineSlimmedPrimaryVertices"));
    desc.add<edm::InputTag>("beamspot",edm::InputTag("offlineBeamSpot"));
-   desc.add<edm::InputTag>("conversions",edm::InputTag("reducedEgamma","reducedConversions","PAT"));
+   //desc.add<edm::InputTag>("conversions",edm::InputTag("reducedEgamma","reducedConversions","PAT"));
+   desc.add<edm::InputTag>("conversions",edm::InputTag("reducedEgamma","reducedConversions"));
    desc.add<edm::InputTag>("photons",edm::InputTag("slimmedPhotons"));
    desc.add<edm::InputTag>("ootPhotons",edm::InputTag("slimmedOOTPhotons"));
    desc.add<edm::InputTag>("MET",edm::InputTag("slimmedMETs"));
@@ -409,7 +412,7 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    iEvent.getByToken(metFilterResultsToken_,metFilterResultsHandle_);
    iEvent.getByToken(isoTrackToken_,isoTrackHandle_);
    iEvent.getByToken(pfRecoMuToken_,pfRecoMuHandle_);
-
+   
    if (!isData) { 
       iEvent.getByToken(genEvtInfoToken_,genEvtInfoHandle_);
       iEvent.getByToken(genParticleToken_,genParticleHandle_);
@@ -712,7 +715,9 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       nt.recoElectronAbs1overEm1overP_.push_back(std::abs(1.0 - eSCoverP)*ecal_energy_inverse);
       constexpr auto missingHitType =reco::HitPattern::MISSING_INNER_HITS;
       nt.recoElectronExpMissingInnerHits_.push_back(ele.gsfTrack()->hitPattern().numberOfLostHits(missingHitType));
-      //nt.recoElectronConversionVeto_.push_back(!ConversionTools::hasMatchedConversion(ele,*conversionsHandle_,beamspot.position()));
+      const reco::BeamSpot& beamspot = *beamspotHandle_;
+      nt.recoElectronConversionVeto_.push_back(!ConversionTools::hasMatchedConversion(ele,*conversionsHandle_,beamspot.position()));
+      //nt.recoElectronConversionVeto_.push_back(!hasMatchedConversion14(ele,*conversionsHandle_,beamspot));
       nt.recoElectronIsEE_.push_back(ele.isEE());
       // x-cleaning study
       nt.recoElectronHasLptMatch_.push_back(false);
@@ -843,7 +848,9 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       nt.recoLowPtElectronAbs1overEm1overP_.push_back(std::abs(1.0 - eSCoverP)*ecal_energy_inverse);
       constexpr auto missingHitType =reco::HitPattern::MISSING_INNER_HITS;
       nt.recoLowPtElectronExpMissingInnerHits_.push_back(ele.gsfTrack()->hitPattern().numberOfLostHits(missingHitType));
-      //nt.recoLowPtElectronConversionVeto_.push_back(!ConversionTools::hasMatchedConversion(ele,*conversionsHandle_,beamspot.position()));
+      const reco::BeamSpot& beamspot = *beamspotHandle_;
+      nt.recoLowPtElectronConversionVeto_.push_back(!ConversionTools::hasMatchedConversion(ele,*conversionsHandle_,beamspot.position()));
+      //nt.recoLowPtElectronConversionVeto_.push_back(!hasMatchedConversion14(ele,*conversionsHandle_,beamspot));
       nt.recoLowPtElectronIsEE_.push_back(ele.isEE());
       // additional x-cleaning study variables 
       nt.recoLowPtElectronGEDisMatched_.push_back(false);
