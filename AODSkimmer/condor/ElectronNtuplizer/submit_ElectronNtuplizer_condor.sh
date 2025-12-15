@@ -11,14 +11,14 @@ nsplit=$7
 flist_full=`realpath $flist`
 fname=`echo $flist_full | rev | cut -d "/" -f 1 | rev | cut -d "." -f 1`
 
-mass=`echo $fname | cut -d "_" -f 1-2`
-ctau=`echo $fname | cut -d "_" -f 3`
+mass=`echo $fname | cut -d "_" -f 1-4`
+ctau=`echo $fname | cut -d "_" -f 5`
 outDirName="${mass}/${ctau}"
 
 mkdir -p split_fileLists
 mkdir -p Logs
-xrdfs root://cmseos.fnal.gov/ mkdir -p /store/group/lpcmetx/iDMe//Samples/Ntuples/signal_${suffix}/${year}/${outDirName}/
-outPath=/store/group/lpcmetx/iDMe//Samples/Ntuples/signal_${suffix}/${year}/${outDirName}/
+xrdfs root://cmsdata.phys.cmu.edu/ mkdir -p /store/user/acrobert/vbfidme/ntuples/Dec2025/signal_${suffix}/${year}/${outDirName}/
+outPath=/store/user/acrobert/vbfidme/ntuples/Dec2025/signal_${suffix}/${year}/${outDirName}/
 
 cp ${flist_full} .
 split -d -l ${nsplit} --additional-suffix ".txt" ${fname}.txt ${fname}_
