@@ -27,7 +27,7 @@ LHEDIR=${BASEDIR}
 
 [ -d ${LHEDIR} ] || mkdir ${LHEDIR}
 
-HADRONIZER="iDMe_pythiaGenFragment.py"
+HADRONIZER="iDMe_pythiaGenFragment_ctau-100.py"
 
 namebase=${GP_f/.tar.xz/}
 namebase=$(basename ${GP_f/.tar.xz/})

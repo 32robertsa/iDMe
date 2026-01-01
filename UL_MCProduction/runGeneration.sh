@@ -10,7 +10,7 @@ nthreads=$6
 export HOME=$PWD
 
 tar -xzf submit.tar.gz
-sed -i -e "s/SET_CTAU/${ctau}/g" iDMe_pythiaGenFragment.py
+sed -i -e "s/SET_CTAU/${ctau}/g" iDMe_pythiaGenFragment_ctau-100.py
 
 echo "gridpack = ${gridpack}"
 echo "ctau = ${ctau}"

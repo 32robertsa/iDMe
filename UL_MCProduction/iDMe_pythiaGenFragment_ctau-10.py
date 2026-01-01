@@ -37,20 +37,18 @@ generator = cms.EDFilter("Pythia8ConcurrentHadronizerFilter",
                 'JetMatching:doShowerKt = off', #off for MLM matching, turn on for shower-kT matching
                 ),
             processParameters = cms.vstring(
-                'SLHA:keepSM = on',
-                'SLHA:minMassSM = 10.',
-                # Very important to enable override!
-                'SLHA:allowUserOverride = on',
-                'RHadrons:allow = on',
-                'RHadrons:allowDecay = on',
-
+                # 'SLHA:keepSM = on',
+                # 'SLHA:minMassSM = 10.',
+                # # Very important to enable override!
+                # 'SLHA:allowUserOverride = on',
+                # 'RHadrons:allow = on',
+                # 'RHadrons:allowDecay = on',
                 #'SLHA:keepSM = on',
                 #'SLHA:minMassSM = 10.',
                 # Very important to enable override!
                 #'SLHA:allowUserOverride = on',
                 #'RHadrons:allow = on',
                 #'RHadrons:allowDecay = on',
-
                 'ParticleDecays:limitTau0 = on',
                 'ParticleDecays:tau0Max = 1000.1',
                 'LesHouches:setLifetime = 2',
@@ -59,7 +57,7 @@ generator = cms.EDFilter("Pythia8ConcurrentHadronizerFilter",
                 '32:mayDecay = true',
                 '32:oneChannel = 1 1.0 0 1000023 1000022',
                 # Set decay length of chi2
-                '1000023:mWidth = 0.1973269804e-14', # must set decay length by width; doing it by tau0 has not worked in the past
+                '1000023:mWidth = 0.1973269804e-13', # must set decay length by width; doing it by tau0 has not worked in the past
                 #'1000023:tau0 = 1', # try setting tau0 directly
                 # Set decay channels of chi2 (only mu or e+mu)
                 '1000023:oneChannel = 1 1.0 0 1000022 11 -11'#,
@@ -93,8 +91,8 @@ tmpGenParticlesForJetsNoNu = cms.EDProducer("InputGenJetsParticleSelector",
             5100039, 4000012, 4000014, 4000016,
             9900012, 9900014, 9900016,
             39,12,14,16),
-        #ignoreParticleIDs = cms.vuint32(1000022,1000023,12,14,16),
 
+        #ignoreParticleIDs = cms.vuint32(1000022,1000023,12,14,16),
         partonicFinalState = cms.bool(False),
         excludeResonances = cms.bool(False),
         excludeFromResonancePids = cms.vuint32(12, 13, 14, 16),

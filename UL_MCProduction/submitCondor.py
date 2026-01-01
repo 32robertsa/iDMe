@@ -27,7 +27,7 @@ if __name__ == "__main__":
     if os.path.isdir(f"{baseDir}/submit"):
         os.system(f"rm -rf {baseDir}/submit")
     os.mkdir(f"{baseDir}/submit")
-    os.system("cp iDMe_pythiaGenFragment.py {0}".format(baseDir+"/submit")) 
+    os.system("cp iDMe_pythiaGenFragment_ctau-100.py {0}".format(baseDir+"/submit")) 
     os.system("cp genFromGridpack_2022.sh {0}".format(baseDir + "/submit"))
     os.system("cp template_DRPremix_cfg_2022.py {0}".format(baseDir+"/submit"))    
     os.system("cp runGeneration.sh {0}".format(baseDir+"/submit"))
