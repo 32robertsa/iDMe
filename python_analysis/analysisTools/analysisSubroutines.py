@@ -400,6 +400,7 @@ def calculateCtau(events):
 
     events.__setitem__("ctau",ctau_chi2)
     
+    
 @nb.njit
 def ele_dRcategory(b,ele_arr):
     nEvents = len(ele_arr)

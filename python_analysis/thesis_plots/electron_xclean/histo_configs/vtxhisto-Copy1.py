@@ -27,9 +27,8 @@ class myHisto:
         self.vxy1 = self.parse_axis(('vxy',100,0,1))
         self.vxy10 = self.parse_axis(('vxy',100,0,10))
         self.vxy100 = self.parse_axis(('vxy',100,0,100))
-        self.vtx_e1vxy = self.parse_axis(('vxy',100,0,10))
-        self.vtx_e2vxy = self.parse_axis(('vxy',100,0,2))
-        self.vtx_e3vxy = self.parse_axis(('vxy',100,0,10))
+        self.vtx_e1vxy = self.parse_axis(('vxy',100,0,3))
+        self.vtx_e2vxy = self.parse_axis(('vxy',100,0,10))
         self.ele_pt = self.parse_axis(("pt",50,0,50))
         self.dphi = self.parse_axis(("phi",64,-3.2,3.2))
         self.phi = self.parse_axis(("phi",64,-3.2,3.2))
@@ -105,7 +104,6 @@ def make_histograms():
     # quantities associated w/ gen objects
     h.make('vtx_e1vxy','vtx_e1vxy')   
     h.make('vtx_e2vxy','vtx_e2vxy') 
-    h.make('vtx_e3vxy','vtx_e3vxy') 
 
     h.make('gen_ele_pt','ele_pt')      
     # matched reco electron, reco variables
@@ -124,57 +122,54 @@ def fillHistos(events,h,samp,cut,info,sum_wgt=1):
     h.cut = cut
     wgt = events.eventWgt/sum_wgt
     
-    if info["type"] == "signal":  
+    if info["type"] == "signal":   
+        print ("events.fields:", events.GenEle.fields)
+        # print ("Length of events.vtx.vxy:", ak.count(events.vtx.vxy, axis=1))
+        mask = events.vtx.isMatched
+        vxy_genmatched = events.vtx.vxy[mask]        
+        # print ("Length of events.vtx.vxy[mask]:", ak.count(vxy_genmatched, axis=1))
         
-        mask_vtx = events.vtx.isMatched
-       
-        gamma = ak.flatten(events.vtx.energy)/ak.flatten(events.vtx.m)
-        ctau = ak.flatten(events.vtx.vxy)/gamma
-        mean_ctau = np.mean(ctau)
-        print ("ctau:", ctau)
-        print ("Mean of ctau:", mean_ctau)
-                            
-        h.fill("vtx_e1vxy",vxy=ctau)
-                
-
-        gamma_ee_genmatched = ak.flatten(events.vtx.energy[mask_vtx])/ak.flatten(events.vtx.m[mask_vtx])  
-        vxy_ee_genmatched = ak.flatten(events.vtx.vxy[mask_vtx])
-        ctau_ee_gen = vxy_ee_genmatched/gamma_ee_genmatched
-        mean_ctau_gen = np.mean(ctau_ee_gen)
-        
-        print ("ctau from gen matched part:", ctau_ee_gen)
-        print ("mean_ctau_gen:", mean_ctau_gen)
-        h.fill("vtx_e2vxy",vxy=ctau_ee_gen)
-        
-
-        gamma_ee_genmatched_not = ak.flatten(events.vtx.energy[~mask_vtx])/ak.flatten(events.vtx.m[~mask_vtx])  
-        vxy_ee_genmatched_not = ak.flatten(events.vtx.vxy[~mask_vtx])
-        ctau_ee_gen_not = vxy_ee_genmatched_not/gamma_ee_genmatched_not
-        mean_ctau_no_gen = np.mean(ctau_ee_gen_not)
-        
-        print ("ctau not from gen matched part:", ctau_ee_gen_not)
-        print ("mean_ctau_no_gen:", mean_ctau_no_gen)
-        h.fill("vtx_e3vxy",vxy=ctau_ee_gen_not)
-        
+        vxy_genmatched_flat = ak.flatten(vxy_genmatched)
+             
+        h.fill("vtx_e1vxy",vxy=vxy_genmatched_flat) 
 
         
-      
-        
+        vxy_no_genmatched = events.vtx.vxy[~mask]        
+        vxy_no_genmatched_flat = ak.flatten(vxy_no_genmatched)
+            
+        # h.fill("vtx_e2vxy",vxy=vxy_no_genmatched_flat)
 
-        
-        
 
         
 
-    
+        
+        
+        # mask_chi2 = events.GenPart.ID == 1000023
+        
+        # vx_chi2 = ak.flatten(events.GenPart.vx[mask_chi2])
+        # print("len(vx_chi2):", len(vx_chi2))
+        # vy_chi2 = ak.flatten(events.GenPart.vy[mask_chi2])
+        # vz_chi2 = ak.flatten(events.GenPart.vz[mask_chi2])
 
-        
-        
-        
+        # gamma_chi2 = ak.flatten(events.GenPart.e[mask_chi2])/ak.flatten(events.GenPart.mass[mask_chi2])
 
-        
-        
-       
+        # genele_vx = events.GenEle.vx
+        # print("len(genele_vx):", len(genele_vx))
+        # genele_vy = events.GenEle.vy
+        # genele_vz = events.GenEle.vz
+
+        # # last_mask = mask_chi2[events.GenPart.ID == 11]
+        # # print ("len(last_mask):",len(last_mask))
+        # # genele_vx = ak.flatten(events.GenEle.vx)
+        # # genele_vy = ak.flatten(events.GenEle.vy)
+        # # genele_vz = ak.flatten(events.GenEle.vz)
+
+
+        # decaylength_chi2 = np.sqrt( (genele_vx-vx_chi2)**2 + (genele_vy-vy_chi2)**2 + (genele_vz-vz_chi2)**2 ) # in [cm]
+
+        # ctau_chi2 = decaylength_chi2 / gamma_chi2
+        # print ("ctau_chi2:", ctau_chi2)
+
         
       
 
