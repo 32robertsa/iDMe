@@ -12,7 +12,7 @@ from Configuration.Generator.MCTunesRun3ECM13p6TeV.PythiaCP5Settings_cfi import 
 
 # Hadronizer configuration
 
-generator = cms.EDFilter("Pythia8HadronizerFilter",
+generator = cms.EDFilter("Pythia8ConcurrentHadronizerFilter",
     maxEventsToPrint = cms.untracked.int32(1),
     pythiaPylistVerbosity = cms.untracked.int32(1),
     filterEfficiency = cms.untracked.double(1.0),
@@ -53,16 +53,18 @@ generator = cms.EDFilter("Pythia8HadronizerFilter",
                 #'RHadrons:allowDecay = on',
 
                 'ParticleDecays:limitTau0 = off',
-                'ParticleDecays:tau0Max = 1000.1',
+                'ParticleDecays:tau0Max = 999.9',
                 'LesHouches:setLifetime = 2',
                 'ParticleDecays:allowPhotonRadiation = on',
                 # Set decay channel of dark photon to chi2+chi1
                 '32:mayDecay = true',
-                '32:oneChannel = 1 1.0 0 1000023 1000022',
+                '32:oneChannel = 1 1.0 0 1000023 1000022',    
+                
+                # '1000023:mayDecay = true',
                 # Set decay length of chi2
-                #'1000023:mWidth = 0.1973269804e-14', # must set decay length by width; doing it by tau0 has not worked in the past #1.9732e-15
-                '1000023:tau0 = 100', # try setting tau0 directly
-                # Set decay channels of chi2 (only mu or e+mu)
+                '1000023:mWidth = 0.1973269804e-14', # must set decay length by width; doing it by tau0 has not worked in the past #1.9732e-15
+                # '1000023:tau0 = 100', # try setting tau0 directly
+                # Set decay channels of chi2 (only mu or e+mu)                
                 '1000023:oneChannel = 1 1.0 0 1000022 11 -11'#,
                 ),
             parameterSets = cms.vstring('pythia8CommonSettings',
@@ -72,6 +74,7 @@ generator = cms.EDFilter("Pythia8HadronizerFilter",
                 )
             )
         )
+
 
 #     Filter setup
 # ------------------------
