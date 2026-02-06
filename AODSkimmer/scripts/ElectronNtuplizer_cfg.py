@@ -262,7 +262,8 @@ process.ntuples = ElectronSkimmer.clone(
     year = options.year,
     metFilters = cms.vstring(metFilters),
     triggerPaths = cms.vstring(triggerPaths),
-    effAreasConfigFile = cms.FileInPath(effAreaInputPath)
+    effAreasConfigFile = cms.FileInPath(effAreaInputPath),
+    displacedStandAloneMuons = cms.InputTag("displacedStandAloneMuons")
 )
 
 #---------------------comment the lines only for Run3---------------------------------
