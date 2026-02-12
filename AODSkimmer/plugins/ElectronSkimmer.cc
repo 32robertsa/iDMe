@@ -599,7 +599,8 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    int iele = 0;
    for (const auto & ele : *recoNanoElectronHandle_) {
       // require pT > 5 & pass loose ID to consider GED electron
-      if (ele.pt() < 5 || !ele.electronID("mvaEleID-RunIIIWinter22-noIso-V1-wp90")) {
+      // if (ele.pt() < 5 || !ele.electronID("mvaEleID-RunIIIWinter22-noIso-V1-wp90"))
+      if (!ele.electronID("mvaEleID-RunIIIWinter22-noIso-V1-wp90")) {
          iele++;
          continue;
       // if (ele.pt() < 5 || !ele.electronID("cutBasedElectronID-RunIIIWinter22-V1-loose")) {
@@ -711,7 +712,7 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    int ilpt_all = 0;
    for (auto & ele : *lowPtNanoElectronHandle_) {
       // basic cut (should be applied by default in miniAOD stage, but repeating here)
-      if (ele.pt() < 1 || ele.electronID("ID") < -0.25)
+      if (ele.electronID("ID") < -0.25)
           //|| ele.userFloat("ID") < -0.25) 
       {
          ilpt_all++;
@@ -732,18 +733,18 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       }\
        // The CROSS-CLEANING part 
       // can optionally not skip and save whether or not the lpt electron *should* be x-cleaned
-      if (mindR < PFmatch_threshold) {
-         //nt.recoLowPtElectronIsXCleaned_.push_back(true);
-         //nt.recoLowPtElectronGEDidx_.push_back(iMatch_reg);
-         //nt.recoElectronHasLptMatch_[iMatch_reg] = true;
-         //nt.recoElectronLptMatchIdx_[iMatch_reg] = ilpt;
-         ilpt_all++;
-         continue;
-      }
-      else {
-         nt.recoLowPtElectronIsXCleaned_.push_back(false);
-         nt.recoLowPtElectronGEDidx_.push_back(-999);
-      }
+      // if (mindR < PFmatch_threshold) {
+      //    //nt.recoLowPtElectronIsXCleaned_.push_back(true);
+      //    //nt.recoLowPtElectronGEDidx_.push_back(iMatch_reg);
+      //    //nt.recoElectronHasLptMatch_[iMatch_reg] = true;
+      //    //nt.recoElectronLptMatchIdx_[iMatch_reg] = ilpt;
+      //    ilpt_all++;
+      //    continue;
+      // }
+      // else {
+      //    nt.recoLowPtElectronIsXCleaned_.push_back(false);
+      //    nt.recoLowPtElectronGEDidx_.push_back(-999);
+      // }
 
       // increment lpt idx
       ilpt++;
@@ -847,12 +848,13 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             mindR = dR;
          }
       }
-      if (mindR < PFmatch_threshold) {
-         allLptEles_isXcleaned.push_back(true);
-      }
-      else {
-         allLptEles_isXcleaned.push_back(false);
-      }
+       //CROSS-CLEAN aspect
+      // if (mindR < PFmatch_threshold) {
+      //    allLptEles_isXcleaned.push_back(true);
+      // }
+      // else {
+      //    allLptEles_isXcleaned.push_back(false);
+      // }
    }
     //This needs to be done: Section 7
    // Computing corrections to PFIso and MiniIso
