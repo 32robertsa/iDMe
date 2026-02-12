@@ -730,14 +730,12 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             mindR = dR;
             //iMatch_reg = ireg;
          }
-      }\
-       // The CROSS-CLEANING part 
-      // can optionally not skip and save whether or not the lpt electron *should* be x-cleaned
+      }
+      nt.recoLowPtElectronIsXCleaned_.push_back(false);
+      nt.recoLowPtElectronGEDidx_.push_back(-999);
+       ////The CROSS-CLEANING part :// can optionally not skip and save whether or not the lpt electron *should* be x-cleaned
       // if (mindR < PFmatch_threshold) {
-      //    //nt.recoLowPtElectronIsXCleaned_.push_back(true);
-      //    //nt.recoLowPtElectronGEDidx_.push_back(iMatch_reg);
-      //    //nt.recoElectronHasLptMatch_[iMatch_reg] = true;
-      //    //nt.recoElectronLptMatchIdx_[iMatch_reg] = ilpt;
+      //    
       //    ilpt_all++;
       //    continue;
       // }
@@ -745,6 +743,7 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       //    nt.recoLowPtElectronIsXCleaned_.push_back(false);
       //    nt.recoLowPtElectronGEDidx_.push_back(-999);
       // }
+       
 
       // increment lpt idx
       ilpt++;
@@ -848,7 +847,8 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             mindR = dR;
          }
       }
-       //CROSS-CLEAN aspect
+      allLptEles_isXcleaned.push_back(false);
+      ////// CROSS-CLEAN aspect
       // if (mindR < PFmatch_threshold) {
       //    allLptEles_isXcleaned.push_back(true);
       // }
