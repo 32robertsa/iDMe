@@ -192,7 +192,6 @@ cmsDriver.py \
 #echo "process.options = cms.untracked.PSet(SkipEvent = cms.untracked.vstring('ProductNotFound'))" >> ${genfragment}
 cmsRun -p ${genfragment}
 
-
 #echo "LIST OF OUTPUT FILES:"
 #ls -ltr *.root
 
