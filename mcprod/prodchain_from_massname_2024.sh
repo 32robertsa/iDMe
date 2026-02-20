@@ -9,17 +9,21 @@ export SCRAM_ARCH=el9_amd64_gcc11
 CMSSW=CMSSW_14_0_21
 
 export BASEDIR=`pwd`
-massname=$1
-nevent=$2
-ctau=$3
-nthreads=$4
-year=2024
 
-if [ "$#" -ne 4 ]; then
+if [ "$#" -eq 5 ]; then
+    index=$5
+    echo "Using index" $index
+elif [ "$#" -ne 4 ]; then
     echo "Wrong number of arguments!"
     echo "Usage: ./genFromGridpack_2024.sh gridpack nevents ctau nThreads"
     exit 1
 fi
+
+massname=$1
+ctau=$2
+nevent=$3
+nthreads=$4
+year=2024
 
 echo "Base Directory: ${BASEDIR}"
 LHEDIR=${BASEDIR}
@@ -142,10 +146,15 @@ nevts=${nevts/"</TotalEvents>"/}
 echo "MiniAOD file complete with ${nevts} events."
 
 remoteDIR="/store/group/lpcmetx/iDMe/Samples/acrobert/signal/2024"
-cp ${namebase}_MiniAOD_${year}.root ${BASEDIR}/miniaod/${namebase}_MiniAOD_${nevts}evts_${year}.root
-xrdcp -vf ${namebase}_MiniAOD_${year}.root root://cmseos.fnal.gov/$remoteDIR/MiniAOD/${namebase}_MiniAOD_${nevts}evts_${year}.root
+cp ${namebase}_MiniAOD_${year}.root ${BASEDIR}/${namebase}_MiniAOD_${year}_${nevts}evts.root
+echo "Final output ROOT file:" miniaod/${namebase}_MiniAOD_${year}_${nevts}evts.root 
+if [ "$#" -eq 5 ]; then
+    xrdcp -vf ${namebase}_MiniAOD_${year}.root root://cmseos.fnal.gov/$remoteDIR/MiniAOD/${namebase}_MiniAOD_${year}_${index}_${nevts}evts.root
+    echo "The output MINIAOD file: root://cmseos.fnal.gov/$remoteDIR/MiniAOD/${namebase}_MiniAOD_${year}_${index}_${nevts}evts.root"
+elif [ "$#" -eq 4 ]; then
+    xrdcp -vf ${namebase}_MiniAOD_${year}.root root://cmseos.fnal.gov/$remoteDIR/MiniAOD/${namebase}_MiniAOD_${year}_${nevts}evts.root
+    echo "The output MINIAOD file: root://cmseos.fnal.gov/$remoteDIR/MiniAOD/${namebase}_MiniAOD_${year}_${nevts}evts.root"
+fi
 
-echo "Final output ROOT file:" miniaod/${namebase}_MiniAOD_${nevts}evts_${year}.root 
-echo "The output MINIAOD file: root://cmseos.fnal.gov/$remoteDIR/MiniAOD/${namebase}_MiniAOD_${nevts}evts_${year}.root"
 echo "DONE!"
 cd ${BASEDIR}
