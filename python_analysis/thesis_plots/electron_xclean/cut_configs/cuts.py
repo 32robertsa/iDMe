@@ -1,5 +1,8 @@
 import numpy as np
 import awkward as ak
+import sys
+
+import analysisSubroutines as routines
 
 def cut0(events,info):
     name = "cut0"
@@ -7,36 +10,80 @@ def cut0(events,info):
     plots = True
     return events, name, desc, plots
 
-def cut1(events,info):
-    name = "cut1"
-    desc = "Pass MET Filters"
-    plots = True
-    cut = events.METFiltersFailBits == 0
-    return events[cut], name, desc, plots
+# def cut0(events,info):
+#     name = "cut0"
+#     desc = "Lxy cut0"
+#     plots = True
+#     cut = (events.GenEle.vxy < 1) 
+#     return events[cut], name, desc, plots
 
-def cut2(events,info):
-    name = "cut2"
-    desc = "HEM Veto"
-    plots = True
-    if info["year"] == 2018:
-        cut = ~events.HEM.flag
-        return events[cut], name, desc, plots
-    else:
-        return events, name, desc, plots
 
-def cut3(events,info):
-    name = "cut3"
-    desc = "MET Trigger (120 GeV)"
-    plots = True
-    cut = events.trig.HLT_PFMET120_PFMHT120_IDTight
-    return events[cut], name, desc, plots
+# def cut0(events,info):
+#     name = "cut0"
+#     desc = "Lxy cut0"
+#     plots = True
+#     cut = (events.GenEle.vxy > 10) & (events.GenEle.vxy <15)
+#     return events[cut], name, desc, plots
 
-def cut4(events,info):
-    name = "cut4"
-    desc = "MET > 200 GeV"
-    plots = True
-    cut = events.PFMET.pt > 200
-    return events[cut], name, desc, plots
+# def cut1(events,info):
+#     name = "cut1"
+#     desc = "pT cut1"
+#     plots = True
+#     cut = 5<events.GenEle.pt <10
+#     return events[cut], name, desc, plots
+
+# def cut2(events,info):
+#     name = "cut2"
+#     desc = "pT cut2"
+#     plots = True
+#     cut = (events.GenEle.pt>10) 
+#     return events[cut], name, desc, plots
+
+# def cut3(events,info):
+#     name = "cut3"
+#     desc = "pT cut3"
+#     plots = True
+#     cut = (events.GenEle.pt>15) & (events.GenEle.pt<20)
+#     return events[cut], name, desc, plots
+
+
+# def cut4(events,info):
+#     name = "cut4"
+#     desc = "pT cut4"
+#     plots = True
+#     cut = (events.GenEle.pt>20) 
+#     return events[cut], name, desc, plots
+
+# def cut1(events,info):
+#     name = "cut1"
+#     desc = "Pass MET Filters"
+#     plots = True
+#     cut = events.METFiltersFailBits == 0
+#     return events[cut], name, desc, plots
+
+# def cut2(events,info):
+#     name = "cut2"
+#     desc = "HEM Veto"
+#     plots = True
+#     if info["year"] == 2018:
+#         cut = ~events.HEM.flag
+#         return events[cut], name, desc, plots
+#     else:
+#         return events, name, desc, plots
+
+# def cut3(events,info):
+#     name = "cut3"
+#     desc = "MET Trigger (120 GeV)"
+#     plots = True
+#     cut = events.trig.HLT_PFMET120_PFMHT120_IDTight
+#     return events[cut], name, desc, plots
+
+# def cut4(events,info):
+#     name = "cut4"
+#     desc = "MET > 200 GeV"
+#     plots = True
+#     cut = events.PFMET.pt > 200
+#     return events[cut], name, desc, plots
 
 # def cut5(events,info):
 #     # UL b-tag threshold recommendations from here: https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation

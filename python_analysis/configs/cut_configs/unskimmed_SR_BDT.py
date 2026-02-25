@@ -4,21 +4,73 @@ import sys
 sys.path.append("../../../analysisTools/")
 import analysisSubroutines as routines
 
-def cut0(events,info):
-    name = "cut0"
-    desc = "General cut for trigger plots"
-    plots = True
-    cut = ((abs(events.PFMET.pt - events.CaloMET.pt))/(events.CaloMET.pt)) < 0.5
-    return events[cut], name, desc, plots
-    print (events[cut])
+# def cut0(events,info):
+#     name = "cut0"
+#     desc = "pT cut0"
+#     plots = True
+#     cut = events.GenEle.pt<5
+#     return events[cut], name, desc, plots
 
-def cut1(events,info):
-    name = "cut1"
-    desc = "Trigger cut"
-    plots = True
-    cut = events.trig.HLT_PFMETNoMu120_PFMHTNoMu120_IDTight == 1
-    return events[cut], name, desc, plots
-    print (events[cut])
+# # def cut4(events,info):
+#     name = "cut4"
+#     desc = "pT cut4"
+#     plots = True
+#     cut = (events.GenEle.pt>20) 
+#     return events[cut], name, desc, plots
+
+
+# def cut1(events,info):
+#     name = "cut1"
+#     desc = "pT cut1"
+#     plots = True
+#     cut = (events.GenEle.pt>5) & (events.GenEle.pt<10)
+#     return events[cut], name, desc, plots
+#     print(cutName, len(events), ak.sum(events.genWgt))
+
+
+# def cut2(events,info):
+#     name = "cut2"
+#     desc = "pT cut2"
+#     plots = True
+#     cut = (events.GenEle.pt>10)&(events.GenEle.pt<15)
+#     return events[cut], name, desc, plots
+
+# def cut3(events,info):
+#     name = "cut3"
+#     desc = "pT cut3"
+#     plots = True
+#     cut = (events.GenEle.pt>15) & (events.GenEle.pt<20)
+#     return events[cut], name, desc, plots
+
+
+# def cut4(events,info):
+#     name = "cut4"
+#     desc = "pT cut4"
+#     plots = True
+#     cut = (events.GenEle.pt>20) 
+#     return events[cut], name, desc, plots
+
+
+
+
+
+
+
+# def cut0(events,info):
+#     name = "cut0"
+#     desc = "General cut for trigger plots"
+#     plots = True
+#     cut = ((abs(events.PFMET.pt - events.CaloMET.pt))/(events.CaloMET.pt)) < 0.5
+#     return events[cut], name, desc, plots
+#     print (events[cut])
+
+# def cut1(events,info):
+#     name = "cut1"
+#     desc = "Trigger cut"
+#     plots = True
+#     cut = events.trig.HLT_PFMETNoMu120_PFMHTNoMu120_IDTight == 1
+#     return events[cut], name, desc, plots
+#     print (events[cut])
     
 # def cut1(events,info):
 #     name = "cut1"

@@ -8,7 +8,6 @@ import analysisSubroutines as sub
 # General Purpose
 samp = StrCategory([],name="samp",label="Sample Name",growth=True)
 cut = StrCategory([],name="cut",label="Cut Applied",growth=True)
-# ctauchi2=sub.ctaucalculate(events)
 
 # functions to make histograms
 class myHisto:
@@ -24,22 +23,13 @@ class myHisto:
         self.match_type = self.parse_axis(('match_type',['L','R']))
         self.match = self.parse_axis(('match',[0,1]))
         self.met = self.parse_axis(('met',60,50,300))
-        self.dR = self.parse_axis(('dR',80,0,5)) 
-        # self.ctauchi2 = self.parse_axis(('ctauchi2', 10, 0,10))        
-       
-        # self.vxy1 = self.parse_axis(('vxy',[0,2,4,7,10,15,20]))  #LPT 2D
-        # self.ele_pt = self.parse_axis(("pt",50,0,50))
-        # self.vxy1 = self.parse_axis(('vxy',[0,2,4,6,8,10,14,18])) 
-        # self.ele_pt = self.parse_axis(("pt",[0,5,10,15,20]))
-
+        self.dR = self.parse_axis(('dR',80,0,5))        
 
 
         
-        # self.vxy1 = self.parse_axis(('vxy',10,0,2) ) #Lxy 10, 100
-        # self.vxy1 = self.parse_axis(('vxy',[0,1,2,3,4,5,6,7,8,9,10,12,14,16,18,20,24,30,40,50,60,70,80]))  #Lxy 10, 100
-
-
-        self.vxy1 = self.parse_axis(('vxy',[0,1,5,10,15,20]))   
+       
+        self.vxy1 = self.parse_axis(('vxy',80,0,80)) 
+        # self.vxy1 = self.parse_axis(('vxy',[0,40]))   #For GED
         self.vxy10 = self.parse_axis(('vxy',[0,2,4,6,8,10,14,18,24,30,40,50,60,70,80]))  #Lxy 10, 100
         # self.vxy10 = self.parse_axis(('vxy',[0,4,8,12,16,22,28,34,40,50,60,70,80]))  #Lxy 1000
         # self.vxy10 = self.parse_axis(('vxy',[0,2,4,6,8,10,14,18,24]))  #Lxy 10, 100
@@ -51,15 +41,12 @@ class myHisto:
        
         self.vxy100 = self.parse_axis(('vxy',[0,2,4,7,9,10]))
         
-        # self.ele_pt = self.parse_axis(("pt",25,0,50))   #LPT 2D
-
-        self.ele_pt = self.parse_axis(("pt",40,0,40))   #LPT 2D
-
-        # self.ele_pt = self.parse_axis(("pt",[0,2,4,10,20]))  #Good for low pT electrons for 1000mm
+        # self.ele_pt = self.parse_axis(("pt",50,0,50))
+        # self.ele_pt = self.parse_axis(("pt",[0,1,2,4,6,8,10,13,16,20]))  #Good for low pT electrons for 1000mm
         # # self.ele_pt = self.parse_axis(("pt",[0,2,4,8,10,14,16,18,20,22,25,27,29,33,38,40]))   #Good for GED electrons
         # self.ele_pt = self.parse_axis(("pt",[0,4,8,12,16,20]))   #Good for GED electrons
         # self.ele_pt = self.parse_axis(("pt",[0,4,8,12,16,22,30,35,40,45,50,60,70,80]))  #10mm
-        # self.ele_pt = self.parse_axis(("pt",[0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,45,50,55,60,65,70,75,80]))  #10mm
+        self.ele_pt = self.parse_axis(("pt",[0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,45,50,55,60,65,70,75,80]))  #10mm
         
 
         
@@ -95,7 +82,9 @@ class myHisto:
         self.ele_ptRes = self.parse_axis(('ptres',100,-2,2))
         self.sigReco = self.parse_axis(('reco',[0,1]))
         self.vtxMatch = self.parse_axis(('match',[0,1]))
-        
+        # self.dRCategories = self.parse_axis(('dRCat',['0to0p1','0p1to0p5','0p5toInf']))
+        # self.vxyCategories = self.parse_axis(('vxyCat',['0to1','1to5','5to10','10to15','15toInf']))
+        # self.ptCategories = self.parse_axis(('ptCat',['0to5','5to10','10to20','20toInf']))
 
     def make(self,name,*args,**hist_kwargs):
         if name in self.histograms.keys():
@@ -140,8 +129,7 @@ def make_histograms():
     h.make("gen_vxy10",'vxy10')
     h.make("gen_vxy100",'vxy100')
 
-    # h.make("gen_VXY1",'vxy1')
-    # h.make("ctauchi2", 'ctauchi2')
+    h.make("gen_VXY1",'vxy1')
 
     
    
@@ -162,10 +150,6 @@ def make_histograms():
     h.make('match_ele_gen_vxy1','match_type','ele_passID','vxy1')    
     h.make('match_ele_gen_vxy10','match_type','ele_passID','vxy10')
     h.make('match_ele_gen_vxy100','match_type','ele_passID','vxy100')
-    
-    h.make("gen_ele_pt_vs_vxy1",'ele_pt','vxy1')
-    h.make("match_ele_gen_pt_vs_vxy1",'match_type','ele_passID','ele_pt','vxy1') 
-    
    
  
   
@@ -213,62 +197,20 @@ def fillHistos(events,h,samp,cut,info,sum_wgt=1):
 
         match_pf = events[hasMatch_pf].Electron
         match_pf = match_pf[match_pf.genMatched]
-
-        # ne=ak.count(events.GenEle.pt)
-        # np= ak.count(events.GenPos.pt)
-        # n=ne+np
+        MASK1= events.GenEle.pt <5
         
-        # print ("GenpT:", events.GenEle.pt)
-        # print ("Number of gen electrons per event:", ak.count(events.Electron.pt,axis=1))
-        # print ("Total number of gen electrons:", ne)
-        # print ("Total number of gen positrons:", np)
-        # print ("Total number of gen electron (gen ele+pos):", n)
-
-        array=[[1],[2,2],[3],[4],[5]]
-        n= ak.count(array, axis=1)
-        sum_e=ak.sum(n)  
-        print (n)
-        print (sum_e) #6
-
-        # nele_event= ak.count(events.Electron.pt,axis=1)
-
-        print ("GenEle.pt :", events.GenEle.pt)
-        ngen_event= ak.count(events.GenEle.pt)
-        print ("Total number of Gen Electrons:", ngen_event)
-
-        print ("Ele.pt :", events.Electron.pt)
-        nele_event= ak.count(events.Electron.pt,axis=1)
-        print ("Number of Electrons per event:", nele_event)
-        print ("Total number of Electrons:", ak.sum(nele_event))
-
-        print ("LowEle.pt :", events.LptElectron.pt)
-        nLptele_event= ak.count(events.LptElectron.pt,axis=1)
-        print ("Number of LptElectrons per event:", nLptele_event)
-        print ("Total number of LptElectrons:", ak.sum(nLptele_event))
+        print ("Mask len:", len(MASK1))
         
-
-
-        
-        # print ("Electron:", events.Electron.pt)
-        # print ("Total number of R electrons:", ak.count(events.Electron.pt))
-        # print ("LowpT:", events.LptElectron.pt)
-        # print ("Total number of L electrons:", ak.count(events.LptElectron.pt))
-        
-        # MASK1= events.GenEle.pt <5
-        
-        # print ("Mask len:", len(MASK1))
-        
-        # print ("len(match_pf):",len(match_pf))
+        print ("len(match_pf):",len(match_pf))
         genObj_pf = ak.where(match_pf.matchType==-1,events[hasMatch_pf].GenEle,events[hasMatch_pf].GenPos)
         match_pf = ak.flatten(match_pf)
         genObj_pf = ak.flatten(genObj_pf)
         match_pf_passID = ak.values_astype(match_pf.passID,int)
 
         # print ("Genpt:", events.GenEle.pt)
-        # MASK1= events.GenEle.pt <5
+        MASK1= events.GenEle.pt <5
         # print ("genObj_pf[MASK1]:",genObj_pf[MASK1])
         # # # print ("vxy:", events.GenEle.vxy[MASK1])
-        # print (events.fields)
         
 
         
@@ -282,11 +224,25 @@ def fillHistos(events,h,samp,cut,info,sum_wgt=1):
         match_lpt_passID = ak.values_astype(match_lpt.passID,int)
 
 
+        print ("Genpt:", events.GenEle.pt)
+        MASK1= events.GenEle.pt <5
+        
+        print ("Mask len:", len(MASK1))
+        print ("vxy:", events.GenEle.vxy[MASK1])
+
         
 
-        # sub.ctaucalculate(events)
+        
+        
+      
+
+       
+        ### FILLING HISTOGRAMS ###
+        h.fill("gen_VXY1",vxy=events.GenEle.vxy[MASK1],weight=1)
+        
+
+        
         h.fill("gen_ele_vxy1",vxy=events.GenEle.vxy,weight=1)
-        # h.fill("ctauchi2", ctauchi2=events.ctauchi2, weight=1)
         h.fill("gen_ele_vxy1",vxy=events.GenPos.vxy,weight=1)
         
         h.fill("gen_ele_vxy10",vxy=events.GenEle.vxy,weight=1)
@@ -300,14 +256,8 @@ def fillHistos(events,h,samp,cut,info,sum_wgt=1):
         h.fill("gen_ele_pt",pt=events.GenPos.pt)
         h.fill("PFMET", met=events.PFMET.pt)
         h.fill("gen_ele_eta", eta=events.GenEle.eta)
-        h.fill("gen_ele_eta", eta=events.GenPos.eta)
-        
         h.fill("gen_ele_phi", phi=events.GenEle.phi)
-        h.fill("gen_ele_phi", phi=events.GenPos.phi)
-        
         h.fill("gen_ele_dR", dR=events.GenEle.dr)
-        h.fill("gen_ele_dR", dR=events.GenPos.dr)
-        
         
       
                
@@ -323,18 +273,4 @@ def fillHistos(events,h,samp,cut,info,sum_wgt=1):
         h.fill("match_ele_gen_vxy1",match_type='L',passID=match_lpt_passID,vxy=genObj_lpt.vxy)
         h.fill("match_ele_gen_vxy10",match_type='L',passID=match_lpt_passID,vxy=genObj_lpt.vxy)
         h.fill("match_ele_gen_vxy100",match_type='L',passID=match_lpt_passID,vxy=genObj_lpt.vxy)
-
-        h.fill("gen_ele_pt_vs_vxy1",pt=events.GenEle.pt,vxy=events.GenEle.vxy)
-        h.fill("gen_ele_pt_vs_vxy1",pt=events.GenPos.pt,vxy=events.GenPos.vxy)
-        
-        h.fill("match_ele_gen_pt_vs_vxy1",match_type='L',passID=match_lpt_passID,pt=genObj_lpt.pt, vxy=genObj_lpt.vxy)
-        
-        h.fill("match_ele_gen_pt_vs_vxy1",match_type='R',passID=match_pf_passID,pt=genObj_pf.pt, vxy=genObj_pf.vxy)
-
-
-
-
-
-        
-
 

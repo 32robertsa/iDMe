@@ -1,0 +1,18 @@
+[
+    {
+        "location": "/uscms/home/reshmar/nobackup/CMSSW_13_0_13/src/iDMe/AODSkimmer/corrected_signal_2022_files/Notcrosscleaned/Signal_Mchi-10p5_dMchi-1p0_ctau-10_removedxclean_output.root",
+        "Mchi": 10.5,
+        "dMchi": 1.0,
+        "ctau": 10,
+        "name": "Mchi-10.5_dMchi-1.0_ctau-10",
+        "sum_wgt": 3.245519337724545e-07,
+        "type": "signal",
+        "year": 2022,
+        "alphaD": "aEM",
+        "xsec": 4965.27114,
+        "nFiles": 1,
+        "filter_eff": 0.6845,
+        "num_events": 64604,
+        "blacklist": []
+    }
+]

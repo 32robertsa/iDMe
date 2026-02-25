@@ -368,37 +368,57 @@ def projectLxy(events):
 
     projectLxyFromPV(events) # cancel out beamspot mis-modeling effect
 
-def calculateCtau(events):
-    # chi2
+def ctaucalculate(events):
     mask_chi2 = events.GenPart.ID == 1000023
-    vx_chi2 = ak.flatten(events.GenPart.vx[mask_chi2])
+    vx_chi2 = ak.flatten(events.GenPart.vx[mask_chi2])      
     vy_chi2 = ak.flatten(events.GenPart.vy[mask_chi2])
     vz_chi2 = ak.flatten(events.GenPart.vz[mask_chi2])
 
     gamma_chi2 = ak.flatten(events.GenPart.e[mask_chi2])/ak.flatten(events.GenPart.mass[mask_chi2])
 
-    # gen e-
-    mask_genele = events.GenPart.ID == 11
-    vx_genele = ak.flatten(events.GenPart.vx[mask_genele])
-    vy_genele = ak.flatten(events.GenPart.vy[mask_genele])
-    vz_genele = ak.flatten(events.GenPart.vz[mask_genele])
-
-    #gamma_genele = ak.flatten(events.GenPart.e[mask_genele])/ak.flatten(events.GenPart.mass[mask_genele])
-
-    # gen e+
-    mask_genpos = events.GenPart.ID == -11
-    vx_genpos = ak.flatten(events.GenPart.vx[mask_genpos])
-    vy_genpos = ak.flatten(events.GenPart.vy[mask_genpos])
-    vz_genpos = ak.flatten(events.GenPart.vz[mask_genpos])
-
-    #gamma_genpos = ak.flatten(events.GenPart.e[mask_genpos])/ak.flatten(events.GenPart.mass[mask_genpos])
-
-    # decay length of chi2 in the lab frame
+    vx_genele = events.GenEle.vx    
+    vy_genele = events.GenEle.vy
+    vz_genele = events.GenEle.vz 
     decaylength_chi2 = 10 * np.sqrt( (vx_genele-vx_chi2)**2 + (vy_genele-vy_chi2)**2 + (vz_genele-vz_chi2)**2 ) # in [mm]
 
-    ctau_chi2 = decaylength_chi2 / gamma_chi2
+    ctauchi2 = decaylength_chi2 / gamma_chi2
+    # events.__setitem__("ctauchi2",ctauchi2)
+    events["ctauchi2"]= ctauchi2
+    # return ctauchi2
 
-    events.__setitem__("ctau",ctau_chi2)
+
+# def calculateCtau(events):
+    
+    # chi2
+    # mask_chi2 = events.GenPart.ID == 1000023
+    # vx_chi2 = ak.flatten(events.GenPart.vx[mask_chi2])
+    # vy_chi2 = ak.flatten(events.GenPart.vy[mask_chi2])
+    # vz_chi2 = ak.flatten(events.GenPart.vz[mask_chi2])
+
+    # gamma_chi2 = ak.flatten(events.GenPart.e[mask_chi2])/ak.flatten(events.GenPart.mass[mask_chi2])
+
+    # # gen e-
+    # mask_genele = events.GenPart.ID == 11
+    # vx_genele = ak.flatten(events.GenPart.vx[mask_genele])
+    # vy_genele = ak.flatten(events.GenPart.vy[mask_genele])
+    # vz_genele = ak.flatten(events.GenPart.vz[mask_genele])
+
+    # #gamma_genele = ak.flatten(events.GenPart.e[mask_genele])/ak.flatten(events.GenPart.mass[mask_genele])
+
+    # # gen e+
+    # mask_genpos = events.GenPart.ID == -11
+    # vx_genpos = ak.flatten(events.GenPart.vx[mask_genpos])
+    # vy_genpos = ak.flatten(events.GenPart.vy[mask_genpos])
+    # vz_genpos = ak.flatten(events.GenPart.vz[mask_genpos])
+
+    # #gamma_genpos = ak.flatten(events.GenPart.e[mask_genpos])/ak.flatten(events.GenPart.mass[mask_genpos])
+
+    # # decay length of chi2 in the lab frame
+    # decaylength_chi2 = 10 * np.sqrt( (vx_genele-vx_chi2)**2 + (vy_genele-vy_chi2)**2 + (vz_genele-vz_chi2)**2 ) # in [mm]
+
+    # ctau_chi2 = decaylength_chi2 / gamma_chi2
+
+    # events.__setitem__("ctau",ctau_chi2)
     
     
 @nb.njit

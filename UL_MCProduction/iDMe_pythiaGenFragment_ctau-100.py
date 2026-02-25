@@ -63,9 +63,9 @@ generator = cms.EDFilter("Pythia8ConcurrentHadronizerFilter",
                 
                 # '1000023:mayDecay = true',
                 # Set decay length of chi2
-                '1000023:mWidth = 0.1973269804e-14', # 100mm must set decay length by width; doing it by tau0 has not worked in the past #1.9732e-15
+                # '1000023:mWidth = 0.1973269804e-14', # 100mm must set decay length by width; doing it by tau0 has not worked in the past #1.9732e-15
                 # '1000023:mWidth = 0.1973269804e-15', #1000 mm
-                # '1000023:mWidth = 0.1973269804e-13', #10mm
+                '1000023:mWidth = 0.1973269804e-13', #10mm
                 # '1000023:tau0 = 100', # try setting tau0 directly
                 # Set decay channels of chi2 (only mu or e+mu)                
                 '1000023:oneChannel = 1 1.0 0 1000022 11 -11'#,

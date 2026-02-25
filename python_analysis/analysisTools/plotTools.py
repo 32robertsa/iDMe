@@ -479,6 +479,7 @@ def plot_signal_1D(sig_histo, m1, delta, ctau, plot_dict, style_dict):
     dmchi = samp_df.dmchi[0]
     ctau = samp_df.ctau[0]
     label = rf"$(m_\chi, \Delta m_\chi) = ({m1:.0f}, {dmchi:.0f})$ GeV"
+    # label = rf"$ctau = {(0.1*(ctau)):.0f}$ cm"
 
     if style_dict['label'] != None:
         label = style_dict['label']
@@ -526,6 +527,7 @@ def plot_signal_1D(sig_histo, m1, delta, ctau, plot_dict, style_dict):
         plt.savefig(f"{style_dict['outDir']}/{style_dict['outName']}")
         print(f"Saved: {style_dict['outDir']}/{style_dict['outName']}")
     
+    
 
 #Used for Electron Reconstruction Efficiency when projecting pT
 def plot_signal_1D_match(sig_histo, m1, delta, ctau, plot_dict, style_dict, match_type='R', passID='1'):
@@ -572,7 +574,7 @@ def plot_signal_1D_match(sig_histo, m1, delta, ctau, plot_dict, style_dict, matc
     m1 = samp_df.m1[0]
     dmchi = samp_df.dmchi[0]
     ctau = samp_df.ctau[0]
-    label = rf"$(m_\chi, \Delta m_\chi) = ({m1:.0f}, {dmchi:.0f})$ GeV"
+    label = rf"$(m_\chi, \Delta m_\chi) = ({m1:.0f}, {dmchi:.0f})$ GeV, ctau= {0.1*ctau:.0f} cm"
 
     if style_dict['label'] != None:
         label = style_dict['label']
@@ -691,7 +693,7 @@ def plot_signal_1D_lxy(sig_histo, m1, delta, ctau, plot_dict, style_dict, match_
     m1 = samp_df.m1[0]
     dmchi = samp_df.dmchi[0]
     ctau = samp_df.ctau[0]
-    label = rf"$(m_\chi, \Delta m_\chi) = ({m1:.0f}, {dmchi:.0f})$ GeV"
+    label = rf"$(m_\chi, \Delta m_\chi) = ({m1:.0f}, {dmchi:.0f})$ GeV, ctau= {0.1*ctau:.0f} cm"
 
     if style_dict['label'] != None:
         label = style_dict['label']
@@ -859,6 +861,120 @@ def plot_signal_2D(sig_histo, m1, delta, ctau, plot_dict, style_dict):
         plt.tight_layout()
         plt.savefig(f"{style_dict['outDir']}/{style_dict['outName']}")
         print(f"Saved: {style_dict['outDir']}/{style_dict['outName']}")
+    count = histo.values()
+    edges0 = histo.axes[0].edges
+    edges1 = histo.axes[1].edges
+    return count, edges0, edges1
+
+def plot_signal_2D_match(sig_histo, m1, delta, ctau, plot_dict, style_dict,match_type='L', passID=1):
+    """
+    Example:
+
+    plot_dict = {
+        'variable': 'sel_vtx_vx_vs_vy',
+        'cut': 'cut9',
+        'year': 2018
+    }
+    
+    style_2d_dict = {
+        'fig': fig,
+        'ax': ax,
+        'xrebin': 1j,
+        'yrebin': 1j,
+        'xlim': None,     # if None, the default will show up; otherwise give as a list, i.e. [0, 10]  
+        'ylim': None,     # if None, the default will show up; otherwise give as a list, i.e. [0, 10]
+        'doLogy': False, 
+        'doLogx': False,
+        'doLogz': True,
+        'xlabel': r"$v_{x}$ [cm]",   # if None, the default will show up; otherwise give as a string, i.e. 'Electron dxy'
+        'ylabel': r"$v_{y}$ [cm]",   # if None, the default will show up; otherwise give as a string, i.e. 'Efficiency'
+        'zlabel': 'Events',   
+        'flow': None,     # overflow
+        'doSave': True,
+        'outDir': './plots/',
+        'outName': f'signal_cut7_vx_vs_vy_m1_{m1}_delta_{delta}_ctau_{ctau}.png'
+    }
+
+    """
+
+    fig = style_dict['fig']
+    ax = style_dict['ax']
+    
+    hep.cms.label('', data=False, year=plot_dict['year'])
+    
+    # get signal point info
+    si = utils.get_signal_point_dict(sig_histo)
+    samp_df = si[(si.m1 == m1) & (si.delta == delta) & (si.ctau == ctau)]
+    
+    samp = samp_df.name[0]
+
+    m1 = samp_df.m1[0]
+    dmchi = samp_df.dmchi[0]
+    ctau = samp_df.ctau[0]
+    label = f'({m1}, {dmchi}) GeV, ctau = {int(ctau)}mm'
+    
+    # get histogram from coffea output
+    histo = sig_histo[plot_dict['variable']][{"samp":samp, "cut": plot_dict['cut']}]
+
+    # Project categorical axes to pt
+    # histo_sel = histo
+    #PART for match "pT" or "vxy" plots
+    if "match_type" in histo.axes.name:
+        histo = histo[{"match_type": match_type}]
+    if "passID" in histo.axes.name:
+        histo = histo[{"passID": passID}]
+
+
+    # rebinning
+    # histo = histo[::style_dict['xrebin'],::style_dict['yrebin']]
+
+    # set x range manually
+    if style_dict['xlim'] != None:
+        xlim = style_dict['xlim']
+        xbin_range = np.where((histo.axes.edges[0] > xlim[0]) & (histo.axes.edges[0] < xlim[1]))[0]
+        histo = histo[ int(xbin_range[0])-1:int(xbin_range[-1]+1), : ]
+    if style_dict['ylim'] != None:
+        ylim = style_dict['ylim']
+        ybin_range = np.where((histo.axes.edges[1] > ylim[0]) & (histo.axes.edges[1] < ylim[1]))[1]
+        histo = histo[ :, int(ybin_range[0]):int(ybin_range[-1]+1) ]
+    
+    # x and y labels
+    if style_dict['xlabel'] != None:
+        ax.set_xlabel(style_dict['xlabel'])
+    if style_dict['ylabel'] != None:
+        ax.set_ylabel(style_dict['ylabel'])
+
+    # x,y scale
+    if style_dict['doLogx']:
+        ax.set_xscale('log')
+    if style_dict['doLogy']:
+        ax.set_yscale('log')
+    
+    # Plot
+    if style_dict['doLogz']:
+        hep.hist2dplot(histo, flow=style_dict['flow'], norm=mpl.colors.LogNorm(), ax=ax, cbarextend=True)
+    else:
+        hep.hist2dplot(histo, flow=style_dict['flow'], ax=ax, cbarextend=True)
+
+    # z label
+    if style_dict['zlabel'] != None:
+        fig.get_axes()[-1].set_ylabel(style_dict['zlabel'])
+    
+    if style_dict['doSave']:
+        os.makedirs(style_dict['outDir'], exist_ok=True)
+        plt.tight_layout()
+        plt.savefig(f"{style_dict['outDir']}/{style_dict['outName']}")
+        print(f"Saved: {style_dict['outDir']}/{style_dict['outName']}")
+
+    count = histo.values()
+    edges0 = histo.axes[0].edges
+    edges1 = histo.axes[1].edges
+    return count, edges0, edges1
+
+
+
+
+
 
 
 

@@ -154,7 +154,7 @@ class Analyzer:
             self.sample_names.append(name)
             loaded += 1
 
-    def process(self,treename='ntuples/outT',execr="iterative",workers=4,dask_client=None,procType='default',**kwargs):
+    def process(self,treename='ntuples/outT',execr="iterative",workers=5,dask_client=None,procType='default',**kwargs):
         fileset = self.sample_locs
         
         if procType == 'default':
@@ -367,10 +367,24 @@ class iDMeProcessor(processor.ProcessorABC):
                 cutflow[cutName] += ak.sum(events.genWgt)/sum_wgt
             else:
                 cutflow[cutName] += len(events)/sum_wgt
-            cutflow_nevts[cutName] += len(events)            
+            cutflow_nevts[cutName] += len(events)     
+            # if info['type'] == "signal":
+            #     vtx_matched_events = events[events.sel_vtx.isMatched]
+
+            #     den = ak.sum(events.genWgt)
+            #     num = ak.sum(vtx_matched_events.genWgt)
+
+            #     if den > 0:
+            #         cutflow_vtx_matched[cutName] += num / den
+            #     else:
+            #         cutflow_vtx_matched[cutName] += 0      
+   
+            # cutDesc[cutName] += cutDescription + "@"
             if info['type'] == "signal":
+                print(cutName, len(events), ak.sum(events.genWgt))
                 vtx_matched_events = events[events.sel_vtx.isMatched]
                 cutflow_vtx_matched[cutName] += ak.sum(vtx_matched_events.genWgt)/ak.sum(events.genWgt)
+                print(cutName, len(events), ak.sum(events.genWgt))
             cutDesc[cutName] += cutDescription + "@"
 
             # Fill histograms
