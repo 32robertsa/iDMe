@@ -732,7 +732,8 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    int ilpt = 0; // track index (in output tree) of lpt electrons for x-cleaning purposes
    vector<int> iSaved_lpt;
    int ilpt_all = 0;
-   for (auto & ele : *lowPtNanoElectronHandle_) {
+   for (auto & ele : *lowPtNanoElectronHandle_) 
+   {
       // basic cut (should be applied by default in miniAOD stage, but repeating here)
       if (ele.electronID("ID") < -0.25)
           //|| ele.userFloat("ID") < -0.25) 
@@ -746,22 +747,25 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       reco::GsfTrackRef track = ele.gsfTrack();
       float PFmatch_threshold = 0.05; // dR threshold for throwing away low-pT electron in favor of PF electron
       //int iMatch_reg;
-      for (size_t ireg = 0; ireg < reg_good_eles.size(); ireg++) {
+      for (size_t ireg = 0; ireg < reg_good_eles.size(); ireg++) 
+      {
          float dR = reco::deltaR(ele.p4(), reg_good_eles[ireg]->p4());
-         if (dR < mindR) {
+         if (dR < mindR) 
+         {
             mindR = dR;
             //iMatch_reg = ireg;
          }
       }
-      nt.recoLowPtElectronIsXCleaned_.push_back(false);
+      nt.recoLowPtElectronIsXCleaned_.push_back(false);   //CROSS
       nt.recoLowPtElectronGEDidx_.push_back(-999);
-       ////The CROSS-CLEANING part :// can optionally not skip and save whether or not the lpt electron *should* be x-cleaned
-      // if (mindR < PFmatch_threshold) {
-      //    
+       //The CROSS-CLEANING part :// can optionally not skip and save whether or not the lpt electron *should* be x-cleaned
+      // if (mindR < PFmatch_threshold) 
+      // {         
       //    ilpt_all++;
       //    continue;
       // }
-      // else {
+      // else 
+      // {
       //    nt.recoLowPtElectronIsXCleaned_.push_back(false);
       //    nt.recoLowPtElectronGEDidx_.push_back(-999);
       // }
@@ -912,7 +916,8 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    // to be used for determining whether any lpt electron is x-cleaned (so it can be neglected when
    // computing the isolation corrections using electrons in the event)
    vector<bool> allLptEles_isXcleaned;
-   for (auto & ele : *lowPtNanoElectronHandle_) {
+   for (auto & ele : *lowPtNanoElectronHandle_) 
+   {
       float mindR = 999;
       reco::GsfTrackRef track = ele.gsfTrack();
       float PFmatch_threshold = 0.05; // dR threshold for throwing away low-pT electron in favor of PF electron
@@ -923,10 +928,11 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             mindR = dR;
          }
       }
-      allLptEles_isXcleaned.push_back(false);
-      ////// CROSS-CLEAN aspect
+      allLptEles_isXcleaned.push_back(false); //NO X clean part   //CROSS
+      //// CROSS-CLEAN aspect
       // if (mindR < PFmatch_threshold) {
       //    allLptEles_isXcleaned.push_back(true);
+      //    // allLptEles_isXcleaned.push_back(false);
       // }
       // else {
       //    allLptEles_isXcleaned.push_back(false);
@@ -955,7 +961,7 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          }
       }
       for (size_t il = 0; il < lowPtNanoElectronHandle_->size(); il++) {
-         if (allLptEles_isXcleaned[il]) continue;
+         if (allLptEles_isXcleaned[il]) continue;   //CROSS
          auto cand_ele = (*lowPtNanoElectronHandle_)[il];
          float dR = reco::deltaR(ele.p4(),cand_ele.p4());
          if (dR < R_pf) {
@@ -1111,7 +1117,7 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          for (size_t j = 0; j < coll_2.size(); j++) {
             if ( (type1==type2) && (j <= i) ) continue; // don't vertex ele with itself or ones prior (if vertexing with same type)
             
-            // don't vertex a GED electron with a matching low-pT (only for x-clean study where we keep xcleaned lpt)
+            //don't vertex a GED electron with a matching low-pT (only for x-clean study where we keep xcleaned lpt) //CROSS
             if (type1 == "L" && type2 == "R") {
                if (nt.recoLowPtElectronIsXCleaned_[i]) continue; // nested if b/c will error if checking condition with i > n_lpt 
             }
@@ -1426,7 +1432,7 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          int iMatch_e = -1;
          int iMatch_p = -1;
          for (size_t icount = 0; icount < all_eles.size(); icount++) {
-            // don't try gen-matching x-cleaned low-pt electrons
+            // don't try gen-matching x-cleaned low-pt electrons     //CROSS
             if (icount >= (size_t)n_reg_eles) {
                if (nt.recoLowPtElectronIsXCleaned_[icount - n_reg_eles]) continue;
             }
