@@ -2,10 +2,12 @@
 
 source /cvmfs/cms.cern.ch/cmsset_default.sh
 
+
 #BASE=/uscms/home/sbrightt/nobackup/iDM/iDMe_analysis/CMSSW_10_6_26/src/iDMe/
 BASE=/uscms/home/reshmar/nobackup/CMSSW_13_0_13/src/iDMe
 HEAD=/uscms/home/reshmar/nobackup/CMSSW_13_0_13/src/iDMe
 /uscms/home/sbrightt/nobackup/iDMe/compiled_CMSSW_envs/ntuplizer_CMSSW_10_6_26_noCustomMini
+
 
 mkdir -p $HEAD
 cd $HEAD

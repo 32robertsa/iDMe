@@ -105,11 +105,14 @@
 #include "CommonTools/Egamma/interface/EffectiveAreas.h"
 #include "CommonTools/Egamma/interface/ConversionTools.h"
 
+
 #include "iDMe/CustomTools/interface/DisplacedDileptonAOD.hh"
 #include "iDMe/CustomTools/interface/JetCorrections.hh"
 #include "iDMe/CustomTools/interface/NtupleContainerV2.hh"
 //#include "iDMe/CustomTools/interface/IsolationCalculator.hh"
 #include "iDMe/CustomTools/interface/Helpers.hh"
+
+#include "DataFormats/MuonReco/interface/Muon.h"  // for SF computation, add prompt muon channels
 
 #include "TTree.h"
 #include "TMath.h"
@@ -177,28 +180,10 @@ class ElectronSkimmer : public edm::one::EDAnalyzer<edm::one::WatchRuns, edm::on
       const edm::EDGetTokenT<vector<pat::Electron> >lowPtNanoElectronToken_;
       const edm::EDGetTokenT<vector<pat::Electron> >lowPtElectronToken_;
       const edm::EDGetTokenT<vector<pat::Electron> > recoNanoElectronToken_;
+      const edm::EDGetTokenT<vector<pat::Muon> > pfRecoMuToken_;
 
 
 
-
-
-    //  const edm::EDGetTokenT<vector<pat::Electron> > recoNanoElectronToken_;
-    //
-     // const edm::EDGetTokenT<std::vector<PileupSummaryInfo> > pileupInfosToken_;
-     // const edm::EDGetTokenT<double> rhoToken_;
-     // const edm::EDGetTokenT<vector<reco::GenParticle> > genParticleToken_;
-      //const edm::EDGetTokenT<vector<reco::GenJet> > genJetToken_;
-      //const edm::EDGetTokenT<vector<reco::GenMET> > genMETToken_;
-    //  const edm::EDGetTokenT<vector<reco::Vertex> > primaryVertexToken_;
-    //  const edm::EDGetTokenT<reco::BeamSpot> beamspotToken_;
-    //  const edm::EDGetTokenT<vector<reco::Conversion> > conversionsToken_;
-    //  const edm::EDGetTokenT<vector<pat::Photon> > photonsToken_;
-     // const edm::EDGetTokenT<vector<pat::Photon> > ootPhotonsToken_;
-      //const edm::EDGetTokenT<vector<pat::MET> > METToken_;
-    //  const edm::EDGetTokenT<vector<pat::MET> > puppiMETToken_;
-     // const edm::EDGetTokenT<edm::TriggerResults> trigResultsToken_;
-     // const edm::EDGetTokenT<edm::TriggerResults> metFilterResultsToken_;
-     // const edm::EDGetTokenT<vector<pat::IsolatedTrack> > isoTrackToken_;
 
       // Handles
       edm::Handle<vector<pat::Electron> > recoElectronHandle_;
@@ -206,6 +191,7 @@ class ElectronSkimmer : public edm::one::EDAnalyzer<edm::one::WatchRuns, edm::on
       edm::Handle<vector<pat::Electron> > lowPtElectronHandle_;
       edm::Handle<vector<pat::Electron> >lowPtNanoElectronHandle_;
       edm::Handle<vector<reco::Track> > dsaMuonHandle_;
+
       edm::Handle<vector<pat::PackedCandidate> > packedPFCandHandle_;
       edm::Handle<vector<pat::Jet> > recoJetHandle_;
       edm::Handle<GenEventInfoProduct> genEvtInfoHandle_;
@@ -224,6 +210,7 @@ class ElectronSkimmer : public edm::one::EDAnalyzer<edm::one::WatchRuns, edm::on
       edm::Handle<edm::TriggerResults> trigResultsHandle_;
       edm::Handle<edm::TriggerResults> metFilterResultsHandle_;
       edm::Handle<vector<pat::IsolatedTrack> > isoTrackHandle_;
+      edm::Handle<vector<pat::Muon> > pfRecoMuHandle_;
 
       // Trigger variables
       std::vector<std::string> trigPathsWithVersion_;
@@ -253,9 +240,6 @@ ElectronSkimmer::ElectronSkimmer(const edm::ParameterSet& ps)
    metFilters_(ps.getParameter<std::vector<std::string> >("metFilters")),
    trigPaths_(ps.getParameter<std::vector<std::string> >("triggerPaths")),
    effectiveAreas_((ps.getParameter<edm::FileInPath>("effAreasConfigFile")).fullPath()),
-
-   //effectiveAreas_(std::make_unique<EffectiveAreas>((ps.getParameter<edm::FileInPath>("effAreasConfigFile")).fullPath()) );
-
    
    recoElectronToken_(consumes<vector<pat::Electron> >(ps.getParameter<edm::InputTag>("recoElectron"))),
 
@@ -294,34 +278,9 @@ ElectronSkimmer::ElectronSkimmer(const edm::ParameterSet& ps)
   // recoNanoElectronToken_(consumes<vector<pat::Electron> >(ps.getParameter<edm::InputTag>("nanoElectron"))),
    lowPtNanoElectronToken_(consumes<vector<pat::Electron> >(ps.getParameter<edm::InputTag>("lowPtNanoElectron"))),
    lowPtElectronToken_(consumes<vector<pat::Electron> >(ps.getParameter<edm::InputTag>("lowPtElectron"))),
-    recoNanoElectronToken_(consumes<vector<pat::Electron> >(ps.getParameter<edm::InputTag>("nanoElectron")))
-   //packedPFCandToken_(consumes<vector<pat::PackedCandidate> >(ps.getParameter<edm::InputTag>("pfCands"))),
+   recoNanoElectronToken_(consumes<vector<pat::Electron> >(ps.getParameter<edm::InputTag>("nanoElectron"))),
+   pfRecoMuToken_(consumes<vector<pat::Muon> >(ps.getParameter<edm::InputTag>("pfRecoMu")))
    
- //  lowPtElectronToken_(consumes<vector<pat::Electron> >(ps.getParameter<edm::InputTag>("lowPtElectron"))),
-   
-  // recoNanoElectronToken_(consumes<vector<pat::Electron> >(ps.getParameter<edm::InputTag>("nanoElectron"))),
-   //lowPtElectronToken_(consumes<vector<pat::Electron> >(ps.getParameter<edm::InputTag>("lowPtElectron"))),
-   
-  // lowPtNanoElectronToken_(consumes<vector<pat::Electron> >(ps.getParameter<edm::InputTag>("lowPtNanoElectron"))),
- //  packedPFCandToken_(consumes<vector<pat::PackedCandidate> >(ps.getParameter<edm::InputTag>("pfCands"))),
-  // recoJetToken_(consumes<vector<pat::Jet> >(ps.getParameter<edm::InputTag>("jets"))),
-  // genEvtInfoToken_(consumes<GenEventInfoProduct>(ps.getParameter<edm::InputTag>("genEvt"))),
-  // pileupInfosToken_(consumes<std::vector<PileupSummaryInfo> >(ps.getParameter<edm::InputTag>("pileups"))),
-  // rhoToken_(consumes<double>(ps.getParameter<edm::InputTag>("rho"))),
-   //genParticleToken_(consumes<vector<reco::GenParticle> >(ps.getParameter<edm::InputTag>("genParticle"))),
-  // genJetToken_(consumes<vector<reco::GenJet> >(ps.getParameter<edm::InputTag>("genJet"))),
-//   genMETToken_(consumes<vector<reco::GenMET> >(ps.getParameter<edm::InputTag>("genMET"))),
-  // primaryVertexToken_(consumes<vector<reco::Vertex> >(ps.getParameter<edm::InputTag>("primaryVertex"))),
-  // beamspotToken_(consumes<reco::BeamSpot>(ps.getParameter<edm::InputTag>("beamspot"))),
- //  conversionsToken_(consumes<vector<reco::Conversion> >(ps.getParameter<edm::InputTag>("conversions"))),
-  // photonsToken_(consumes<vector<pat::Photon> >(ps.getParameter<edm::InputTag>("photons"))),
-  // ootPhotonsToken_(consumes<vector<pat::Photon> >(ps.getParameter<edm::InputTag>("ootPhotons"))),
-   //METToken_(consumes<vector<pat::MET> >(ps.getParameter<edm::InputTag>("MET"))),
-  // puppiMETToken_(consumes<vector<pat::MET> >(ps.getParameter<edm::InputTag>("puppiMET"))),
-  // trigResultsToken_(consumes<edm::TriggerResults>(ps.getParameter<edm::InputTag>("trigResults"))),
- //  metFilterResultsToken_(consumes<edm::TriggerResults>(ps.getParameter<edm::InputTag>("metFilterResults"))),
-  // isoTrackToken_(consumes<vector<pat::IsolatedTrack> >(ps.getParameter<edm::InputTag>("isoTracks"))),
-  // ttkToken_(esConsumes(edm::ESInputTag{"", "TransientTrackBuilder"}))
 {
    usesResource("TFileService");
    m_random_generator = std::mt19937(37428479);
@@ -379,10 +338,6 @@ ElectronSkimmer::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup)
    
    const std::vector<std::string>& pathNames = hltConfig_.triggerNames();
 
-   /*std::cout << " AVAILABLE TRIGGERS" << std::endl;
-   for (auto s : pathNames) {
-      std::cout << s << std::endl;
-   }*/
    
    // All trigger paths
    for (auto trigPathNoVersion : trigPaths_) {
@@ -446,7 +401,7 @@ ElectronSkimmer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) 
    // Inputs from the run_ntuplizer_cfg python (cmsRun inputs)
    desc.add<bool>("isData", 0);
    desc.add<bool>("isSignal",0);
-   desc.add<std::string>("year","2018");
+   desc.add<std::string>("year","2022");
    desc.add<std::string>("triggerProcessName", "HLT");
    desc.add<std::string>("metFilterName","PAT");
    desc.add<std::vector<std::string> >("metFilters",{});
@@ -457,12 +412,14 @@ ElectronSkimmer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) 
    desc.add<edm::InputTag>("lowPtElectron",edm::InputTag("slimmedLowPtElectrons"));
    desc.add<edm::InputTag>("lowPtNanoElectron",edm::InputTag("updatedLowPtElectronsWithUserData"));
    desc.add<edm::InputTag>("displacedStandAloneMuons",edm::InputTag("displacedStandAloneMuons"));
+
    desc.add<edm::InputTag>("pfCands",edm::InputTag("packedPFCandidates"));
    desc.add<edm::InputTag>("jets",edm::InputTag("slimmedJets"));
    desc.add<edm::InputTag>("genEvt", edm::InputTag("generator"));
    desc.add<edm::InputTag>("pileups", edm::InputTag("slimmedAddPileupInfo"));
    desc.add<edm::InputTag>("rho", edm::InputTag("fixedGridRhoFastJetAll"));
    desc.add<edm::InputTag>("genParticle",edm::InputTag("prunedGenParticles")); //IMP
+
    desc.add<edm::InputTag>("genJet",edm::InputTag("slimmedGenJets"));
    desc.add<edm::InputTag>("genMET",edm::InputTag("genMetTrue"));
    desc.add<edm::InputTag>("primaryVertex",edm::InputTag("offlineSlimmedPrimaryVertices"));
@@ -475,6 +432,7 @@ ElectronSkimmer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) 
    desc.add<edm::InputTag>("trigResults",edm::InputTag("TriggerResults","","HLT"));
    desc.add<edm::InputTag>("metFilterResults",edm::InputTag("TriggerResults","","PAT"));
    desc.add<edm::InputTag>("isoTracks",edm::InputTag("isolatedTracks","","PAT"));
+   desc.add<edm::InputTag>("pfRecoMu", edm::InputTag("slimmedMuons"));
    descriptions.add("ElectronSkimmer", desc);
 }
 
@@ -490,6 +448,7 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    iEvent.getByToken(lowPtElectronToken_,lowPtElectronHandle_);
    iEvent.getByToken(lowPtNanoElectronToken_,lowPtNanoElectronHandle_);
    iEvent.getByToken(dsaMuonToken_,dsaMuonHandle_);
+
    iEvent.getByToken(packedPFCandToken_,packedPFCandHandle_);
    iEvent.getByToken(recoJetToken_,recoJetHandle_);
    iEvent.getByToken(pileupInfosToken_,pileupInfosHandle_);
@@ -504,8 +463,10 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    iEvent.getByToken(trigResultsToken_,trigResultsHandle_);
    iEvent.getByToken(metFilterResultsToken_,metFilterResultsHandle_);
    iEvent.getByToken(isoTrackToken_,isoTrackHandle_);
+   iEvent.getByToken(pfRecoMuToken_,pfRecoMuHandle_);  //FIGURE OUT WHY THIS IS NOT WORKING
 
-   if (!isData) { 
+   if (!isData) 
+   { 
       iEvent.getByToken(genEvtInfoToken_,genEvtInfoHandle_);
       iEvent.getByToken(genParticleToken_,genParticleHandle_);
       iEvent.getByToken(genJetToken_,genJetHandle_);
@@ -530,6 +491,16 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    nt.PV_x_ = pv.x();
    nt.PV_y_ = pv.y();
    nt.PV_z_ = pv.z();
+// <<<<<<< HEAD
+// =======
+      
+    double nPV = 0;
+    for (const auto & ele : *primaryVertexHandle_) {
+      nPV++;
+    }
+    nt.numPV_ = nPV;
+
+// >>>>>>> kyungmin/main
    auto beamspot = *beamspotHandle_;
    // Set up objects for vertex reco
    const TransientTrackBuilder* theB = &iSetup.getData(ttkToken_);
@@ -574,6 +545,11 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       nt.PFMETJERUpPhi_ = met.shiftedPhi(pat::MET::JetResUp,metType);
       nt.PFMETJERDownPt_ = met.shiftedPt(pat::MET::JetResDown,metType);
       nt.PFMETJERDownPhi_ = met.shiftedPhi(pat::MET::JetResDown,metType);
+      nt.PFMETUnclusteredUpPt_ = met.shiftedPt(pat::MET::UnclusteredEnUp,metType);
+      nt.PFMETUnclusteredUpPhi_ = met.shiftedPhi(pat::MET::UnclusteredEnUp,metType);
+      nt.PFMETUnclusteredDownPt_ = met.shiftedPt(pat::MET::UnclusteredEnDown,metType);
+      nt.PFMETUnclusteredDownPhi_ = met.shiftedPhi(pat::MET::UnclusteredEnDown,metType);
+      
       // Calo MET
       nt.CaloMET_Pt_ = met.caloMETPt();
       nt.CaloMET_Phi_ = met.caloMETPhi(); 
@@ -581,12 +557,14 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    }
 
    // Handling Jets
-   for (auto & jet : *recoJetHandle_) {
+   for (auto & jet : *recoJetHandle_) 
+   {
      
       nt.PFNJetAll_++;
       cout<<"Total number of jets:"<<nt.PFNJetAll_<<endl;
-      if (helper.JetID(jet,year) && jet.pt() > 30) {
-     // if (jet.pt() > 30){
+      if (helper.JetID(jet,year) && jet.pt() > 30) 
+      {
+     
          nt.PFNJet_++;
          cout<<"nt.PFNJet_:"<<nt.PFNJet_<<endl;
          nt.PFJetPt_.push_back(jet.pt());
@@ -595,22 +573,104 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          cout << "Jet pt: " << jet.pt() << " eta: " << jet.eta() << " phi: " << jet.phi() << endl;
          cout<<"Something interesting!"<<endl;
          auto bTag = jet.bDiscriminator("pfDeepFlavourJetTags:probb") + 
+
                      jet.bDiscriminator("pfDeepFlavourJetTags:probbb") + 
                      jet.bDiscriminator("pfDeepFlavourJetTags:problepb");
          nt.PFJetBTag_.push_back(bTag);
-         nt.PFJetMETdPhi_.push_back(reco::deltaPhi(jet.phi(),nt.PFMET_Phi_));}
-      else {cout<<"Not following the selection."<<endl;}
-    
-         //if ((jet.pt() > 30) && (jet.eta() > -3.0) && (jet.eta() < -1.3) && (jet.phi() > -1.57) && (jet.phi() < -0.87)) {
-           // nt.PFHEMFlag_ = true;
-         
       
+   
+         // btagging efficiencies
+         if (!isData) 
+         {
+             nt.PFJetTruth_.push_back(jet.hadronFlavour());
+             if (jet.hadronFlavour() == 5) 
+             {       
+                 nt.PFNbJetTrue_++; 
+                 nt.PFJetEffDenomPt_.push_back(jet.pt());
+                 float pt_btagEff_num = -999;
+                 if ((year == "2018") && (bTag > 0.2783)) { nt.PFNbJetTagged_++; pt_btagEff_num = jet.pt(); } 
+                 else if ((year == "2017") && (bTag > 0.3040)) { nt.PFNbJetTagged_++; pt_btagEff_num = jet.pt(); } 
+                 else if ((year == "2016") && (bTag > 0.2489)) { nt.PFNbJetTagged_++; pt_btagEff_num = jet.pt(); } 
+                 else if ((year == "2016APV") && (bTag > 0.2598)) { nt.PFNbJetTagged_++; pt_btagEff_num = jet.pt(); }
+                 nt.PFJetEffNumPt_.push_back(pt_btagEff_num); 
+             }
+         } 
+
+         // For JEC
+         nt.PFJetRawFactor_.push_back(jet.jecFactor("Uncorrected"));
+         nt.PFJetMass_.push_back(jet.mass());
+         nt.PFJetEnergy_.push_back(jet.energy());
+ 
+         nt.PFJetArea_.push_back(jet.jetArea());
+         nt.PFJetPtRaw_.push_back((1 - jet.jecFactor("Uncorrected"))*jet.pt());
+         nt.PFJetEnergyRaw_.push_back((1 - jet.jecFactor("Uncorrected"))*jet.energy());
+         nt.PFJetMassRaw_.push_back((1 - jet.jecFactor("Uncorrected"))*jet.mass());
+ 
+         nt.fixedGridRhoFastjetAll_ = rhoHandle_.isValid() ? *(rhoHandle_.product()) : -999;
+
+         // For JER
+         if (!isData) 
+         {
+           double min_deltaR = 999;
+           double matched_jet_pT = -999;
+           double matched_jet_eta = -999;
+           double matched_jet_phi = -999;
+           for (const auto & genJet : *genJetHandle_) 
+           {
+             double deltaR = reco::deltaR( genJet.p4(), jet.p4() );
+             double deltaPt = fabs( genJet.pt() - jet.pt() );
+ 
+             if (deltaR < min_deltaR) 
+             {
+               min_deltaR = deltaR;
+
+               if (deltaR < 0.2)
+               {
+                 matched_jet_pT = genJet.pt();
+                 matched_jet_eta = genJet.eta();
+                 matched_jet_phi = genJet.phi();
+               }
+             }
+           }
+           nt.PFJet_matchedGenJetPt_.push_back(matched_jet_pT);
+           nt.PFJet_matchedGenJetEta_.push_back(matched_jet_eta);
+           nt.PFJet_matchedGenJetPhi_.push_back(matched_jet_phi);
+         } 
+
+         // METdPhi
+         nt.PFJetMETdPhi_.push_back(reco::deltaPhi(jet.phi(),nt.PFMET_Phi_));
+         if ((jet.pt() > 30) && (jet.eta() > -3.0) && (jet.eta() < -1.3) && (jet.phi() > -1.57) && (jet.phi() < -0.87)) {
+            nt.PFHEMFlag_ = true;
+         }
+      }
+// // >>>>>>> kyungmin/main
    }
 
    // Record all electrons that are not part of PF -- either regulars that don't pass PF ID
    // or low-pT that aren't reconstructed as PF
    vector<math::XYZTLorentzVector> nonPF_ele_p4s;
-   
+  
+   // Handling muons: used only for SF measurement with Z/gamma events
+   for (const auto & mu : *pfRecoMuHandle_) 
+   {
+      if (mu.pt() < 3) continue;
+      else 
+      {
+         nt.nMuon_++;
+         nt.recoMuonPt_.push_back(mu.pt());     
+         nt.recoMuonEta_.push_back(mu.eta());     
+         nt.recoMuonPhi_.push_back(mu.phi());     
+         nt.recoMuonEnergy_.push_back(mu.energy());
+         nt.recoMuonCharge_.push_back(mu.charge());     
+         nt.recoMuonIDcutBasedLoose_.push_back(mu.passed('CutBasedIdLoose'));
+         nt.recoMuonIDcutBasedMedium_.push_back(mu.passed('CutBasedIdMedium'));
+         nt.recoMuonIDcutBasedMediumPrompt_.push_back(mu.passed('CutBasedIdMediumPrompt'));
+         nt.recoMuonIDcutBasedTight_.push_back(mu.passed('CutBasedIdTight'));
+         nt.recoMuonIsPFMuon_.push_back(mu.isPFMuon());
+         nt.recoMuonIsGlobalMuon_.push_back(mu.isGlobalMuon());
+         nt.recoMuonIsStandAloneMuon_.push_back(mu.isStandAloneMuon());
+      }
+   } 
    
    ////////////////////////////////
    // Handling default electrons // 
@@ -620,14 +680,12 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    vector<int> iSaved_ele; // record indices of saved electrons for later veto during isolation correction calculations
    int iele = 0;
    for (const auto & ele : *recoNanoElectronHandle_) {
-      // require pT > 5 & pass loose ID to consider GED electron
-      // if (ele.pt() < 5 || !ele.electronID("mvaEleID-RunIIIWinter22-noIso-V1-wp90"))
-      if (!ele.electronID("mvaEleID-RunIIIWinter22-noIso-V1-wp90")) {
+  
+      if (!ele.electronID("mvaEleID-RunIIIWinter22-noIso-V1-wp90")) 
+      {
          iele++;
          continue;
-      // if (ele.pt() < 5 || !ele.electronID("cutBasedElectronID-RunIIIWinter22-V1-loose")) {
-      //    iele++;
-      //    continue;
+     
       }
       iSaved_ele.push_back(iele);
       iele++;
@@ -658,6 +716,7 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       nt.recoElectronID_mva90_.push_back(ele.electronID("mvaEleID-RunIIIWinter22-noIso-V1-wp90"));
       nt.recoElectronID_mva80_.push_back(ele.electronID("mvaEleID-RunIIIWinter22-noIso-V1-wp80"));
       // nt.recoElectronID_mvaLoose_.push_back(ele.electronID("mvaEleID-RunIIIWinter22-noIso-V1-wpLoose"));
+
       nt.recoElectronAngularRes_.push_back(sqrt(track->phiError()*track->phiError() + track->etaError()*track->etaError()));
       nt.recoElectronE_.push_back(ele.energy());
       nt.recoElectronVxy_.push_back(ele.trackPositionAtVtx().rho());
@@ -735,8 +794,7 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    for (auto & ele : *lowPtNanoElectronHandle_) 
    {
       // basic cut (should be applied by default in miniAOD stage, but repeating here)
-      if (ele.electronID("ID") < -0.25)
-          //|| ele.userFloat("ID") < -0.25) 
+      if (ele.electronID("ID") < -0.25)         
       {
          ilpt_all++;
          continue;
@@ -752,6 +810,7 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          float dR = reco::deltaR(ele.p4(), reg_good_eles[ireg]->p4());
          if (dR < mindR) 
          {
+
             mindR = dR;
             //iMatch_reg = ireg;
          }
@@ -825,6 +884,7 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          }
          nt.recoDSAMuonDisplacedId_.push_back(passesDisplacedId);
       }
+
       // increment lpt idx
       ilpt++;
       iSaved_lpt.push_back(ilpt_all);
@@ -846,6 +906,7 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
      // nt.recoLowPtElectronID_.push_back(ele.userFloat("ID"));
       nt.recoLowPtElectronID_.push_back(ele.electronID("ID"));
      // nt.recoLowPtElectronID_.push_back(ele.electronID("2020Nov28"));
+
 
 
       nt.recoLowPtElectronAngularRes_.push_back(sqrt(track->phiError()*track->phiError() + track->etaError()*track->etaError()));
@@ -918,6 +979,7 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    vector<bool> allLptEles_isXcleaned;
    for (auto & ele : *lowPtNanoElectronHandle_) 
    {
+
       float mindR = 999;
       reco::GsfTrackRef track = ele.gsfTrack();
       float PFmatch_threshold = 0.05; // dR threshold for throwing away low-pT electron in favor of PF electron
@@ -938,7 +1000,10 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       //    allLptEles_isXcleaned.push_back(false);
       // }
    }
+
+    
     //This needs to be done: Section 7
+
    // Computing corrections to PFIso and MiniIso
    float mindr = 0.05; float maxdr = 0.2; float kt_scale = 10.0; // for miniIso
    // correcting for regular electrons
@@ -962,6 +1027,7 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       }
       for (size_t il = 0; il < lowPtNanoElectronHandle_->size(); il++) {
          if (allLptEles_isXcleaned[il]) continue;   //CROSS
+
          auto cand_ele = (*lowPtNanoElectronHandle_)[il];
          float dR = reco::deltaR(ele.p4(),cand_ele.p4());
          if (dR < R_pf) {
@@ -1033,7 +1099,8 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    }
 
    // Handling OOT photons
-   for (const auto & ph : *ootPhotonsHandle_) {
+   for (const auto & ph : *ootPhotonsHandle_) 
+   {
       nt.nOOTPhotons_++;
       nt.ootPhotonEt_.push_back(ph.et());
       nt.ootPhotonEta_.push_back(ph.eta());
@@ -1118,6 +1185,7 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             if ( (type1==type2) && (j <= i) ) continue; // don't vertex ele with itself or ones prior (if vertexing with same type)
             
             //don't vertex a GED electron with a matching low-pT (only for x-clean study where we keep xcleaned lpt) //CROSS
+
             if (type1 == "L" && type2 == "R") {
                if (nt.recoLowPtElectronIsXCleaned_[i]) continue; // nested if b/c will error if checking condition with i > n_lpt 
             }
@@ -1276,7 +1344,7 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                   auto diele_state = diele_part->currentState();
                   auto daughters = vertexFitTree->daughterParticles();
                   nt.vtx_refit_m_.push_back(diele_state.mass());
-                  
+
                   nt.vtx_refit_pt_.push_back(diele_state.globalMomentum().transverse());
                   nt.vtx_refit_eta_.push_back(diele_state.globalMomentum().eta());
                   nt.vtx_refit_phi_.push_back(diele_state.globalMomentum().phi());
@@ -1286,7 +1354,7 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                   nt.vtx_refit_pt_.push_back(-999.0);
                   nt.vtx_refit_eta_.push_back(-999.0);
                   nt.vtx_refit_phi_.push_back(-999.0);
-                  
+
                }
             }
             catch (std::exception ex) {
@@ -1352,7 +1420,7 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       math::XYZTLorentzVector gen_ele_p4, gen_pos_p4;
       for (const auto & genParticle : *genParticleHandle_) {
          int absID = abs(genParticle.pdgId());
-         //std::cout<<"ID:"<<absID<<std::endl;
+
          // veto anything that isn't a lepton or a hard process particle
          if ((!genParticle.isHardProcess()) && (genParticle.status() != 1 || (absID < 11) || (absID > 16))) {
             continue;
@@ -1381,8 +1449,8 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
          if (isSignal) {
             if ((abs(genParticle.pdgId()) == 11) && (motherID == 1000023))
-            {
-            //if ((abs(genParticle.pdgId()) == 11)) {
+            {            
+
                // Recording basic info
                if (genParticle.pdgId() == 11) {
                   gen_ele_p4 = genParticle.p4();
@@ -1421,6 +1489,7 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       }
 
        if (isSignal) {
+
          // Gen-matching electrons to reco objects for iDM signal
          // Strategy: merge "good" electrons + low-pT electrons (i.e. the ones saved to ntuples & used in vertexing)
          vector<math::XYZTLorentzVector> all_eles(reg_ele_p4s);
@@ -1433,6 +1502,7 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
          int iMatch_p = -1;
          for (size_t icount = 0; icount < all_eles.size(); icount++) {
             // don't try gen-matching x-cleaned low-pt electrons     //CROSS
+
             if (icount >= (size_t)n_reg_eles) {
                if (nt.recoLowPtElectronIsXCleaned_[icount - n_reg_eles]) continue;
             }

@@ -20,6 +20,12 @@ from mplhep.styles.cms import cmap_petroff
 
 cmap = ["#3f90da", "#ffa90e", "#bd1f01", "#94a4a2", "#832db6", "#a96b59", "#e76300", "#b9ac70", "#717581", "#92dadd"] 
 # cms-recommended version of 10-color scheme
+# =======
+
+# from mplhep.styles.cms import cmap_petroff
+
+# cmap = ["#3f90da", "#ffa90e", "#bd1f01", "#94a4a2", "#832db6", "#a96b59", "#e76300", "#b9ac70", "#717581", "#92dadd"] # cms-recommended version of 10-color scheme
+# >>>>>>> kyungmin/main
 
 bkg_cmap = {
     "QCD":cmap_petroff[0],
@@ -48,6 +54,7 @@ bkg_cmap = {
 }
 '''
 
+# <<<<<<< HEAD
 # selected_signals = [
 #     "signal_2022_Mchi-10p5_dMchi-1p0_ctau-10",
 #     "signal_2022_Mchi-31p5_dMchi-3p0_ctau-10",
@@ -58,6 +65,20 @@ bkg_cmap = {
 #     "signal_2022_Mchi-31p5_dMchi-3p0_ctau-10":"b",
 #     "signal_2022_Mchi-52p5_dMchi-5p0_ctau-10":"g"
 # }
+# =======
+# selected_signals = [
+#     "sig_2018_Mchi-10p5_dMchi-1p0_ctau-1",
+#     "sig_2018_Mchi-11p0_dMchi-2p0_ctau-100",
+#     "sig_2018_Mchi-52p5_dMchi-5p0_ctau-10",
+#     "sig_2018_Mchi-77p0_dMchi-14p0_ctau-100"
+# ]
+# selected_signals_cmap = {
+#     "sig_2018_Mchi-10p5_dMchi-1p0_ctau-1":"k",
+#     "sig_2018_Mchi-11p0_dMchi-2p0_ctau-100":"g",
+#     "sig_2018_Mchi-52p5_dMchi-5p0_ctau-10":"c",
+#     "sig_2018_Mchi-77p0_dMchi-14p0_ctau-100":"b"
+# }
+# >>>>>>> kyungmin/main
 
 class histContainer:
     def __init__(self,path,noMeta=False,bkg=False):
@@ -279,7 +300,12 @@ def plot_signal_efficiency(sig_histo, df, plot_dict_sig_eff):
     'doLog': True,
     
     'ylabel': 'Events', # None for default
+<<<<<<< HEAD
     'title': rf"Cutflow: $\Delta$ = {deltas[0]}, c$\tau$ = {ctaus[0]}mm", 
+=======
+    'title': rf"Cutflow: $\Delta$ = {deltas[0]}, c$\tau$ = {ctaus[0]}mm",
+    'label': None,
+>>>>>>> kyungmin/main
 
     # Plot saving
     'doSave': False,
@@ -310,7 +336,15 @@ def plot_signal_efficiency(sig_histo, df, plot_dict_sig_eff):
         
         if (m1 in plot_dict_sig_eff['m1s']) and (delta in plot_dict_sig_eff['deltas']):
             if ctau in plot_dict_sig_eff['ctaus']:
-                plt.plot(cuts, df.loc[point], label=rf"($M_{1}$, $\Delta$) = ({m1:.0f}, {dmchi:.0f}) GeV, c$\tau$ = {int(ctau)}mm")
+# <<<<<<< HEAD
+#                 plt.plot(cuts, df.loc[point], label=rf"($M_{1}$, $\Delta$) = ({m1:.0f}, {dmchi:.0f}) GeV, c$\tau$ = {int(ctau)}mm")
+# =======
+                if plot_dict_sig_eff['label'] == None:
+                    label = rf"($M_{1}$, $\Delta$) = ({m1:.0f}, {dmchi:.0f}) GeV, c$\tau$ = {int(ctau)}mm"
+                else:
+                    label = plot_dict_sig_eff['label']
+                plt.plot(cuts, df.loc[point], label=label)
+# >>>>>>> kyungmin/main
 
     if plot_dict_sig_eff['doLog']:
         plt.yscale('log')
@@ -334,8 +368,11 @@ def plot_signal_efficiency(sig_histo, df, plot_dict_sig_eff):
         plt.savefig(f"{plot_dict_sig_eff['outDir']}/{plot_dict_sig_eff['outName']}")
         print(f"Saved: {plot_dict_sig_eff['outDir']}/{plot_dict_sig_eff['outName']}")
     
+# <<<<<<< HEAD
     plt.show()
 
+# =======
+# >>>>>>> kyungmin/main
 
 def plot_bkg_efficiency(bkg_histos, df, plot_dict_bkg_eff):
     """
@@ -353,6 +390,9 @@ def plot_bkg_efficiency(bkg_histos, df, plot_dict_bkg_eff):
     'ylabel': 'Events', # None for default
     'title': rf"Cutflow", 
 
+    'label': None,
+    'color': None,
+
     # Plot saving
     'doSave': True,
     'outDir': './plots/cutflow/',
@@ -368,10 +408,26 @@ def plot_bkg_efficiency(bkg_histos, df, plot_dict_bkg_eff):
 
     # Color map for each process
     for process in processes:
-        if 'Total' in process:
-            plt.plot(cuts, df.loc[process], label=process, color='black')
+# <<<<<<< HEAD
+#         if 'Total' in process:
+#             plt.plot(cuts, df.loc[process], label=process, color='black')
+#         else:
+#             plt.plot(cuts, df.loc[process], label=process, color = bkg_cmap[process])
+# =======
+        if plot_dict_bkg_eff['label'] != None:
+            label = plot_dict_bkg_eff['label']
         else:
-            plt.plot(cuts, df.loc[process], label=process, color = bkg_cmap[process])
+            label = plot_dict_bkg_eff
+        
+        if 'Total' in process:
+            if plot_dict_bkg_eff['color'] != None:
+                color = plot_dict_bkg_eff['color']
+            else:
+                color = 'black'
+            plt.plot(cuts, df.loc[process], label=label, color=color)
+        else:
+            plt.plot(cuts, df.loc[process], label=label, color = bkg_cmap[process])
+# >>>>>>> kyungmin/main
 
     if plot_dict_bkg_eff['doLog']:
         plt.yscale('log')
@@ -467,7 +523,11 @@ def plot_signal_1D(sig_histo, m1, delta, ctau, plot_dict, style_dict):
     fig = style_dict['fig']
     ax = style_dict['ax']
     
+# <<<<<<< HEAD
     hep.cms.label('Preliminary', data=False, year=plot_dict['year'], com='13.6')
+# =======
+#     hep.cms.label('', data=False, year=plot_dict['year'])
+# >>>>>>> kyungmin/main
     
     # get signal point info
     si = utils.get_signal_point_dict(sig_histo)
@@ -479,7 +539,7 @@ def plot_signal_1D(sig_histo, m1, delta, ctau, plot_dict, style_dict):
     dmchi = samp_df.dmchi[0]
     ctau = samp_df.ctau[0]
     label = rf"$(m_\chi, \Delta m_\chi) = ({m1:.0f}, {dmchi:.0f})$ GeV"
-    # label = rf"$ctau = {(0.1*(ctau)):.0f}$ cm"
+
 
     if style_dict['label'] != None:
         label = style_dict['label']
@@ -515,8 +575,7 @@ def plot_signal_1D(sig_histo, m1, delta, ctau, plot_dict, style_dict):
     if style_dict['doLogy']:
         ax.set_yscale('log')
 
-    # Plot
-   
+
     hep.histplot(histo, yerr=style_dict['doYerr'], density=style_dict['doDensity'], ax=ax, histtype='step', flow=style_dict['flow'], label = label)
 
     plt.legend()
@@ -527,6 +586,7 @@ def plot_signal_1D(sig_histo, m1, delta, ctau, plot_dict, style_dict):
         plt.savefig(f"{style_dict['outDir']}/{style_dict['outName']}")
         print(f"Saved: {style_dict['outDir']}/{style_dict['outName']}")
     
+# <<<<<<< HEAD
     
 
 #Used for Electron Reconstruction Efficiency when projecting pT
@@ -769,8 +829,6 @@ def plot_signal_1D_lxy(sig_histo, m1, delta, ctau, plot_dict, style_dict, match_
     
 
 
-
-
 def plot_signal_2D(sig_histo, m1, delta, ctau, plot_dict, style_dict):
     """
     Example:
@@ -973,11 +1031,6 @@ def plot_signal_2D_match(sig_histo, m1, delta, ctau, plot_dict, style_dict,match
 
 
 
-
-
-
-
-
 def get_bkg_histo_1d(bkg_histos, plot_dict, style_dict, processes = 'all'):
     if processes == 'all':
         processes = list(set(utils.get_bkg_point_dict(bkg_histos).loc[:, 'Process']))
@@ -999,7 +1052,6 @@ def get_bkg_histo_1d(bkg_histos, plot_dict, style_dict, processes = 'all'):
         entries = {process: bkg[plot_dict['variable']][process].sum().value for process in processes}
         
     sorted_entries = dict(sorted(entries.items(), key=lambda x:x[1], reverse = False))
-    print ("sorts:", sorted_entries)
 
     # histogram
     bkg_stack = {}
@@ -1062,14 +1114,25 @@ def get_bkg_histo_stacked_1d(bkg_histos, plot_dict, style_dict, processes = 'all
     return bkg_stack
 
 
+
 def get_data_histo_1d(data_histo, plot_dict, style_dict):
     runs = list(data_histo['cutflow_cts'].keys())
 
     for idx, run in enumerate(runs):
-        if idx == 0:
-            histo = data_histo[plot_dict['variable']][{"samp":run, "cut": plot_dict['cut']}]
-        else:
-            histo += data_histo[plot_dict['variable']][{"samp":run, "cut": plot_dict['cut']}]
+# <<<<<<< HEAD
+#         if idx == 0:
+#             histo = data_histo[plot_dict['variable']][{"samp":run, "cut": plot_dict['cut']}]
+#         else:
+#             histo += data_histo[plot_dict['variable']][{"samp":run, "cut": plot_dict['cut']}]
+# =======
+        try:
+            if idx == 0:
+                histo = data_histo[plot_dict['variable']][{"samp":run, "cut": plot_dict['cut']}]
+            else:
+                histo += data_histo[plot_dict['variable']][{"samp":run, "cut": plot_dict['cut']}]
+        except:
+            print('No run')
+# >>>>>>> kyungmin/main
 
     # rebinning
     histo = histo[::style_dict['rebin']]
@@ -1116,7 +1179,11 @@ def plot_bkg_1d(bkg_histos, plot_dict, style_dict, isLegacy = False, processes =
 
     # CMS styling
     #hep.cms.label(r"$\mathrm{Private Work}$", data=False, year=plot_dict['year'])
+# <<<<<<< HEAD
     hep.cms.label('Preliminary', data=False, year=plot_dict['year'], com='13.6')
+# =======
+#     hep.cms.label('', data=False, year=plot_dict['year'])
+# >>>>>>> kyungmin/main
     
     if isLegacy:
         return plot_bkg_1d_legacy(ax, bkg_histos, plot_dict, style_dict, processes, isLegacy)
@@ -1148,7 +1215,6 @@ def plot_bkg_1d(bkg_histos, plot_dict, style_dict, isLegacy = False, processes =
         
         # add histos to stack after rebinning and range setting
         for process in sorted_entries.keys():
-            #bkg[plot_dict['variable']][process] = bkg[plot_dict['variable']][process][{"cut": plot_dict['cut']}, ::style_dict['rebin']]
 
             bkg[plot_dict['variable']][process] = bkg[plot_dict['variable']][process][plot_dict['cut'],::style_dict['rebin']]
         
@@ -1661,10 +1727,20 @@ def plot_data_1d(data_histo, plot_dict, style_dict):
     runs = list(data_histo['cutflow_cts'].keys())
 
     for idx, run in enumerate(runs):
-        if idx == 0:
-            histo = data_histo[plot_dict['variable']][{"samp":run, "cut": plot_dict['cut']}]
-        else:
-            histo += data_histo[plot_dict['variable']][{"samp":run, "cut": plot_dict['cut']}]
+# <<<<<<< HEAD
+#         if idx == 0:
+#             histo = data_histo[plot_dict['variable']][{"samp":run, "cut": plot_dict['cut']}]
+#         else:
+#             histo += data_histo[plot_dict['variable']][{"samp":run, "cut": plot_dict['cut']}]
+# =======
+        try:
+            if idx == 0:
+                histo = data_histo[plot_dict['variable']][{"samp":run, "cut": plot_dict['cut']}]
+            else:
+                histo += data_histo[plot_dict['variable']][{"samp":run, "cut": plot_dict['cut']}]
+        except:
+            print('No run')
+# >>>>>>> kyungmin/main
 
     # rebinning
     histo = histo[::style_dict['rebin']]
@@ -1702,6 +1778,37 @@ def plot_data_1d(data_histo, plot_dict, style_dict):
     ax.legend(handles[::-1], labels[::-1])
 
 
+def get_data_histo_2D(data_histo, plot_dict, style_dict):
+    fig = style_dict['fig']
+    ax = style_dict['ax']
+    
+    #hep.cms.label('', data=True, year=plot_dict['year'])
+    
+    # Get list of data
+    runs = list(data_histo['cutflow_cts'].keys())
+
+    for idx, run in enumerate(runs):
+        try:
+            if idx == 0:
+                histo = data_histo[plot_dict['variable']][{"samp":run, "cut": plot_dict['cut']}]
+            else:
+                histo += data_histo[plot_dict['variable']][{"samp":run, "cut": plot_dict['cut']}]
+        except:
+            print('No run')
+
+    # set x range manually
+    if style_dict['xlim'] != None:
+        xlim = style_dict['xlim']
+        xbin_range = np.where((histo.axes.edges[0] > xlim[0]) & (histo.axes.edges[0] < xlim[1]))[0]
+        histo = histo[ int(xbin_range[0])-1:int(xbin_range[-1]+1), : ]
+    if style_dict['ylim'] != None:
+        ylim = style_dict['ylim']
+        ybin_range = np.where((histo.axes.edges[1] > ylim[0]) & (histo.axes.edges[1] < ylim[1]))[1]
+        histo = histo[ :, int(ybin_range[0]):int(ybin_range[-1]+1) ]
+
+    return histo
+
+
 def plot_data_2D(data_histo, plot_dict, style_dict):
     """
     Example:
@@ -1711,7 +1818,12 @@ def plot_data_2D(data_histo, plot_dict, style_dict):
     fig = style_dict['fig']
     ax = style_dict['ax']
     
+# <<<<<<< HEAD
     hep.cms.label('', data=True, year=plot_dict['year'])
+# =======
+#     #hep.cms.label('', data=True, year=plot_dict['year'])
+#     hep.cms.label('', data=False, llabel='Private Work', rlabel='')
+# >>>>>>> kyungmin/main
     
     # Get list of data
     runs = list(data_histo['cutflow_cts'].keys())
@@ -1764,7 +1876,6 @@ def plot_data_2D(data_histo, plot_dict, style_dict):
         print(f"Saved: {style_dict['outDir']}/{style_dict['outName']}")
 
 
-
 def plot_data_MC_ratio(data_histo, bkg_histo, plot_dict, style_dict):
     """
     Plot data and background MC
@@ -1774,6 +1885,8 @@ def plot_data_MC_ratio(data_histo, bkg_histo, plot_dict, style_dict):
     ax = style_dict['ax']
     
     plot_bkg_1d(bkg_histo, plot_dict, style_dict, processes = 'all')
+
+    plot_bkg_1d_stacked_errbar(bkg_histo, plot_dict, style_dict, processes = 'all')
     plot_data_1d(data_histo, plot_dict, style_dict)
 
     """
@@ -1801,34 +1914,68 @@ def plot_data_MC_ratio(data_histo, bkg_histo, plot_dict, style_dict):
     ax_ratio.set_ylabel('Data/MC')
     ax_ratio.set_ylim([0,2.5])
 
-    binwidth = hist_bkg.axes.widths[0][0]
-    xmin = hist_bkg.axes.edges[0][0]
-    xmax = hist_bkg.axes.edges[0][-1]
+# <<<<<<< HEAD
+#     binwidth = hist_bkg.axes.widths[0][0]
+#     xmin = hist_bkg.axes.edges[0][0]
+#     xmax = hist_bkg.axes.edges[0][-1]
     
-    xbin_centers = (range(len(ratio)) * binwidth) + xmin + binwidth/2
+#     xbin_centers = (range(len(ratio)) * binwidth) + xmin + binwidth/2
     
-    ax_ratio.plot(xbin_centers, ratio, 'o', color='black')
+#     ax_ratio.plot(xbin_centers, ratio, 'o', color='black')
+# =======
+    xbin_centers = hist_bkg.axes.edges[0][:-1] + hist_bkg.axes.widths[0]/2
+    
+    # data error bar
+    data_err = np.sqrt(hist_data.values())/hist_data.values()
+    ax_ratio.errorbar(xbin_centers, ratio, yerr=data_err, fmt='o', color='black')
+    #ax_ratio.plot(xbin_centers, ratio, 'o', color='black')
+
+    # bkg Error bars
+    bkg_err = np.sqrt(hist_bkg.values())/hist_bkg.values()
+    bkg_err[np.isnan(bkg_err)] = 0
+
+    y_upper = np.ones(len(bkg_err)) + bkg_err
+    y_lower = np.ones(len(bkg_err)) - bkg_err
+
+    error_band_args = { 
+        #"edges": (range(len(ratio)+1) * binwidth) + xmin, "facecolor": "none", "linewidth": 0.5,
+        "edges": hist_bkg.axes.edges[0], 
+        "facecolor": "none", "linewidth": 0.5,
+        "alpha": .5, "color": "grey", "hatch": "///"
+    }
+    ax_ratio.stairs(y_upper, baseline=y_lower, **error_band_args)
+    ax_ratio.stairs(y_upper, baseline=y_lower, **error_band_args)
+# >>>>>>> kyungmin/main
     
     ax_ratio.axhline(y=1, color='black', linestyle='--', linewidth=0.8)
 
     extent = ax.get_window_extent().transformed(fig.dpi_scale_trans.inverted())
+# <<<<<<< HEAD
 
+#     if style_dict['doSave']:
+#         os.makedirs(style_dict['outDir'], exist_ok=True)
+#         plt.savefig(f"{style_dict['outDir']}/{style_dict['outName']}", bbox_inches='tight', bbox_extra_artists=[ax_ratio])
+#         print(f"Saved: {style_dict['outDir']}/{style_dict['outName']}")
+
+#     '''
+#     main_ax_artists, sublot_ax_artists = hist_data.plot_ratio(
+#     #hist_data.plot_ratio(
+#         hist_bkg,
+#         rp_ylabel=r"Data/MC",
+#         rp_num_label="Data",
+#         rp_denom_label="Background MC",
+#         rp_uncert_draw_type="bar",  # line or bar
+#     )
+#     '''
+
+# =======
+    
     if style_dict['doSave']:
         os.makedirs(style_dict['outDir'], exist_ok=True)
-        plt.savefig(f"{style_dict['outDir']}/{style_dict['outName']}", bbox_inches='tight', bbox_extra_artists=[ax_ratio])
+        plt.savefig(f"{style_dict['outDir']}/{style_dict['outName']}", bbox_inches='tight', bbox_extra_artists=[ax_ratio], pad_inches=0.3)
         print(f"Saved: {style_dict['outDir']}/{style_dict['outName']}")
 
-    '''
-    main_ax_artists, sublot_ax_artists = hist_data.plot_ratio(
-    #hist_data.plot_ratio(
-        hist_bkg,
-        rp_ylabel=r"Data/MC",
-        rp_num_label="Data",
-        rp_denom_label="Background MC",
-        rp_uncert_draw_type="bar",  # line or bar
-    )
-    '''
-
+# >>>>>>> kyungmin/main
 def plot_samples_sigBkg(loader_sig,loader_bkg,hname,selection,samples,labels,outName,outD,
                  xlabel=None,ylabel=None,title=None,xlim=None,ylim=None,
                  ncol_leg=1,figsize=None,logy=False,logx=False,rebin=1j,
@@ -2026,4 +2173,5 @@ def summedBkgCutflow(loader_bkg,cfname,cut):
     for key,value in cf.items():
         cat = key.split("_")[2]
         output[cat] += value[cut]
+
     return output

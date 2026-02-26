@@ -14,8 +14,13 @@ bool Helper::JetID(const pat::Jet &jet, std::string year) {
     auto muonFrac = jet.muonEnergyFraction();
     auto chEmFrac = jet.chargedEmEnergyFraction();
 
+// <<<<<<< HEAD
     bool passID = true;
    
+// =======
+//     bool passID = false;
+
+// >>>>>>> kyungmin/main
     if ((year == "2016") || (year == "2016APV")) {
         if (abs(eta) <= 2.4) {
             passID = (neutHadFrac < 0.9) && (neutEmFrac < 0.9) && (nConstit > 1) && (muonFrac < 0.8) && (chargedHadFrac > 0) && (chargedMult > 0) && (chEmFrac < 0.8);
@@ -39,6 +44,7 @@ bool Helper::JetID(const pat::Jet &jet, std::string year) {
         }
         else if ((abs(eta) > 2.7) && (abs(eta) <= 3.0)) {
             passID = (neutHadFrac < 0.9999);
+
         }
         else if ((abs(eta) >= 3.0) && (abs(eta) < 5.0)) {
             passID = (neutEmFrac < 0.9) && (neutMult > 2);

@@ -8,7 +8,7 @@ import analysisSubroutines as sub
 # General Purpose
 samp = StrCategory([],name="samp",label="Sample Name",growth=True)
 cut = StrCategory([],name="cut",label="Cut Applied",growth=True)
-# ctauchi2=sub.ctaucalculate(events)
+
 
 # functions to make histograms
 class myHisto:
@@ -69,6 +69,7 @@ class myHisto:
         self.phi = self.parse_axis(("phi",64,-3.2,3.2))
         self.abs_dphi = self.parse_axis(('phi',100,0,3))
         self.eta = self.parse_axis(('eta',50,-2.5,2.5))
+
         self.dxy = self.parse_axis(('dxy',500,0,5))
         self.r3 = self.parse_axis(('r3',500,0,100))
         self.dxy_signif = self.parse_axis(('signif',100,0,20))
@@ -89,13 +90,17 @@ class myHisto:
         self.IDScore = self.parse_axis(('id',100,-1,3))
         self.ele_passID = self.parse_axis(('passID',[0,1]))
         #self.vtx_type = self.parse_axis(('vtype',['LL','LR','RR']))
+
         self.vtx_mass = self.parse_axis(('mass',100,0,30))
         self.vtx_sign = self.parse_axis(('sign',[-1,1]))
         self.vtx_pt = self.parse_axis(('pt',100,0,50))
         self.ele_ptRes = self.parse_axis(('ptres',100,-2,2))
         self.sigReco = self.parse_axis(('reco',[0,1]))
         self.vtxMatch = self.parse_axis(('match',[0,1]))
-        
+
+        self.dRCategories = self.parse_axis(('dRCat',['0to0p1','0p1to0p5','0p5toInf']))
+        self.vxyCategories = self.parse_axis(('vxyCat',['0to1','1to5','5to10','10to15','15toInf']))
+        self.ptCategories = self.parse_axis(('ptCat',['0to5','5to10','10to20','20toInf']))
 
     def make(self,name,*args,**hist_kwargs):
         if name in self.histograms.keys():
@@ -114,6 +119,7 @@ class myHisto:
     
    
     #I made it a bit CASE-SPECIFIC
+
     def parse_axis(self,a):
         name = a[0]
         if type(a[1]) == list:
@@ -126,6 +132,12 @@ class myHisto:
                 if type(a[1][0]) == int: 
                     axis = IntCategory(a[1],name=name,label=name)
            
+# =======
+#             if type(a[1][0]) == str:
+#                 axis = StrCategory(a[1],name=name,label=name)
+#             else:
+#                 axis = IntCategory(a[1],name=name,label=name)
+# >>>>>>> kyungmin/main
         else:
             assert len(a) == 4
             axis = Regular(a[1],a[2],a[3],name=name,label=name)
@@ -169,6 +181,7 @@ def make_histograms():
    
  
   
+
     
     # misc other quantities
     h.make("PFMET",'met')
@@ -178,6 +191,7 @@ def make_histograms():
     return h
 
 subroutines = []
+
 
 # def CtauCal(events):
 #     mask_chi2 = events.GenPart.ID == 1000023
@@ -194,9 +208,6 @@ subroutines = []
 
 #     ctau_chi2 = decaylength_chi2 / gamma_chi2
 #     events.__setitem__("Ctau_cal",ctau_chi2)
-    
-
-
 
 def fillHistos(events,h,samp,cut,info,sum_wgt=1):
     h.samp = samp
@@ -259,20 +270,12 @@ def fillHistos(events,h,samp,cut,info,sum_wgt=1):
         # print ("Mask len:", len(MASK1))
         
         # print ("len(match_pf):",len(match_pf))
+
         genObj_pf = ak.where(match_pf.matchType==-1,events[hasMatch_pf].GenEle,events[hasMatch_pf].GenPos)
         match_pf = ak.flatten(match_pf)
         genObj_pf = ak.flatten(genObj_pf)
         match_pf_passID = ak.values_astype(match_pf.passID,int)
 
-        # print ("Genpt:", events.GenEle.pt)
-        # MASK1= events.GenEle.pt <5
-        # print ("genObj_pf[MASK1]:",genObj_pf[MASK1])
-        # # # print ("vxy:", events.GenEle.vxy[MASK1])
-        # print (events.fields)
-        
-
-        
-        
 
         match_lpt = events[hasMatch_lpt].LptElectron
         match_lpt = match_lpt[match_lpt.genMatched]
@@ -281,6 +284,7 @@ def fillHistos(events,h,samp,cut,info,sum_wgt=1):
         genObj_lpt = ak.flatten(genObj_lpt)
         match_lpt_passID = ak.values_astype(match_lpt.passID,int)
 
+<<<<<<< HEAD
 
         
 
@@ -330,11 +334,4 @@ def fillHistos(events,h,samp,cut,info,sum_wgt=1):
         h.fill("match_ele_gen_pt_vs_vxy1",match_type='L',passID=match_lpt_passID,pt=genObj_lpt.pt, vxy=genObj_lpt.vxy)
         
         h.fill("match_ele_gen_pt_vs_vxy1",match_type='R',passID=match_pf_passID,pt=genObj_pf.pt, vxy=genObj_pf.vxy)
-
-
-
-
-
-        
-
 

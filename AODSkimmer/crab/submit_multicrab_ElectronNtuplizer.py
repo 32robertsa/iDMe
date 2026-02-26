@@ -25,6 +25,7 @@ def parseArguments():
                       dest = 'year',
                       default = '',
                       help = "Which year to process ('2023'/'2022'/'2018'(default)/'2017'/'2016'/'2016APV')",
+
                       metavar = 'YEAR')
 
     parser.add_option("-f","--inFile",
@@ -81,6 +82,7 @@ def main():
     
     if 'CMSSW_BASE' not in os.environ.keys():
         print ("Run cmsenv first!")
+
         return
     base_dir = os.environ['CMSSW_BASE']
 
@@ -99,7 +101,11 @@ def main():
     config = CRABClient.UserUtilities.config()
 
     # Basic settings common to all runs 
+# <<<<<<< HEAD
     config.General.workArea = base_dir+'/src/iDMe/AODSkimmer/crab/submissions_ElectronNtuplizer/'
+# =======
+#     config.General.workArea = base_dir+'/src/iDMe/AODSkimmer/crab/submissions_ElectronNtuplizer_/' + options.name
+# >>>>>>> kyungmin/main
     config.General.transferOutputs = True
     config.General.transferLogs = False
     config.JobType.pluginName = 'Analysis'
@@ -107,6 +113,8 @@ def main():
     config.JobType.allowUndistributedCMSSW = True
     config.JobType.numCores = 1
     config.Data.splitting = 'Automatic'
+
+    config.JobType.maxMemoryMB = 2500
     #config.Data.totalUnits = 1
     #config.Data.splitting = 'EventAwareLumiBased'
     #config.Data.unitsPerJob = 10000
@@ -147,6 +155,7 @@ def main():
                                           'data={0}'.format(samp_type),
                                           'signal={0}'.format(isSignal)]
             print ('Submitting for input dataset {0}'.format(subsample))
+
             #crabCommand(options.crabCmd, config = config)
             kwargs = {'config':config}
             p = Process(target=crabCommand,args=(options.crabCmd,),kwargs=kwargs)

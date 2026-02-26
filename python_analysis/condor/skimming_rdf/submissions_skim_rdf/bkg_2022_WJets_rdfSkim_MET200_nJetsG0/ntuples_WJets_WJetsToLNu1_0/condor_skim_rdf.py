@@ -186,6 +186,7 @@ if __name__ == "__main__":
     t = time.time()
     print(f"initial = {d.Count().GetValue()}")
     
+<<<<<<<< HEAD:python_analysis/condor/skimming_rdf/submissions_skim_rdf/bkg_2022_WJets_rdfSkim_MET200_nJetsG0/ntuples_WJets_WJetsToLNu1_0/condor_skim_rdf.py
     if nJet_cut > 0:
         njet_filter = f"(nPFJet > 0) && (nPFJet < {nJet_cut})"
     else:
@@ -197,6 +198,13 @@ if __name__ == "__main__":
         .Filter(f"PFMET_pt > {MET_cut}") \
         .Filter(njet_filter) \
         .Filter("!anyB_med")
+========
+    d = d.Filter("anyTrue(vtx_isGood)") \
+        .Filter("METFiltersFailBits == 0") \
+        .Filter("trig_HLT_IsoMu27 == 1") \
+        .Filter("nMuon >= 2") \
+        .Filter("(nElectron + nLptElectron) >= 2")
+>>>>>>>> kyungmin/main:python_analysis/condor/skimming_rdf/condor_skim_rdf_SFmuonChannel.py
     final = d.Count().GetValue()
     print(f"final = {final}")
     if final > 0:

@@ -14,6 +14,7 @@ with open(inputJson) as f:
 
 if kind == 'sig':
     df = pd.read_csv('signal_xsec_table.csv')
+
     with open("filter_effs_simple.json","r") as fin:
         effs = json.load(fin)
     for samp in samples:
