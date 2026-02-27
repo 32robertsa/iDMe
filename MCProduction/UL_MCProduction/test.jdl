@@ -1,0 +1,14 @@
+universe = vanilla
+executable = test.sh
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+Output = test_$(Cluster)_$(Process).stdout
+Error = test_$(Cluster)_$(Process).stderr
+Log = test_$(Cluster)_$(Process).log
+input = /dev/null
+rank = Mips
++AcctGroup = "analysis"
++ProjectName = "DarkMatterSimulation"
++DesiredOS = "EL8"
+
+
