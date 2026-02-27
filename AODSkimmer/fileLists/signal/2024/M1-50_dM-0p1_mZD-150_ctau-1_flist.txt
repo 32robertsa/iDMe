@@ -1,0 +1,15 @@
+/store/group/lpcmetx/iDMe/Samples/acrobert/signal/2024/MiniAOD/iDMe_run3_M1-50_dM-0p1_mZD-150_ctau-1_1jet_xptj80_MiniAOD_2024_0_6983evts.root
+/store/group/lpcmetx/iDMe/Samples/acrobert/signal/2024/MiniAOD/iDMe_run3_M1-50_dM-0p1_mZD-150_ctau-1_1jet_xptj80_MiniAOD_2024_10_6984evts.root
+/store/group/lpcmetx/iDMe/Samples/acrobert/signal/2024/MiniAOD/iDMe_run3_M1-50_dM-0p1_mZD-150_ctau-1_1jet_xptj80_MiniAOD_2024_11_6874evts.root
+/store/group/lpcmetx/iDMe/Samples/acrobert/signal/2024/MiniAOD/iDMe_run3_M1-50_dM-0p1_mZD-150_ctau-1_1jet_xptj80_MiniAOD_2024_12_6907evts.root
+/store/group/lpcmetx/iDMe/Samples/acrobert/signal/2024/MiniAOD/iDMe_run3_M1-50_dM-0p1_mZD-150_ctau-1_1jet_xptj80_MiniAOD_2024_13_6973evts.root
+/store/group/lpcmetx/iDMe/Samples/acrobert/signal/2024/MiniAOD/iDMe_run3_M1-50_dM-0p1_mZD-150_ctau-1_1jet_xptj80_MiniAOD_2024_15_6978evts.root
+/store/group/lpcmetx/iDMe/Samples/acrobert/signal/2024/MiniAOD/iDMe_run3_M1-50_dM-0p1_mZD-150_ctau-1_1jet_xptj80_MiniAOD_2024_16_6935evts.root
+/store/group/lpcmetx/iDMe/Samples/acrobert/signal/2024/MiniAOD/iDMe_run3_M1-50_dM-0p1_mZD-150_ctau-1_1jet_xptj80_MiniAOD_2024_17_6928evts.root
+/store/group/lpcmetx/iDMe/Samples/acrobert/signal/2024/MiniAOD/iDMe_run3_M1-50_dM-0p1_mZD-150_ctau-1_1jet_xptj80_MiniAOD_2024_19_6912evts.root
+/store/group/lpcmetx/iDMe/Samples/acrobert/signal/2024/MiniAOD/iDMe_run3_M1-50_dM-0p1_mZD-150_ctau-1_1jet_xptj80_MiniAOD_2024_2_6958evts.root
+/store/group/lpcmetx/iDMe/Samples/acrobert/signal/2024/MiniAOD/iDMe_run3_M1-50_dM-0p1_mZD-150_ctau-1_1jet_xptj80_MiniAOD_2024_3_6961evts.root
+/store/group/lpcmetx/iDMe/Samples/acrobert/signal/2024/MiniAOD/iDMe_run3_M1-50_dM-0p1_mZD-150_ctau-1_1jet_xptj80_MiniAOD_2024_4_6948evts.root
+/store/group/lpcmetx/iDMe/Samples/acrobert/signal/2024/MiniAOD/iDMe_run3_M1-50_dM-0p1_mZD-150_ctau-1_1jet_xptj80_MiniAOD_2024_6_6899evts.root
+/store/group/lpcmetx/iDMe/Samples/acrobert/signal/2024/MiniAOD/iDMe_run3_M1-50_dM-0p1_mZD-150_ctau-1_1jet_xptj80_MiniAOD_2024_7_6960evts.root
+/store/group/lpcmetx/iDMe/Samples/acrobert/signal/2024/MiniAOD/iDMe_run3_M1-50_dM-0p1_mZD-150_ctau-1_1jet_xptj80_MiniAOD_2024_8_6966evts.root

@@ -12,6 +12,7 @@ from Configuration.ProcessModifiers.run2_miniAOD_UL_cff import run2_miniAOD_UL
 #Run3 imports
 from Configuration.Eras.Era_Run3_cff import Run3                   #corresponds to Run3 2022 (maybe)
 from Configuration.Eras.Era_Run3_2023_cff import Run3_2023         #corresponds to Run3 2023
+from Configuration.Eras.Era_Run3_2024_cff import Run3_2024         # 2024
 
 import json
 import sys
@@ -99,6 +100,11 @@ elif options.year == '2023':
     era = Run3_2023
     recoEgammaTools_era = '2023-Prompt'
 
+elif options.year == '2024': #XYZ FIX
+    globaltag = '' if options.data else '150X_mcRun3_2024_realistic_v2'
+    era = Run3_2024
+    recoEgammaTools_era = '2018UL'
+
 
 else:
     print("Invalid year: {0}".format(options.year))
@@ -121,7 +127,7 @@ if options.year == '2016' or options.year == '2016APV':
         "Flag_eeBadScFilter",
         "Flag_hfNoisyHitsFilter"
     ]
-elif options.year == '2017' or options.year == '2018' or options.year == '2022' or options.year == '2023':
+elif options.year == '2017' or options.year == '2018' or options.year == '2022' or options.year == '2023' or options.year == '2024':
 
     metFilters = [
         "Flag_goodVertices",
@@ -328,9 +334,11 @@ process.nanoElectronSequence = cms.Sequence(process.isoForEleRelative+\
 process.ntupleSequence = cms.Sequence(process.ntuples)
 process.ntuplePath = cms.Path(process.ntupleSequence)
 
-
-
 process.iDMNanoElectronSequence = cms.Sequence(process.lowPtNanoElectronSequence + process.nanoElectronSequence)
 process.iDMNanoElectron = cms.Path(process.iDMNanoElectronSequence)
 
+process.iDMEgammaPostRecoSequence = cms.Sequence(process.egammaPostRecoSeq)
+process.iDMEgammaPostReco = cms.Path(process.iDMEgammaPostRecoSequence)
+
+process.schedule = cms.Schedule(process.iDMEgammaPostReco,process.iDMNanoElectron,process.ntuplePath)
 
