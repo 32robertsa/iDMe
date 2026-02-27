@@ -182,7 +182,7 @@ cmsDriver.py \
 #echo "process.options = cms.untracked.PSet(SkipEvent = cms.untracked.vstring('ProductNotFound'))" >> ${genfragment}
 cmsRun ${genfragment}
 
-remoteDIR="/store/group/lpcmetx/iDMe/Samples/signal/test/${year}"
+remoteDIR="/store/group/lpcmetx/iDMe/Samples/signal/${year}"
 xrdcp -vf ${namebase}_MINIAOD_ctau-${ctau}_year-${year}.root root://cmseos.fnal.gov/$remoteDIR/MINIAOD/${namebase}_MINIAOD_ctau-${ctau}_year-${year}.root
 
 echo "Final output ROOT file:" ${namebase}_MINIAOD_ctau-${ctau}_year-${year}.root 
