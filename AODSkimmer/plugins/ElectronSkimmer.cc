@@ -403,7 +403,8 @@ ElectronSkimmer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) 
    desc.add<bool>("isSignal",0);
    desc.add<std::string>("year","2022");
    desc.add<std::string>("triggerProcessName", "HLT");
-   desc.add<std::string>("metFilterName","PAT");
+   //desc.add<std::string>("metFilterName","PAT");
+   desc.add<std::string>("metFilterName","RECO");
    desc.add<std::vector<std::string> >("metFilters",{});
    desc.add<std::vector<std::string> >("triggerPaths",{});
    desc.add<edm::FileInPath>("effAreasConfigFile");
@@ -424,14 +425,17 @@ ElectronSkimmer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) 
    desc.add<edm::InputTag>("genMET",edm::InputTag("genMetTrue"));
    desc.add<edm::InputTag>("primaryVertex",edm::InputTag("offlineSlimmedPrimaryVertices"));
    desc.add<edm::InputTag>("beamspot",edm::InputTag("offlineBeamSpot"));
-   desc.add<edm::InputTag>("conversions",edm::InputTag("reducedEgamma","reducedConversions","PAT"));
+   //desc.add<edm::InputTag>("conversions",edm::InputTag("reducedEgamma","reducedConversions","PAT"));
+   desc.add<edm::InputTag>("conversions",edm::InputTag("reducedEgamma","reducedConversions","RECO"));
    desc.add<edm::InputTag>("photons",edm::InputTag("slimmedPhotons"));
    desc.add<edm::InputTag>("ootPhotons",edm::InputTag("slimmedOOTPhotons"));
    desc.add<edm::InputTag>("MET",edm::InputTag("slimmedMETs"));
    desc.add<edm::InputTag>("puppiMET",edm::InputTag("slimmedMETsPuppi"));
    desc.add<edm::InputTag>("trigResults",edm::InputTag("TriggerResults","","HLT"));
-   desc.add<edm::InputTag>("metFilterResults",edm::InputTag("TriggerResults","","PAT"));
-   desc.add<edm::InputTag>("isoTracks",edm::InputTag("isolatedTracks","","PAT"));
+   //desc.add<edm::InputTag>("metFilterResults",edm::InputTag("TriggerResults","","PAT"));
+   //desc.add<edm::InputTag>("isoTracks",edm::InputTag("isolatedTracks","","PAT"));
+   desc.add<edm::InputTag>("metFilterResults",edm::InputTag("TriggerResults","","RECO"));
+   desc.add<edm::InputTag>("isoTracks",edm::InputTag("isolatedTracks","","RECO"));
    desc.add<edm::InputTag>("pfRecoMu", edm::InputTag("slimmedMuons"));
    descriptions.add("ElectronSkimmer", desc);
 }
@@ -561,17 +565,17 @@ ElectronSkimmer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    {
      
       nt.PFNJetAll_++;
-      cout<<"Total number of jets:"<<nt.PFNJetAll_<<endl;
+      //cout<<"Total number of jets:"<<nt.PFNJetAll_<<endl;
       if (helper.JetID(jet,year) && jet.pt() > 30) 
       {
      
          nt.PFNJet_++;
-         cout<<"nt.PFNJet_:"<<nt.PFNJet_<<endl;
+         //cout<<"nt.PFNJet_:"<<nt.PFNJet_<<endl;
          nt.PFJetPt_.push_back(jet.pt());
          nt.PFJetEta_.push_back(jet.eta());
          nt.PFJetPhi_.push_back(jet.phi());
-         cout << "Jet pt: " << jet.pt() << " eta: " << jet.eta() << " phi: " << jet.phi() << endl;
-         cout<<"Something interesting!"<<endl;
+         //cout << "Jet pt: " << jet.pt() << " eta: " << jet.eta() << " phi: " << jet.phi() << endl;
+         //cout<<"Something interesting!"<<endl;
          auto bTag = jet.bDiscriminator("pfDeepFlavourJetTags:probb") + 
 
                      jet.bDiscriminator("pfDeepFlavourJetTags:probbb") + 

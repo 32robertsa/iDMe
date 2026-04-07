@@ -103,7 +103,7 @@ elif options.year == '2023':
 elif options.year == '2024': #XYZ FIX
     globaltag = '' if options.data else '150X_mcRun3_2024_realistic_v2'
     era = Run3_2024
-    recoEgammaTools_era = '2018UL'
+    recoEgammaTools_era = '2018-UL'
 
 
 else:
@@ -150,24 +150,33 @@ elif options.year == '2017' or options.year == '2018' or options.year == '2022' 
 # but what's available will get written out to the ntuples
 # Jet triggers (for MET trigger eff)
 metTrigs = [
-   # "HLT_PFMET90_PFMHT90_IDTight",
-    #"HLT_PFMET100_PFMHT100_IDTight",
-    "HLT_PFMET110_PFMHT110_IDTight",
+   # "HLT_PFMET90_PFMHT90_IDTight", # not included in Run 3
+    #"HLT_PFMET100_PFMHT100_IDTight", # not included in Run 3
+    #"HLT_PFMET110_PFMHT110_IDTight", # not included in Run 3
     "HLT_PFMET120_PFMHT120_IDTight",
+    "HLT_PFMET120_PFMHT120_IDTight_PFHT60",
     "HLT_PFMET130_PFMHT130_IDTight",
     "HLT_PFMET140_PFMHT140_IDTight",
+    "HLT_PFMETNoMu110_PFMHTNoMu110_IDTight_FilterHF",
     "HLT_PFMETNoMu120_PFMHTNoMu120_IDTight",
-    "HLT_PFMETTypeOne110_PFMHT110_IDTight",
-    "HLT_PFMETTypeOne120_PFMHT120_IDTight",
-    "HLT_PFMETTypeOne130_PFMHT130_IDTight",
-    "HLT_PFMETTypeOne140_PFMHT140_IDTight"
-   # "HLT_PFMET100_PFMHT100_IDTight_PFHT60_v9"
+    "HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_FilterHF",
+    "HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60",
+    "HLT_PFMETNoMu130_PFMHTNoMu130_IDTight",
+    "HLT_PFMETNoMu130_PFMHTNoMu130_IDTight_FilterHF",
+    "HLT_PFMETNoMu140_PFMHTNoMu140_IDTight",
+    "HLT_PFMETNoMu140_PFMHTNoMu140_IDTight_FilterHF",
+    #"HLT_PFMETTypeOne110_PFMHT110_IDTight", # not included in Run 3
+    #"HLT_PFMETTypeOne120_PFMHT120_IDTight", # not included in Run 3
+    #"HLT_PFMETTypeOne130_PFMHT130_IDTight", # not included in Run 3
+    "HLT_PFMETTypeOne140_PFMHT140_IDTight",
+    #"HLT_PFMET100_PFMHT100_IDTight_PFHT60_v9", # not included in Run 3
+    "HLT_PFMET105_IsoTrk50",
 ]
 
 
 jetTrigs = [
-    "HLT_PFJet15",
-    "HLT_PFJet25",
+    #"HLT_PFJet15", # not included in Run 3
+    #"HLT_PFJet25", # not included in Run 3
     "HLT_PFJet40",
     "HLT_PFJet60",
     "HLT_PFJet80",
@@ -179,26 +188,25 @@ jetTrigs = [
     "HLT_PFJet450",
     "HLT_PFJet500",
     "HLT_PFJet550",
-    "HLT_AK4PFJet30",
-    "HLT_AK4PFJet50",
-    "HLT_AK4PFJet80",
-    "HLT_AK4PFJet100",
-    "HLT_AK4PFJet120"
+    #"HLT_AK4PFJet30", # not included in Run 3
+    #"HLT_AK4PFJet50", # not included in Run 3
+    #"HLT_AK4PFJet80", # not included in Run 3
+    #"HLT_AK4PFJet100", # not included in Run 3
+    #"HLT_AK4PFJet120", # not included in Run 3
 ]
 eleTrigs = list(set([
     "HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165",
     "HLT_Ele30_eta2p1_WPTight_Gsf_CentralPFJet35_EleCleaned",
     "HLT_Ele28_eta2p1_WPTight_Gsf_HT150",
-   # "HLT_Ele27_Ele37_CaloIdL_MW"
+    #"HLT_Ele27_Ele37_CaloIdL_MW",
     #"HLT_DoubleEle25_CaloIdL_MW",
-
     "HLT_DoubleEle27_CaloIdL_MW",
     "HLT_DoubleEle33_CaloIdL_MW",
     "HLT_DoubleEle24_eta2p1_WPTight_Gsf",
-    "HLT_Ele20_WPTight_Gsf",
-    "HLT_Ele15_WPLoose_Gsf",
-    "HLT_Ele17_WPLoose_Gsf",
-    "HLT_Ele20_WPLoose_Gsf",
+    #"HLT_Ele20_WPTight_Gsf", # not included in Run 3
+    #"HLT_Ele15_WPLoose_Gsf", # not included in Run 3
+    #"HLT_Ele17_WPLoose_Gsf", # not included in Run 3
+    #"HLT_Ele20_WPLoose_Gsf", # not included in Run 3
     "HLT_Ele27_WPTight_Gsf",
     "HLT_Ele28_WPTight_Gsf",
     "HLT_Ele30_WPTight_Gsf",
@@ -214,7 +222,7 @@ eleTrigs = list(set([
     "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ",
     "HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30",
     "HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30",
-    "HLT_Ele15_CaloIdL_TrackIdL_IsoVL_PFJet30",
+    #"HLT_Ele15_CaloIdL_TrackIdL_IsoVL_PFJet30", # not included in Run 3
     "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30",
     "HLT_Ele8_CaloIdM_TrackIdM_PFJet30",
     "HLT_Ele17_CaloIdM_TrackIdM_PFJet30",
@@ -259,6 +267,8 @@ process.load("TrackingTools.TransientTrack.TransientTrackBuilder_cfi")
 process.load("Configuration.StandardSequences.GeometryRecoDB_cff")
 process.load('Configuration.StandardSequences.MagneticField_38T_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
+
+process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, globaltag, '')
